@@ -28,12 +28,27 @@ extern "C" {
 #include <gk.h>
 
 AkResult
-ak_glGeometryLoad(AkGeometry * geometry,
+ak_glLoadScene(AkDoc  * __restrict doc,
+               AkScene * scene,
+               GLenum usage,
+               GkScene ** dest);
+
+AkResult
+ak_glLoadNode(AkDoc   * __restrict doc,
+              AkNode  *node,
+              GLenum   usage,
+              mat4     parentTransform,
+              GkNode **dest);
+  
+AkResult
+ak_glLoadGeometry(AkDoc  * __restrict doc,
+                  AkGeometry * geometry,
                   GLenum usage,
                   GkComplexModel ** dest);
 
 AkResult
-ak_glMeshLoad(AkMesh * mesh,
+ak_glLoadMesh(AkDoc  * __restrict doc,
+              AkMesh * mesh,
               GLenum usage,
               GkComplexModel ** dest);
 

@@ -12,7 +12,8 @@
 #include <gk.h>
 
 AkResult
-ak_glGeometryLoad(AkGeometry * geometry,
+ak_glLoadGeometry(AkDoc  * __restrict doc,
+                  AkGeometry * geometry,
                   GLenum usage,
                   GkComplexModel ** dest) {
   AkObject *primitive;
@@ -20,7 +21,8 @@ ak_glGeometryLoad(AkGeometry * geometry,
   primitive = geometry->gdata;
   switch ((AkGeometryType)primitive->type) {
     case AK_GEOMETRY_TYPE_MESH:
-      return ak_glMeshLoad(ak_objGet(primitive),
+      return ak_glLoadMesh(doc,
+                           ak_objGet(primitive),
                            usage,
                            dest);
     default:

@@ -12,13 +12,13 @@
 #include <gk.h>
 
 AkResult
-ak_glMeshLoad(AkMesh * mesh,
+ak_glLoadMesh(AkDoc  * __restrict doc,
+              AkMesh * mesh,
               GLenum usage,
               GkComplexModel ** dest) {
   GkComplexModel  *model;
   AkMeshPrimitive *primitive;
-  AkDoc    *doc;
-  AkHeap   *heap;
+  GkMatrix *matrix;
   GLuint   *vbo;
   GLuint   *vao;
   GLsizei  *count;
@@ -30,18 +30,20 @@ ak_glMeshLoad(AkMesh * mesh,
 
   primitive = mesh->primitive;
   model     = calloc(sizeof(*model), 1);
-  heap      = ak_heap_getheap(mesh->vertices);
-  doc       = ak_heap_attachment(heap);
 
-  vao       = calloc(sizeof(*vao) * vaoCount, 1);
+  vao       = calloc(sizeof(*vao)   * vaoCount, 1);
   count     = calloc(sizeof(*count) * vaoCount, 1);
   modes     = calloc(sizeof(*modes) * vaoCount, 1);
+  matrix    = malloc(sizeof(*matrix));
 
   vaoIndex  = vboIndex = vboCount = 0;
   vaoCount  = mesh->primitiveCount;
   vbo       = NULL;
 
-  gkModelEmptyMatrix(&model->base);
+  glm_mat4_dup(GLM_MAT4_IDENTITY, matrix->matrix);
+  model->base.matrix = matrix;
+  matrix->index = 0;
+
   glGenVertexArrays(vaoCount, vao);
 
   primitive = mesh->primitive;
@@ -191,6 +193,7 @@ err:
   free(vao);
   free(count);
   free(model);
+  free(matrix);
   
   return AK_ERR;
 }
