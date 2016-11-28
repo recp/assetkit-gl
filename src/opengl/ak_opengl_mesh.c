@@ -15,7 +15,7 @@
 #define ak__align(size) ((size + 32 - 1) &~ (uint32_t)(32 - 1))
 
 typedef struct AkGLVBODesc {
-  AkSource *source;
+  void     *source;
   GLuint    vbo;
   struct AkGLVBODesc *next;
 } AkGLVBODesc;
@@ -78,12 +78,23 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
     inputIndex = 0;
     while (verticesInput) {
       AkSource      *vertexSource;
+      AkObject      *sourceObj;
       AkFloatArrayN *sourceData;
       AkGLVBODesc   *vboDesc;
 
+
       vertexSource = ak_getObjectByUrl(&verticesInput->source);
       if (!vertexSource)
-        continue;;
+        continue; /* TODO: assert or log */
+
+      acc       = vertexSource->techniqueCommon;
+      sourceObj = ak_getObjectByUrl(&acc->source);
+
+      if (!sourceObj)
+        continue; /* TODO: assert or log */
+
+      sourceData = ak_objGet(sourceObj);
+
 
       assert(vertexSource->data->type == AK_SOURCE_ARRAY_TYPE_FLOAT
              && "*Currently* only single floats are supported!");
@@ -91,18 +102,15 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
       /* check if is there vbo for this source */
       vboDesc = vboDescList;
       while (vboDesc) {
-        if (vboDesc->source == vertexSource)
+        if (vboDesc->source == sourceData)
           break;
 
         vboDesc = vboDesc->next;
       }
 
-      acc = vertexSource->techniqueCommon;
+
       if (!vboDesc) {
         AkGLVBODesc *vboDescNew;
-
-        sourceData = ak_objGet(vertexSource->data);
-
         vboCount++;
 
         if (ak__align(vboCount * sizeof(*vbo)) > vboSize) {
@@ -119,7 +127,7 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
                      usage);
 
         vboDescNew = calloc(sizeof(*vboDescNew), 1);
-        vboDescNew->source = vertexSource;
+        vboDescNew->source = sourceData;
         vboDescNew->vbo    = vbo[vboIndex];
 
         vboDescNew->next = vboDescList;
@@ -145,6 +153,7 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
     /* other inputs e.g. normals */
     input = primitive->input;
     while (input) {
+      AkObject      *sourceObj;
       AkSource      *source;
       AkFloatArrayN *sourceData;
       AkGLVBODesc   *vboDesc;
@@ -156,25 +165,32 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
         continue;
       }
 
-      source     = ak_getObjectByUrl(&input->base.source);
-      sourceData = ak_objGet(source->data);
+      source = ak_getObjectByUrl(&input->base.source);
+      if (!source)
+        continue; /* TODO: assert or log */
+
+      acc        = source->techniqueCommon;
+      sourceObj  = ak_getObjectByUrl(&acc->source);
+
+      if (!sourceObj)
+        continue; /* TODO: assert or log */
+
+      sourceData = ak_objGet(sourceObj);
 
       assert((source->data->type == AK_SOURCE_ARRAY_TYPE_FLOAT
               || source->data->type == AK_SOURCE_ARRAY_TYPE_INT)
              && "*Currently* only single floats and integers "
-             "are supported!");
+                "are supported!");
 
       if (source->data->type == AK_SOURCE_ARRAY_TYPE_INT)
         type = GL_INT;
       else
         type = GL_FLOAT;
 
-      acc = source->techniqueCommon;
-
       /* check if is there vbo for this source */
       vboDesc = vboDescList;
       while (vboDesc) {
-        if (vboDesc->source == source)
+        if (vboDesc->source == sourceData)
           break;
 
         vboDesc = vboDesc->next;
@@ -199,7 +215,7 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
                      usage);
 
         vboDescNew = calloc(sizeof(*vboDescNew), 1);
-        vboDescNew->source = source;
+        vboDescNew->source = sourceData;
         vboDescNew->vbo    = vbo[vboIndex];
 
         vboDescNew->next = vboDescList;
