@@ -26,7 +26,7 @@ ak_glLoadScene(AkDoc  * __restrict doc,
 
   glscene = calloc(sizeof(*glscene), 1);
 
-  visualScene = ak_instanceObject(doc, &scene->visualScene->base);
+  visualScene = ak_instanceObject(&scene->visualScene->base);
   node = visualScene->node;
 
   ret = ak_glLoadNode(doc,

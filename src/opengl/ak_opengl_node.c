@@ -36,7 +36,7 @@ ak_glLoadNode(AkDoc   * __restrict doc,
       GkNode         *n_glnode;
       AkResult        ret;
 
-      geom = ak_instanceObjectGeom(doc, node);
+      geom = ak_instanceObjectGeom(node);
       ret = ak_glLoadGeometry(doc,
                               geom,
                               GL_STATIC_DRAW,

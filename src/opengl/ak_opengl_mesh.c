@@ -74,7 +74,7 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
       AkSource      *vertexSource;
       AkFloatArrayN *sourceData;
 
-      vertexSource = ak_getObjectByUrl(doc, verticesInput->source);
+      vertexSource = ak_getObjectByUrl(&verticesInput->source);
       if (!vertexSource)
         continue;
 
@@ -114,7 +114,7 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
         continue;
       }
 
-      source     = ak_getObjectByUrl(doc, input->base.source);
+      source     = ak_getObjectByUrl(&input->base.source);
       sourceData = ak_objGet(source->data);
 
       assert((source->data->type == AK_SOURCE_ARRAY_TYPE_FLOAT
