@@ -30,6 +30,7 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
   GkComplexModel  *model;
   AkMeshPrimitive *primitive;
   AkAccessor      *acc;
+  AkGLVBODesc     *vboDesc;
   GkMatrix *matrix;
   GLuint   *vbo;
   GLuint   *vao;
@@ -80,8 +81,6 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
       AkSource      *vertexSource;
       AkObject      *sourceObj;
       AkFloatArrayN *sourceData;
-      AkGLVBODesc   *vboDesc;
-
 
       vertexSource = ak_getObjectByUrl(&verticesInput->source);
       if (!vertexSource)
@@ -107,7 +106,6 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
 
         vboDesc = vboDesc->next;
       }
-
 
       if (!vboDesc) {
         AkGLVBODesc *vboDescNew;
@@ -156,7 +154,6 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
       AkObject      *sourceObj;
       AkSource      *source;
       AkFloatArrayN *sourceData;
-      AkGLVBODesc   *vboDesc;
       GLenum         type;
 
       /* vertices are already processed, skip */
@@ -279,6 +276,16 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
   model->base.flags = GK_DRAW_ELEMENTS | GK_COMPLEX;
   
   *dest = model;
+
+  vboDesc = vboDescList;
+  while (vboDesc) {
+    void *tofree;
+
+    tofree = vboDesc;
+    vboDesc = vboDesc->next;
+    free(tofree);
+  }
+
   return AK_OK;
   
 err:
@@ -294,6 +301,15 @@ err:
   free(model);
   free(modes);
   free(matrix);
-  
+
+  vboDesc = vboDescList;
+  while (vboDesc) {
+    void *tofree;
+
+    tofree = vboDesc;
+    vboDesc = vboDesc->next;
+    free(tofree);
+  }
+
   return AK_ERR;
 }
