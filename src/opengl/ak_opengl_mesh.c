@@ -175,14 +175,14 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
       if (!sourceObj)
         continue; /* TODO: assert or log */
 
-      sourceData = ak_objGet(sourceObj);
-
-      assert((source->data->type == AK_SOURCE_ARRAY_TYPE_FLOAT
-              || source->data->type == AK_SOURCE_ARRAY_TYPE_INT)
+      assert((sourceObj->type == AK_SOURCE_ARRAY_TYPE_FLOAT
+              || sourceObj->type == AK_SOURCE_ARRAY_TYPE_INT)
              && "*Currently* only single floats and integers "
                 "are supported!");
 
-      if (source->data->type == AK_SOURCE_ARRAY_TYPE_INT)
+      sourceData = ak_objGet(sourceObj);
+      
+      if (sourceObj->type == AK_SOURCE_ARRAY_TYPE_INT)
         type = GL_INT;
       else
         type = GL_FLOAT;
