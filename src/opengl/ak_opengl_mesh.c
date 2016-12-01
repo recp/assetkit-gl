@@ -20,8 +20,6 @@ typedef struct AkGLVBODesc {
   struct AkGLVBODesc *next;
 } AkGLVBODesc;
 
-static AkGLVBODesc *vboDescList = NULL;
-
 AkResult
 ak_glLoadMesh(AkDoc  * __restrict doc,
               AkMesh * mesh,
@@ -31,7 +29,8 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
   AkMeshPrimitive *primitive;
   AkAccessor      *acc;
   AkGLVBODesc     *vboDesc;
-  GkMatrix *matrix;
+  GkMatrix        *matrix;
+  AkGLVBODesc     *vboDescList;
   GLuint   *vbo;
   GLuint   *vao;
   GLsizei  *count;
@@ -43,9 +42,10 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
   uint32_t  inputIndex;
   GLsizei   vboSize;
 
-  vaoIndex  = vboIndex = vboCount = 0;
-  vaoCount  = mesh->primitiveCount;
-  vbo       = NULL;
+  vaoIndex    = vboIndex = vboCount = 0;
+  vaoCount    = mesh->primitiveCount;
+  vbo         = NULL;
+  vboDescList = NULL;
 
   vboSize   = 32;
   model     = calloc(sizeof(*model), 1);
