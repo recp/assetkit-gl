@@ -78,9 +78,9 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
 
     inputIndex = 0;
     while (verticesInput) {
-      AkSource      *vertexSource;
-      AkObject      *sourceObj;
-      AkFloatArrayN *sourceData;
+      AkSourceFloatArray *sourceData;
+      AkSource *vertexSource;
+      AkObject *sourceObj;
 
       vertexSource = ak_getObjectByUrl(&verticesInput->source);
       if (!vertexSource)
@@ -151,10 +151,10 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
     /* other inputs e.g. normals */
     input = primitive->input;
     while (input) {
-      AkObject      *sourceObj;
-      AkSource      *source;
-      AkFloatArrayN *sourceData;
-      GLenum         type;
+      AkSourceFloatArray *sourceData;
+      AkObject *sourceObj;
+      AkSource *source;
+      GLenum    type;
 
       /* vertices are already processed, skip */
       if (input->base.semantic == AK_INPUT_SEMANTIC_VERTEX) {
