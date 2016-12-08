@@ -66,8 +66,10 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
     AkInputBasic *verticesInput;
     AkInput      *input;
 
-    if (!primitive->vertices)
+    if (!primitive->vertices) {
+      primitive = primitive->next;
       continue;
+    }
 
     verticesInput = NULL;
 
@@ -83,14 +85,18 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
       AkObject *sourceObj;
 
       vertexSource = ak_getObjectByUrl(&verticesInput->source);
-      if (!vertexSource)
+      if (!vertexSource) {
+        verticesInput = verticesInput->next;
         continue; /* TODO: assert or log */
+      }
 
       acc       = vertexSource->techniqueCommon;
       sourceObj = ak_getObjectByUrl(&acc->source);
 
-      if (!sourceObj)
+      if (!sourceObj) {
+        verticesInput = verticesInput->next;
         continue; /* TODO: assert or log */
+      }
 
       sourceData = ak_objGet(sourceObj);
 
@@ -163,14 +169,18 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
       }
 
       source = ak_getObjectByUrl(&input->base.source);
-      if (!source)
+      if (!source) {
+        input = (AkInput *)input->base.next;
         continue; /* TODO: assert or log */
+      }
 
       acc        = source->techniqueCommon;
       sourceObj  = ak_getObjectByUrl(&acc->source);
 
-      if (!sourceObj)
+      if (!sourceObj) {
+        input = (AkInput *)input->base.next;
         continue; /* TODO: assert or log */
+      }
 
       assert((sourceObj->type == AK_SOURCE_ARRAY_TYPE_FLOAT
               || sourceObj->type == AK_SOURCE_ARRAY_TYPE_INT)
