@@ -15,66 +15,58 @@ AkResult
 ak_glLoadNode(AkDoc   * __restrict doc,
               AkNode  *node,
               GLenum   usage,
-              mat4     parentTransform,
               GkNode **dest) {
-  GkNode  *glnode, *gl_lastNode;
-  mat4     transform;
-  mat4     localTransform;
+  GkNode *glnode;
 
-  glnode = gl_lastNode = NULL;
+  glnode = calloc(sizeof(*glnode), 1);
+  if (node->transform) {
+    glnode->matrix        = malloc(sizeof(*glnode->matrix));
+    glnode->matrix->index = -1;
+    ak_transformCombine(node, glnode->matrix->matrix[0]);
+  }
 
-  while (node) {
-    ak_transformCombine(node, localTransform[0]);
-    glm_mat4_mul(parentTransform, localTransform, transform);
+  if (node->geometry) {
+    AkGeometry     *geom;
+    GkComplexModel *model;
+    AkResult        ret;
 
-    if (node->nodeType != AK_NODE_TYPE_NODE)
-      goto cont;
+    geom = ak_instanceObjectGeom(node);
+    ret = ak_glLoadGeometry(doc,
+                            geom,
+                            GL_STATIC_DRAW,
+                            &model);
 
-    if (node->geometry) {
-      AkGeometry     *geom;
-      GkComplexModel *model;
-      GkNode         *n_glnode;
-      AkResult        ret;
+    if (ret == AK_OK)
+      glnode->model = &model->base;
+  }
 
-      geom = ak_instanceObjectGeom(node);
-      ret = ak_glLoadGeometry(doc,
-                              geom,
-                              GL_STATIC_DRAW,
-                              &model);
-
-      if (ret == AK_OK) {
-        n_glnode = calloc(sizeof(*n_glnode), 1);
-
-        glm_mat4_dup(transform, model->base.matrix->matrix);
-        n_glnode->model = &model->base;
-
-        if (gl_lastNode)
-          gl_lastNode->next = n_glnode;
-        else
-          glnode = n_glnode;
-
-        gl_lastNode = n_glnode;
-      }
-    }
-
-    if (node->chld)
+  if (node->node) {
+    AkNode *nodei;
+    if ((nodei = ak_instanceObjectNode(node))) {
       ak_glLoadNode(doc,
-                    node->chld,
+                    nodei,
                     usage,
-                    transform,
-                    glnode ? &glnode : dest);
-
-  cont:
-    node = node->next;
-  }
-
-  if (glnode) {
-    if (*dest) {
-      (*dest)->chld = glnode;
-    } else {
-      *dest = glnode;
+                    &glnode->nodeInst);
     }
   }
+
+  if (node->chld) {
+    AkNode  *nodei;
+    GkNode **glnodei;
+
+    nodei   = node->chld;
+    glnodei = &glnode->chld;
+    do {
+      ak_glLoadNode(doc,
+                    nodei,
+                    usage,
+                    glnodei);
+      glnodei = &(*glnodei)->next;
+      nodei   = nodei->next;
+    } while (nodei);
+  }
+
+  *dest = glnode;
 
   return AK_OK;
 }

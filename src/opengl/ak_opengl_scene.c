@@ -12,32 +12,37 @@
 #include <gk.h>
 
 AkResult
-ak_glLoadScene(AkDoc  * __restrict doc,
-               AkScene * scene,
-               GLenum usage,
+ak_glLoadScene(AkDoc    * __restrict doc,
+               AkScene  * scene,
+               GLenum     usage,
                GkScene ** dest) {
   AkVisualScene *visualScene;
   AkNode        *node;
   GkScene       *glscene;
+  GkNode       **glnodei;
   AkResult       ret;
 
   if (!scene->visualScene)
     return AK_ERR;
 
-  glscene = calloc(sizeof(*glscene), 1);
-
+  glscene     = calloc(sizeof(*glscene), 1);
   visualScene = ak_instanceObject(&scene->visualScene->base);
-  node = visualScene->node;
 
-  ret = ak_glLoadNode(doc,
-                      node,
-                      usage,
-                      GLM_MAT4_IDENTITY,
-                      &glscene->rootNode);
+  node    = visualScene->node;
+  glnodei = &glscene->rootNode;
+  while (node) {
+    ret = ak_glLoadNode(doc,
+                        node,
+                        usage,
+                        glnodei);
 
-  if (ret != AK_OK) {
-    free(glscene);
-    return AK_ERR;
+    if (ret != AK_OK) {
+      free(glscene);
+      return AK_ERR;
+    }
+
+    glnodei = &(*glnodei)->next;
+    node    = node->next;
   }
 
   *dest = glscene;

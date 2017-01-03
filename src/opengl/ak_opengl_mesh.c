@@ -29,7 +29,6 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
   AkMeshPrimitive *primitive;
   AkAccessor      *acc;
   AkGLVBODesc     *vboDesc;
-  GkMatrix        *matrix;
   AkGLVBODesc     *vboDescList;
   GLuint   *vbo;
   GLuint   *vao;
@@ -53,11 +52,9 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
   vbo       = calloc(vboSize, 1);
   count     = calloc(sizeof(*count) * vaoCount, 1);
   modes     = calloc(sizeof(*modes) * vaoCount, 1);
-  matrix    = malloc(sizeof(*matrix));
 
-  glm_mat4_dup(GLM_MAT4_IDENTITY, matrix->matrix);
-  model->base.matrix = matrix;
-  matrix->index = 0;
+  glm_mat4_dup(GLM_MAT4_IDENTITY,
+               model->base.cachedMatrix.matrix);
 
   glGenVertexArrays(vaoCount, vao);
 
@@ -319,7 +316,6 @@ err:
   free(count);
   free(model);
   free(modes);
-  free(matrix);
 
   vboDesc = vboDescList;
   while (vboDesc) {
