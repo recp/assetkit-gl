@@ -245,23 +245,32 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
       input = (AkInput *)input->base.next;
     }
 
-    vboCount++;
+    /* indexed draw */
+    if (primitive->indices) {
+      vboCount++;
 
-    if (ak__align(vboCount * sizeof(*vbo)) > vboSize) {
-      vboSize = ak__align(vboCount * sizeof(*vbo));
-      vbo = realloc(vbo, vboSize);
+      if (ak__align(vboCount * sizeof(*vbo)) > vboSize) {
+        vboSize = ak__align(vboCount * sizeof(*vbo));
+        vbo = realloc(vbo, vboSize);
+      }
+
+      glGenBuffers(1, &vbo[vboIndex]);
+
+      /* only one GL_ELEMENT_ARRAY_BUFFER for VAO */
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[vboIndex]);
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                   primitive->indices->count * sizeof(AkUInt),
+                   primitive->indices->items,
+                   usage);
+
+      count[vaoIndex] = (GLsizei)primitive->indices->count;
+      model->base.flags |= GK_DRAW_ELEMENTS;
     }
 
-    glGenBuffers(1, &vbo[vboIndex]);
-
-    /* only one GL_ELEMENT_ARRAY_BUFFER for VAO */
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[vboIndex]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 primitive->indices->count * sizeof(AkUInt),
-                 primitive->indices->items,
-                 usage);
-
-    count[vaoIndex] = (GLsizei)primitive->indices->count;
+    /* els direct draw */
+    else {
+      model->base.flags |= GK_DRAW_ARRAYS;
+    }
 
     if (primitive->type != AK_MESH_PRIMITIVE_TYPE_LINES)
       modes[vaoIndex] = GL_TRIANGLES;
@@ -283,7 +292,7 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
   model->vboCount   = vboCount;
   model->count      = count;
   model->modes      = modes;
-  model->base.flags = GK_DRAW_ELEMENTS | GK_COMPLEX;
+  model->base.flags |= GK_COMPLEX;
   
   *dest = model;
 
