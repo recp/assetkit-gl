@@ -20,6 +20,51 @@ typedef struct AkGLVBODesc {
   struct AkGLVBODesc *next;
 } AkGLVBODesc;
 
+GLenum
+ak_drawMode(AkMeshPrimitive *primitive) {
+  GLenum mode;
+
+  switch (primitive->type) {
+    case AK_MESH_PRIMITIVE_TYPE_POLYGONS:
+      mode = GL_TRIANGLES;
+      break;
+    case AK_MESH_PRIMITIVE_TYPE_TRIANGLES: {
+      AkTriangles *triangles;
+      triangles = (AkTriangles *)primitive;
+      switch (triangles->mode) {
+        case AK_TRIANGLE_MODE_TRIANGLES:
+          mode = GL_TRIANGLES;
+          break;
+        case AK_TRIANGLE_MODE_TRIANGLE_STRIP:
+          mode = GL_TRIANGLE_STRIP;
+          break;
+        case AK_TRIANGLE_MODE_TRIANGLE_FAN:
+          mode = GL_TRIANGLE_FAN;
+          break;
+      }
+      break;
+    }
+    case AK_MESH_PRIMITIVE_TYPE_LINES: {
+      AkLines *lines;
+
+      lines = (AkLines *)primitive;
+      switch (lines->mode) {
+        case AK_LINE_MODE_LINES:
+          mode = GL_LINES;
+          break;
+        case AK_LINE_MODE_LINE_STRIP:
+          mode = GL_LINE_STRIP;
+          break;
+        case AK_LINE_MODE_LINE_LOOP:
+          mode = GL_LINE_LOOP;
+          break;
+      }
+    }
+  }
+
+  return mode;
+}
+
 AkResult
 ak_glLoadMesh(AkDoc  * __restrict doc,
               AkMesh * mesh,
@@ -269,10 +314,7 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
       model->base.flags |= GK_DRAW_ARRAYS;
     }
 
-    if (primitive->type != AK_MESH_PRIMITIVE_TYPE_LINES)
-      modes[vaoIndex] = GL_TRIANGLES;
-    else
-      modes[vaoIndex] = GL_LINES;
+    modes[vaoIndex] = ak_drawMode(primitive);
 
     glBindVertexArray(0);
 
