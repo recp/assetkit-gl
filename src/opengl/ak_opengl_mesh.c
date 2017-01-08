@@ -318,6 +318,7 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
 
     glBindVertexArray(0);
 
+    vaoIndex++;
     primitive = primitive->next;
   }
 
