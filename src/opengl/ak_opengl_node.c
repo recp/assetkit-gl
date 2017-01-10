@@ -20,8 +20,14 @@ ak_glLoadNode(AkDoc   * __restrict doc,
 
   glnode = calloc(sizeof(*glnode), 1);
   if (node->transform) {
-    glnode->matrix        = malloc(sizeof(*glnode->matrix));
-    glnode->matrix->index = -1;
+    GkMatrix *mat;
+
+    mat = malloc(sizeof(*mat));
+    mat->cmatIsValid = 0;
+    mat->refc        = 1;
+    glnode->matrix   = mat;
+    glnode->flags   |= GK_HAVE_MATRIX;
+
     ak_transformCombine(node, glnode->matrix->matrix[0]);
   }
 

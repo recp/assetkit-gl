@@ -98,9 +98,6 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
   count     = calloc(sizeof(*count) * vaoCount, 1);
   modes     = calloc(sizeof(*modes) * vaoCount, 1);
 
-  glm_mat4_dup(GLM_MAT4_IDENTITY,
-               model->base.cmat.matrix);
-
   glGenVertexArrays(vaoCount, vao);
 
   primitive = mesh->primitive;
