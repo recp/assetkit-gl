@@ -25,6 +25,7 @@ ak_glLoadNode(AkDoc   * __restrict doc,
     mat = malloc(sizeof(*mat));
     mat->cmatIsValid = 0;
     mat->refc        = 1;
+    mat->fmat        = NULL;
     glnode->matrix   = mat;
     glnode->flags   |= GK_HAVE_MATRIX;
 
