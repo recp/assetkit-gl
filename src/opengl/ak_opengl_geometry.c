@@ -16,17 +16,28 @@ ak_glLoadGeometry(AkDoc  * __restrict doc,
                   AkGeometry * geometry,
                   GLenum usage,
                   GkComplexModel ** dest) {
-  AkObject *primitive;
+  AkObject *prim;
+  GkModelBase *modelBase;
 
-  primitive = geometry->gdata;
-  switch ((AkGeometryType)primitive->type) {
+  modelBase = gk_model_find(geometry);
+  if (modelBase && (modelBase->flags & GK_COMPLEX)) {
+    *dest = (GkComplexModel *)modelBase;
+    return AK_OK;
+  }
+
+  prim = geometry->gdata;
+  switch ((AkGeometryType)prim->type) {
     case AK_GEOMETRY_TYPE_MESH:
       return ak_glLoadMesh(doc,
-                           ak_objGet(primitive),
+                           ak_objGet(prim),
                            usage,
                            dest);
     default:
       break;
   }
+
+  if (*dest)
+    gk_model_add(&(*dest)->base, geometry);
+
   return AK_OK;
 }
