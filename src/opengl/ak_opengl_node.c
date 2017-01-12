@@ -46,7 +46,6 @@ ak_glLoadNode(AkDoc   * __restrict doc,
                                geom,
                                GL_STATIC_DRAW,
                                &model);
-
       if (ret == AK_OK) {
         modelInst       = gkMakeInstance(&model->base);
         modelInst->next = glnode->model;
