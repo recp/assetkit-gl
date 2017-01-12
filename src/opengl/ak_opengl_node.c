@@ -33,18 +33,28 @@ ak_glLoadNode(AkDoc   * __restrict doc,
   }
 
   if (node->geometry) {
+    AkInstanceBase *geomInst;
     AkGeometry     *geom;
     GkComplexModel *model;
+    GkModelInst    *modelInst;
     AkResult        ret;
 
-    geom = ak_instanceObjectGeom(node);
-    ret = ak_glLoadGeometry(doc,
-                            geom,
-                            GL_STATIC_DRAW,
-                            &model);
+    geomInst = &node->geometry->base;
+    while (geomInst) {
+      geom = ak_instanceObject(geomInst);
+      ret  = ak_glLoadGeometry(doc,
+                               geom,
+                               GL_STATIC_DRAW,
+                               &model);
 
-    if (ret == AK_OK)
-      glnode->model = &model->base;
+      if (ret == AK_OK) {
+        modelInst       = gkMakeInstance(&model->base);
+        modelInst->next = glnode->model;
+        glnode->model   = modelInst;
+      }
+
+      geomInst = geomInst->next;
+    }
   }
 
   if (node->node) {
