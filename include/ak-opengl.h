@@ -37,7 +37,8 @@ AkResult
 ak_glLoadNode(AkDoc   * __restrict doc,
               AkNode  *node,
               GLenum   usage,
-              GkNode **glnode);
+              GkScene *scene,
+              GkNode **dest);
   
 AkResult
 ak_glLoadGeometry(AkDoc  * __restrict doc,

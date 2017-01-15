@@ -15,6 +15,7 @@ AkResult
 ak_glLoadNode(AkDoc   * __restrict doc,
               AkNode  *node,
               GLenum   usage,
+              GkScene *scene,
               GkNode **dest) {
   GkNode *glnode;
 
@@ -56,12 +57,32 @@ ak_glLoadNode(AkDoc   * __restrict doc,
     }
   }
 
+  /* make extra light ref to global scene for multiple light shader */
+  if (node->light) {
+    AkInstanceBase *lightInst;
+    AkLight        *light;
+    GkLight        *gllight;
+    AkResult        ret;
+
+    lightInst = node->light;
+    while (lightInst) {
+      light     = ak_instanceObject(lightInst);
+      ret       = ak_glLoadLight(doc, light, &gllight);
+      if (ret == AK_OK) {
+        gllight->next = scene->lights;
+        scene->lights = gllight;
+      }
+      lightInst = lightInst->next;
+    }
+  }
+
   if (node->node) {
     AkNode *nodei;
     if ((nodei = ak_instanceObjectNode(node))) {
       ak_glLoadNode(doc,
                     nodei,
                     usage,
+                    scene,
                     &glnode->nodeInst);
     }
   }
@@ -76,6 +97,7 @@ ak_glLoadNode(AkDoc   * __restrict doc,
       ak_glLoadNode(doc,
                     nodei,
                     usage,
+                    scene,
                     glnodei);
       glnodei = &(*glnodei)->next;
       nodei   = nodei->next;

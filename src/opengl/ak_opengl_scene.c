@@ -36,6 +36,7 @@ ak_glLoadScene(AkDoc    * __restrict doc,
     ret = ak_glLoadNode(doc,
                         node,
                         usage,
+                        glscene,
                         glnodei);
 
     if (ret != AK_OK) {
