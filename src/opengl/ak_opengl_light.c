@@ -51,9 +51,9 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       glm_vec4_dup3(pointSrc->base.color.vec,
                     pointDest->base.color.vec);
 
-      pointDest->constantAttenuation  = pointSrc->constantAttenuation;
-      pointDest->linearAttenuation    = pointSrc->linearAttenuation;
-      pointDest->quadraticAttenuation = pointSrc->quadraticAttenuation;
+      pointDest->constAttn  = pointSrc->constAttn;
+      pointDest->linearAttn = pointSrc->linearAttn;
+      pointDest->quadAttn   = pointSrc->quadAttn;
 
       pointDest->base.type = GK_LIGHT_TYPE_POINT;
       *dest = &pointDest->base;
@@ -67,11 +67,11 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       glm_vec4_dup3(spotSrc->base.color.vec,
                     spotDest->base.color.vec);
 
-      spotDest->constantAttenuation  = spotSrc->constantAttenuation;
-      spotDest->linearAttenuation    = spotSrc->linearAttenuation;
-      spotDest->quadraticAttenuation = spotSrc->quadraticAttenuation;
-      spotDest->falloffAngle         = spotSrc->falloffAngle;
-      spotDest->falloffExponent      = spotSrc->falloffExponent;
+      spotDest->constAttn    = spotSrc->constAttn;
+      spotDest->linearAttn   = spotSrc->linearAttn;
+      spotDest->quadAttn     = spotSrc->quadAttn;
+      spotDest->falloffAngle = spotSrc->falloffAngle;
+      spotDest->falloffExp   = spotSrc->falloffExp;
 
       spotDest->base.type = GK_LIGHT_TYPE_POINT;
       *dest = &spotDest->base;
