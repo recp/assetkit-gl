@@ -51,6 +51,11 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
               GLenum usage,
               GkComplexModel ** dest);
 
+AkResult
+ak_glLoadLight(AkDoc    * __restrict doc,
+               AkLight  *light,
+               GkLight **dest);
+
 #ifdef __cplusplus
 }
 #endif
