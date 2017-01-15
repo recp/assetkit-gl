@@ -30,6 +30,8 @@ ak_glLoadScene(AkDoc    * __restrict doc,
 
   node    = visualScene->node;
   glnodei = &glscene->rootNode;
+
+  glscene->usage = usage;
   while (node) {
     ret = ak_glLoadNode(doc,
                         node,
