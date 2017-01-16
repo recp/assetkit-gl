@@ -72,8 +72,14 @@ ak_glLoadNode(AkDoc   * __restrict doc,
                                  light,
                                  &gllight);
       if (ret == AK_OK) {
-        gllight->next = scene->lights;
-        scene->lights = gllight;
+        gllight->next = glnode->light;
+        glnode->light = gllight;
+
+        gllight->ref.next = scene->lights;
+        scene->lights     = &gllight->ref;
+
+        if (scene->lights->prev)
+          scene->lights->prev = &gllight->ref;
       }
 
       scene->lightCount++;

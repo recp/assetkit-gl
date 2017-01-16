@@ -26,7 +26,7 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       GkAmbientLight *ambientDest;
 
       ambientSrc  = (AkAmbientLight *)light->tcommon;
-      ambientDest = malloc(sizeof(*ambientDest));
+      ambientDest = calloc(sizeof(*ambientDest), 1);
       gllight     = ambientDest;
       glm_vec4_dup3(ambientSrc->color.vec,
                     ambientDest->color.vec);
@@ -39,7 +39,7 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       GkDirectionalLight *directionalDest;
 
       directionalSrc  = (AkDirectionalLight *)light->tcommon;
-      directionalDest = malloc(sizeof(*directionalDest));
+      directionalDest = calloc(sizeof(*directionalDest), 1);
       gllight         = &directionalDest->base;
       glm_vec4_dup3(directionalSrc->color.vec,
                     directionalDest->base.color.vec);
@@ -52,7 +52,7 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       GkPointLight *pointDest;
 
       pointSrc  = (AkPointLight *)light->tcommon;
-      pointDest = malloc(sizeof(*pointDest));
+      pointDest = calloc(sizeof(*pointDest), 1);
       gllight   = &pointDest->base;
       glm_vec4_dup3(pointSrc->base.color.vec,
                     pointDest->base.color.vec);
@@ -69,7 +69,7 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       GkSpotLight *spotDest;
 
       spotSrc  = (AkSpotLight *)light->tcommon;
-      spotDest = malloc(sizeof(*spotDest));
+      spotDest = calloc(sizeof(*spotDest), 1);
       gllight  = &spotDest->base;
       glm_vec4_dup3(spotSrc->base.color.vec,
                     spotDest->base.color.vec);
