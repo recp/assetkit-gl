@@ -88,6 +88,7 @@ ak_glLoadLight(AkDoc    * __restrict doc,
   }
 
   gllight->index   = -1;
+  gllight->enabled = 1;
   gllight->isvalid = 0;
   gllight->next    = NULL;
   gllight->node    = node;
