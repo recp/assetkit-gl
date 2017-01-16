@@ -72,6 +72,8 @@ ak_glLoadNode(AkDoc   * __restrict doc,
         gllight->next = scene->lights;
         scene->lights = gllight;
       }
+
+      scene->lightCount++;
       lightInst = lightInst->next;
     }
   }
