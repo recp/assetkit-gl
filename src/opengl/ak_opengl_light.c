@@ -13,9 +13,11 @@
 
 AkResult
 ak_glLoadLight(AkDoc    * __restrict doc,
-               AkLight  *light,
-               GkLight **dest) {
+               GkNode   * __restrict node,
+               AkLight  * __restrict light,
+               GkLight ** __restrict dest) {
   AkLightBase *tcommon;
+  GkLight     *gllight;
   tcommon = light->tcommon;
 
   switch (tcommon->type) {
@@ -23,31 +25,35 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       AkAmbientLight *ambientSrc;
       GkAmbientLight *ambientDest;
 
+      ambientSrc  = (AkAmbientLight *)light->tcommon;
       ambientDest = malloc(sizeof(*ambientDest));
+      gllight     = ambientDest;
       glm_vec4_dup3(ambientSrc->color.vec,
                     ambientDest->color.vec);
 
       ambientDest->type = GK_LIGHT_TYPE_AMBIENT;
-      *dest = ambientDest;
       break;
     }
     case AK_LIGHT_TYPE_DIRECTIONAL: {
       AkDirectionalLight *directionalSrc;
       GkDirectionalLight *directionalDest;
 
+      directionalSrc  = (AkDirectionalLight *)light->tcommon;
       directionalDest = malloc(sizeof(*directionalDest));
+      gllight         = &directionalDest->base;
       glm_vec4_dup3(directionalSrc->color.vec,
-                    directionalDest->color.vec);
+                    directionalDest->base.color.vec);
 
-      directionalDest->type = GK_LIGHT_TYPE_DIRECTIONAL;
-      *dest = directionalDest;
+      directionalDest->base.type = GK_LIGHT_TYPE_DIRECTIONAL;
       break;
     }
     case AK_LIGHT_TYPE_POINT: {
       AkPointLight *pointSrc;
       GkPointLight *pointDest;
 
+      pointSrc  = (AkPointLight *)light->tcommon;
       pointDest = malloc(sizeof(*pointDest));
+      gllight   = &pointDest->base;
       glm_vec4_dup3(pointSrc->base.color.vec,
                     pointDest->base.color.vec);
 
@@ -56,14 +62,15 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       pointDest->quadAttn   = pointSrc->quadAttn;
 
       pointDest->base.type = GK_LIGHT_TYPE_POINT;
-      *dest = &pointDest->base;
       break;
     }
     case AK_LIGHT_TYPE_SPOT: {
       AkSpotLight *spotSrc;
       GkSpotLight *spotDest;
 
+      spotSrc  = (AkSpotLight *)light->tcommon;
       spotDest = malloc(sizeof(*spotDest));
+      gllight  = &spotDest->base;
       glm_vec4_dup3(spotSrc->base.color.vec,
                     spotDest->base.color.vec);
 
@@ -74,12 +81,18 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       spotDest->falloffExp   = spotSrc->falloffExp;
 
       spotDest->base.type = GK_LIGHT_TYPE_POINT;
-      *dest = &spotDest->base;
       break;
     }
     default:
       return AK_ETCOMMON;
   }
+
+  gllight->index   = -1;
+  gllight->isvalid = 0;
+  gllight->next    = NULL;
+  gllight->node    = node;
+
+  *dest = gllight;
 
   return AK_OK;
 }

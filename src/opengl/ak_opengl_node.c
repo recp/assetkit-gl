@@ -67,7 +67,10 @@ ak_glLoadNode(AkDoc   * __restrict doc,
     lightInst = node->light;
     while (lightInst) {
       light     = ak_instanceObject(lightInst);
-      ret       = ak_glLoadLight(doc, light, &gllight);
+      ret       = ak_glLoadLight(doc,
+                                 glnode,
+                                 light,
+                                 &gllight);
       if (ret == AK_OK) {
         gllight->next = scene->lights;
         scene->lights = gllight;

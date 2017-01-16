@@ -54,8 +54,9 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
 
 AkResult
 ak_glLoadLight(AkDoc    * __restrict doc,
-               AkLight  *light,
-               GkLight **dest);
+               GkNode   * __restrict node,
+               AkLight  * __restrict light,
+               GkLight ** __restrict dest);
 
 #ifdef __cplusplus
 }
