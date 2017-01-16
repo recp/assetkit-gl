@@ -80,7 +80,7 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       spotDest->falloffAngle = spotSrc->falloffAngle;
       spotDest->falloffExp   = spotSrc->falloffExp;
 
-      spotDest->base.type = GK_LIGHT_TYPE_POINT;
+      spotDest->base.type = GK_LIGHT_TYPE_SPOT;
       break;
     }
     default:
