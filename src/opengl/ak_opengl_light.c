@@ -74,11 +74,11 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       glm_vec4_dup3(spotSrc->base.color.vec,
                     spotDest->base.color.vec);
 
-      spotDest->constAttn    = spotSrc->constAttn;
-      spotDest->linearAttn   = spotSrc->linearAttn;
-      spotDest->quadAttn     = spotSrc->quadAttn;
-      spotDest->falloffAngle = spotSrc->falloffAngle;
-      spotDest->falloffExp   = spotSrc->falloffExp;
+      spotDest->constAttn     = spotSrc->constAttn;
+      spotDest->linearAttn    = spotSrc->linearAttn;
+      spotDest->quadAttn      = spotSrc->quadAttn;
+      spotDest->falloffCosine = cosf(spotSrc->falloffAngle);
+      spotDest->falloffExp    = spotSrc->falloffExp;
 
       spotDest->base.type = GK_LIGHT_TYPE_SPOT;
       break;
