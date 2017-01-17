@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <assetkit.h>
 #include <gk.h>
+#include <math.h>
 
 AkResult
 ak_glLoadLight(AkDoc    * __restrict doc,
