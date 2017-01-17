@@ -33,8 +33,9 @@ ak_glLoadGeometry(AkDoc  * __restrict doc,
                           ak_objGet(prim),
                           usage,
                           dest);
-    default:
       break;
+    default:
+      ret = AK_ERR;
   }
 
   if (*dest)
