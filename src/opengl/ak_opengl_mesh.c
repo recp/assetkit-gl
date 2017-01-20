@@ -10,13 +10,14 @@
 #include <assert.h>
 #include <assetkit.h>
 #include <gk.h>
+#include <gk-rb.h>
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 #define ak__align(size) ((size + 32 - 1) &~ (uint32_t)(32 - 1))
 
 typedef struct AkGLVBODesc {
   void     *source;
-  GLuint    vbo;
+  GkBuffer *buff;
   struct AkGLVBODesc *next;
 } AkGLVBODesc;
 
@@ -65,142 +66,132 @@ ak_drawMode(AkMeshPrimitive *primitive) {
   return mode;
 }
 
+void
+ak_loadSource(AkGLContext * __restrict ctx,
+              AkAccessor  * __restrict acc,
+              GkPrimitive * __restrict glprim,
+              uint32_t    * __restrict inputIndex) {
+  AkObject *sourceObj;
+  void     *sourceData;
+  void     *items;
+  GkBuffer *buff;
+  size_t    count;
+  GLsizei   isize;
+  GLenum    type;
+
+  sourceObj = ak_getObjectByUrl(&acc->source);
+  if (!sourceObj)
+    return; /* TODO: assert or log */
+
+  assert((sourceObj->type == AK_SOURCE_ARRAY_TYPE_FLOAT
+          || sourceObj->type == AK_SOURCE_ARRAY_TYPE_INT)
+         && "*Currently* only single floats and integers "
+         "are supported!");
+
+  sourceData = ak_objGet(sourceObj);
+  
+  if (sourceObj->type == AK_SOURCE_ARRAY_TYPE_INT) {
+    AkSourceIntArray *floatArray;
+    floatArray = (AkSourceIntArray *)sourceData;
+    type  = GL_INT;
+    count = floatArray->count;
+    items = floatArray->items;
+    isize = sizeof(GLint);
+  } else {
+    AkSourceFloatArray *floatArray;
+    floatArray = (AkSourceFloatArray *)sourceData;
+    type  = GL_FLOAT;
+    count = floatArray->count;
+    items = floatArray->items;
+    isize = sizeof(GLfloat);
+  }
+
+  buff = rb_find(ctx->bufftree, sourceData);
+  if (!buff) {
+    glprim->bufc++;
+
+    buff = calloc(sizeof(*buff), 1);
+    buff->size   = (GLsizei)(count * isize);
+    buff->usage  = ctx->usage;
+    buff->type   = type;
+    buff->target = GL_ARRAY_BUFFER;
+
+    glGenBuffers(1, &buff->vbo);
+
+    glBindBuffer(buff->target, buff->vbo);
+    glBufferData(buff->target,
+                 buff->size,
+                 items,
+                 ctx->usage);
+
+    rb_insert(ctx->bufftree, sourceData, buff);
+
+    if (glprim->bufs)
+      glprim->bufs->prev = buff;
+    buff->next   = glprim->bufs;
+    glprim->bufs = buff;
+  } else {
+    glBindBuffer(buff->target, buff->vbo);
+  }
+
+  glVertexAttribPointer(*inputIndex,
+                        acc->bound,
+                        type,
+                        GL_FALSE,
+                        acc->stride * isize,
+                        BUFFER_OFFSET(acc->offset * isize));
+  glEnableVertexAttribArray(*inputIndex);
+  (*inputIndex)++;
+}
+
 AkResult
-ak_glLoadMesh(AkDoc  * __restrict doc,
-              AkMesh * mesh,
-              GLenum usage,
-              GkComplexModel ** dest) {
-  GkComplexModel  *model;
-  AkMeshPrimitive *primitive;
-  AkAccessor      *acc;
-  AkGLVBODesc     *vboDesc;
-  AkGLVBODesc     *vboDescList;
-  GLuint   *vbo;
-  GLuint   *vao;
-  GLsizei  *count;
-  GLenum   *modes;
-  uint32_t  vaoCount;
-  uint32_t  vboCount;
-  uint32_t  vaoIndex;
-  uint32_t  vboIndex;
-  uint32_t  inputIndex;
-  GLsizei   vboSize;
+ak_glLoadMesh(AkGLContext * __restrict ctx,
+              AkMesh      * __restrict mesh,
+              GkModel    ** __restrict dest) {
+  AkMeshPrimitive *prim;
+  GkModel         *glmodel;
+  GkBuffer        *buff;
+  uint32_t        inputIndex;
 
-  vaoIndex    = vboIndex = vboCount = 0;
-  vaoCount    = mesh->primitiveCount;
-  vbo         = NULL;
-  vboDescList = NULL;
+  glmodel = calloc(sizeof(*glmodel), 1);
 
-  vboSize   = 32;
-  model     = calloc(sizeof(*model), 1);
-  vao       = calloc(sizeof(*vao)   * vaoCount, 1);
-  vbo       = calloc(vboSize, 1);
-  count     = calloc(sizeof(*count) * vaoCount, 1);
-  modes     = calloc(sizeof(*modes) * vaoCount, 1);
-
-  glGenVertexArrays(vaoCount, vao);
-
-  primitive = mesh->primitive;
-  while (primitive) {
-    AkInputBasic *verticesInput;
+  prim = mesh->primitive;
+  while (prim) {
+    GkPrimitive  *glprim;
+    AkInputBasic *vi;
     AkInput      *input;
+    AkSource     *source;
+    GLenum        type;
 
-    if (!primitive->vertices) {
-      primitive = primitive->next;
+    /* there is no position? */
+    if (!prim->vertices) {
+      prim = prim->next;
       continue;
     }
 
-    verticesInput = NULL;
-
-    glBindVertexArray(vao[vaoIndex]);
+    glprim = calloc(sizeof(*glprim), 1);
+    glGenVertexArrays(1, &glprim->vao);
+    glBindVertexArray(glprim->vao);
 
     /* vertices */
-    verticesInput = primitive->vertices->input;
+    vi = prim->vertices->input;
 
     inputIndex = 0;
-    while (verticesInput) {
-      AkSourceFloatArray *sourceData;
-      AkSource *vertexSource;
-      AkObject *sourceObj;
-
-      vertexSource = ak_getObjectByUrl(&verticesInput->source);
-      if (!vertexSource) {
-        verticesInput = verticesInput->next;
-        continue; /* TODO: assert or log */
+    while (vi) {
+      source = ak_getObjectByUrl(&vi->source);
+      if (source && source->techniqueCommon) {
+        ak_loadSource(ctx,
+                      source->techniqueCommon,
+                      glprim,
+                      &inputIndex);
       }
 
-      acc       = vertexSource->techniqueCommon;
-      sourceObj = ak_getObjectByUrl(&acc->source);
-
-      if (!sourceObj) {
-        verticesInput = verticesInput->next;
-        continue; /* TODO: assert or log */
-      }
-
-      sourceData = ak_objGet(sourceObj);
-
-
-      assert(vertexSource->data->type == AK_SOURCE_ARRAY_TYPE_FLOAT
-             && "*Currently* only single floats are supported!");
-
-      /* check if is there vbo for this source */
-      vboDesc = vboDescList;
-      while (vboDesc) {
-        if (vboDesc->source == sourceData)
-          break;
-
-        vboDesc = vboDesc->next;
-      }
-
-      if (!vboDesc) {
-        AkGLVBODesc *vboDescNew;
-        vboCount++;
-
-        if (ak__align(vboCount * sizeof(*vbo)) > vboSize) {
-          vboSize = ak__align(vboCount * sizeof(*vbo));
-          vbo = realloc(vbo, vboSize);
-        }
-
-        glGenBuffers(1, &vbo[vboIndex]);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[vboIndex]);
-        glBufferData(GL_ARRAY_BUFFER,
-                     sourceData->count * sizeof(GLfloat),
-                     sourceData->items,
-                     usage);
-
-        vboDescNew = calloc(sizeof(*vboDescNew), 1);
-        vboDescNew->source = sourceData;
-        vboDescNew->vbo    = vbo[vboIndex];
-
-        vboDescNew->next = vboDescList;
-        vboDescList      = vboDescNew;
-
-        vboIndex++;
-      } else {
-        glBindBuffer(GL_ARRAY_BUFFER, vboDesc->vbo);
-      }
-
-      glVertexAttribPointer(inputIndex,
-                            acc->bound,
-                            GL_FLOAT,
-                            GL_FALSE,
-                            acc->stride * sizeof(GLfloat),
-                            BUFFER_OFFSET(acc->offset * sizeof(GLfloat)));
-      glEnableVertexAttribArray(inputIndex);
-
-      verticesInput = verticesInput->next;
-      inputIndex++;
+      vi = vi->next;
     }
 
-    /* other inputs e.g. normals */
-    input = primitive->input;
+    /* per-primitive inputs */
+    input = prim->input;
     while (input) {
-      AkSourceFloatArray *sourceData;
-      AkObject *sourceObj;
-      AkSource *source;
-      GLenum    type;
-
       /* vertices are already processed, skip */
       if (input->base.semantic == AK_INPUT_SEMANTIC_VERTEX) {
         input = (AkInput *)input->base.next;
@@ -208,163 +199,71 @@ ak_glLoadMesh(AkDoc  * __restrict doc,
       }
 
       source = ak_getObjectByUrl(&input->base.source);
-      if (!source) {
-        input = (AkInput *)input->base.next;
-        continue; /* TODO: assert or log */
+      if (source && source->techniqueCommon) {
+        ak_loadSource(ctx,
+                      source->techniqueCommon,
+                      glprim,
+                      &inputIndex);
       }
 
-      acc        = source->techniqueCommon;
-      sourceObj  = ak_getObjectByUrl(&acc->source);
-
-      if (!sourceObj) {
-        input = (AkInput *)input->base.next;
-        continue; /* TODO: assert or log */
-      }
-
-      assert((sourceObj->type == AK_SOURCE_ARRAY_TYPE_FLOAT
-              || sourceObj->type == AK_SOURCE_ARRAY_TYPE_INT)
-             && "*Currently* only single floats and integers "
-                "are supported!");
-
-      sourceData = ak_objGet(sourceObj);
-      
-      if (sourceObj->type == AK_SOURCE_ARRAY_TYPE_INT)
-        type = GL_INT;
-      else
-        type = GL_FLOAT;
-
-      /* check if is there vbo for this source */
-      vboDesc = vboDescList;
-      while (vboDesc) {
-        if (vboDesc->source == sourceData)
-          break;
-
-        vboDesc = vboDesc->next;
-      }
-
-      if (!vboDesc) {
-        AkGLVBODesc *vboDescNew;
-
-        vboCount++;
-
-        if (ak__align(vboCount * sizeof(*vbo)) > vboSize) {
-          vboSize = ak__align(vboCount * sizeof(*vbo));
-          vbo = realloc(vbo, vboSize);
-        }
-
-        glGenBuffers(1, &vbo[vboIndex]);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[vboIndex]);
-        glBufferData(GL_ARRAY_BUFFER,
-                     sourceData->count * sizeof(GLfloat),
-                     sourceData->items,
-                     usage);
-
-        vboDescNew = calloc(sizeof(*vboDescNew), 1);
-        vboDescNew->source = sourceData;
-        vboDescNew->vbo    = vbo[vboIndex];
-
-        vboDescNew->next = vboDescList;
-        vboDescList      = vboDescNew;
-
-        vboIndex++;
-      } else {
-        glBindBuffer(GL_ARRAY_BUFFER, vboDesc->vbo);
-      }
-
-      glVertexAttribPointer(inputIndex,
-                            acc->bound,
-                            type,
-                            GL_FALSE,
-                            acc->stride * sizeof(GLfloat),
-                            BUFFER_OFFSET(acc->offset * sizeof(GLfloat)));
-      glEnableVertexAttribArray(inputIndex);
-
-      inputIndex++;
       input = (AkInput *)input->base.next;
     }
 
     /* indexed draw */
-    if (primitive->indices) {
-      vboCount++;
+    if (prim->indices) {
+      glprim->bufc++;
 
-      if (ak__align(vboCount * sizeof(*vbo)) > vboSize) {
-        vboSize = ak__align(vboCount * sizeof(*vbo));
-        vbo = realloc(vbo, vboSize);
-      }
+      GkBuffer *ibuff;
+      ibuff = calloc(sizeof(*buff), 1);
+      ibuff->size   = (GLsizei)(prim->indices->count * sizeof(AkUInt));
+      ibuff->usage  = ctx->usage;
+      ibuff->type   = type;
+      ibuff->target = GL_ELEMENT_ARRAY_BUFFER;
 
-      glGenBuffers(1, &vbo[vboIndex]);
+      glGenBuffers(1, &ibuff->vbo);
 
       /* only one GL_ELEMENT_ARRAY_BUFFER for VAO */
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[vboIndex]);
-      glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                   primitive->indices->count * sizeof(AkUInt),
-                   primitive->indices->items,
-                   usage);
+      glBindBuffer(ibuff->target, ibuff->vbo);
+      glBufferData(ibuff->target,
+                   ibuff->size,
+                   prim->indices->items,
+                   ibuff->usage);
 
-      count[vaoIndex] = (GLsizei)primitive->indices->count;
-      model->base.flags |= GK_DRAW_ELEMENTS;
+      glprim->count = (GLsizei)prim->indices->count;
+      glprim->flags |= GK_DRAW_ELEMENTS;
+
+      if (glprim->bufs)
+        glprim->bufs->prev = buff;
+      buff->next   = glprim->bufs;
+      glprim->bufs = buff;
     }
 
     /* els direct draw */
     else {
-      model->base.flags |= GK_DRAW_ARRAYS;
+      glprim->flags |= GK_DRAW_ARRAYS;
     }
 
-    modes[vaoIndex] = ak_drawMode(primitive);
+    glprim->mode = ak_drawMode(prim);
+
+    if (glmodel->prim)
+      glmodel->prim->prev = glprim;
+    glprim->next  = glmodel->prim;
+    glmodel->prim = glprim;
 
     glBindVertexArray(0);
 
-    vaoIndex++;
-    primitive = primitive->next;
+    glmodel->primc++;
+    prim = prim->next;
   }
 
   /* nothing to render */
-  if (vaoCount < 1 || vboCount < 1)
+  if (glmodel->primc < 1)
     goto err;
 
-  model->vao        = vao;
-  model->vbo        = vbo;
-  model->vaoCount   = vaoCount;
-  model->vboCount   = vboCount;
-  model->count      = count;
-  model->modes      = modes;
-  model->base.flags |= GK_COMPLEX;
-  
-  *dest = model;
-
-  vboDesc = vboDescList;
-  while (vboDesc) {
-    void *tofree;
-
-    tofree = vboDesc;
-    vboDesc = vboDesc->next;
-    free(tofree);
-  }
+  *dest = glmodel;
 
   return AK_OK;
-  
 err:
-  if (vboCount > 1)
-    glDeleteBuffers(vboCount, vbo);
-  
-  glDeleteVertexArrays(vaoCount, vao);
-  glBindVertexArray(0);
-  
-  free(vao);
-  free(vbo);
-  free(count);
-  free(model);
-  free(modes);
-
-  vboDesc = vboDescList;
-  while (vboDesc) {
-    void *tofree;
-
-    tofree = vboDesc;
-    vboDesc = vboDesc->next;
-    free(tofree);
-  }
-
+  free(glmodel);
   return AK_ERR;
 }

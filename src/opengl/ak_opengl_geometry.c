@@ -12,26 +12,24 @@
 #include <gk.h>
 
 AkResult
-ak_glLoadGeometry(AkDoc  * __restrict doc,
-                  AkGeometry * geometry,
-                  GLenum usage,
-                  GkComplexModel ** dest) {
+ak_glLoadGeometry(AkGLContext * __restrict ctx,
+                  AkGeometry  * __restrict geom,
+                  GkModel    ** __restrict dest) {
   AkObject    *prim;
-  GkModelBase *modelBase;
+  GkModel     *model;
   AkResult     ret;
 
-  modelBase = gk_model_find(geometry);
-  if (modelBase && (modelBase->flags & GK_COMPLEX)) {
-    *dest = (GkComplexModel *)modelBase;
+  model = gk_model_find(geom);
+  if (model && (model->flags & GK_COMPLEX)) {
+    *dest = model;
     return AK_OK;
   }
 
-  prim = geometry->gdata;
+  prim = geom->gdata;
   switch ((AkGeometryType)prim->type) {
     case AK_GEOMETRY_TYPE_MESH:
-      ret = ak_glLoadMesh(doc,
+      ret = ak_glLoadMesh(ctx,
                           ak_objGet(prim),
-                          usage,
                           dest);
       break;
     default:
@@ -39,7 +37,7 @@ ak_glLoadGeometry(AkDoc  * __restrict doc,
   }
 
   if (*dest)
-    gk_model_add(&(*dest)->base, geometry);
+    gk_model_add(*dest, geom);
 
   return ret;
 }

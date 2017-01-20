@@ -12,14 +12,15 @@
 #include <gk.h>
 
 AkResult
-ak_glLoadScene(AkDoc    * __restrict doc,
-               AkScene  * scene,
-               GLenum     usage,
-               GkScene ** dest) {
+ak_glLoadScene(AkDoc    *doc,
+               AkScene  *scene,
+               GLenum    usage,
+               GkScene **dest) {
   AkVisualScene *visualScene;
   AkNode        *node;
   GkScene       *glscene;
   GkNode       **glnodei;
+  AkGLContext   *ctx;
   AkResult       ret;
 
   if (!scene->visualScene)
@@ -31,14 +32,15 @@ ak_glLoadScene(AkDoc    * __restrict doc,
   node    = visualScene->node;
   glnodei = &glscene->rootNode;
 
+  ctx = calloc(sizeof(*ctx), 1);
+  ctx->bufftree = rb_newtree_ptr();
+  ctx->doc      = doc;
+  ctx->usage    = usage;
+  ctx->scene    = glscene;
+
   glscene->usage = usage;
   while (node) {
-    ret = ak_glLoadNode(doc,
-                        node,
-                        usage,
-                        glscene,
-                        glnodei);
-
+    ret = ak_glLoadNode(ctx, node, glnodei);
     if (ret != AK_OK) {
       free(glscene);
       return AK_ERR;

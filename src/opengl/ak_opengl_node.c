@@ -12,11 +12,9 @@
 #include <gk.h>
 
 AkResult
-ak_glLoadNode(AkDoc   * __restrict doc,
-              AkNode  *node,
-              GLenum   usage,
-              GkScene *scene,
-              GkNode **dest) {
+ak_glLoadNode(AkGLContext * __restrict ctx,
+              AkNode      * __restrict node,
+              GkNode     ** __restrict dest) {
   GkNode *glnode;
 
   glnode = calloc(sizeof(*glnode), 1);
@@ -36,19 +34,16 @@ ak_glLoadNode(AkDoc   * __restrict doc,
   if (node->geometry) {
     AkInstanceBase *geomInst;
     AkGeometry     *geom;
-    GkComplexModel *model;
+    GkModel        *model;
     GkModelInst    *modelInst;
     AkResult        ret;
 
     geomInst = &node->geometry->base;
     while (geomInst) {
       geom = ak_instanceObject(geomInst);
-      ret  = ak_glLoadGeometry(doc,
-                               geom,
-                               GL_STATIC_DRAW,
-                               &model);
+      ret  = ak_glLoadGeometry(ctx, geom, &model);
       if (ret == AK_OK) {
-        modelInst       = gkMakeInstance(&model->base);
+        modelInst       = gkMakeInstance(model);
         modelInst->next = glnode->model;
         glnode->model   = modelInst;
       }
@@ -66,36 +61,31 @@ ak_glLoadNode(AkDoc   * __restrict doc,
 
     lightInst = node->light;
     while (lightInst) {
-      light     = ak_instanceObject(lightInst);
-      ret       = ak_glLoadLight(doc,
-                                 glnode,
-                                 light,
-                                 &gllight);
+      light = ak_instanceObject(lightInst);
+      ret   = ak_glLoadLight(ctx->doc,
+                             glnode,
+                             light,
+                             &gllight);
       if (ret == AK_OK) {
         gllight->next = glnode->light;
         glnode->light = gllight;
 
-        gllight->ref.next = scene->lights;
-        scene->lights     = &gllight->ref;
+        gllight->ref.next  = ctx->scene->lights;
+        ctx->scene->lights = &gllight->ref;
 
-        if (scene->lights->prev)
-          scene->lights->prev = &gllight->ref;
+        if (ctx->scene->lights->prev)
+          ctx->scene->lights->prev = &gllight->ref;
       }
 
-      scene->lightCount++;
+      ctx->scene->lightCount++;
       lightInst = lightInst->next;
     }
   }
 
   if (node->node) {
     AkNode *nodei;
-    if ((nodei = ak_instanceObjectNode(node))) {
-      ak_glLoadNode(doc,
-                    nodei,
-                    usage,
-                    scene,
-                    &glnode->nodeInst);
-    }
+    if ((nodei = ak_instanceObjectNode(node)))
+      ak_glLoadNode(ctx, nodei, &glnode->nodeInst);
   }
 
   if (node->chld) {
@@ -105,17 +95,12 @@ ak_glLoadNode(AkDoc   * __restrict doc,
     nodei   = node->chld;
     glnodei = &glnode->chld;
     do {
-      ak_glLoadNode(doc,
-                    nodei,
-                    usage,
-                    scene,
-                    glnodei);
+      ak_glLoadNode(ctx, nodei, glnodei);
       glnodei = &(*glnodei)->next;
       nodei   = nodei->next;
     } while (nodei);
   }
 
   *dest = glnode;
-
   return AK_OK;
 }

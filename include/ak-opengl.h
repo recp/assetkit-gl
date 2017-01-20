@@ -26,31 +26,35 @@ extern "C" {
 
 #include "assetkit.h"
 #include <gk.h>
+#include <gk-rb.h>
+
+typedef struct AkGLContext {
+  AkDoc   *doc;
+  RBTree  *bufftree;
+  GkScene *scene;
+  GLenum   usage;
+} AkGLContext;
 
 AkResult
-ak_glLoadScene(AkDoc  * __restrict doc,
-               AkScene * scene,
-               GLenum usage,
-               GkScene ** dest);
+ak_glLoadScene(AkDoc    *doc,
+               AkScene  *scene,
+               GLenum    usage,
+               GkScene **dest);
 
 AkResult
-ak_glLoadNode(AkDoc   * __restrict doc,
-              AkNode  *node,
-              GLenum   usage,
-              GkScene *scene,
-              GkNode **dest);
+ak_glLoadNode(AkGLContext * __restrict ctx,
+              AkNode      * __restrict node,
+              GkNode     ** __restrict dest);
   
 AkResult
-ak_glLoadGeometry(AkDoc  * __restrict doc,
-                  AkGeometry * geometry,
-                  GLenum usage,
-                  GkComplexModel ** dest);
+ak_glLoadGeometry(AkGLContext * __restrict ctx,
+                  AkGeometry  * __restrict geom,
+                  GkModel    ** __restrict dest);
 
 AkResult
-ak_glLoadMesh(AkDoc  * __restrict doc,
-              AkMesh * mesh,
-              GLenum usage,
-              GkComplexModel ** dest);
+ak_glLoadMesh(AkGLContext * __restrict ctx,
+              AkMesh      * __restrict mesh,
+              GkModel    ** __restrict dest);
 
 AkResult
 ak_glLoadLight(AkDoc    * __restrict doc,
