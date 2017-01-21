@@ -173,9 +173,9 @@ ak_glLoadMesh(AkGLContext * __restrict ctx,
     inputIndex = 0;
     while (vi) {
       source = ak_getObjectByUrl(&vi->source);
-      if (source && source->techniqueCommon) {
+      if (source && source->tcommon) {
         ak_loadSource(ctx,
-                      source->techniqueCommon,
+                      source->tcommon,
                       glprim,
                       &inputIndex);
       }
@@ -193,9 +193,9 @@ ak_glLoadMesh(AkGLContext * __restrict ctx,
       }
 
       source = ak_getObjectByUrl(&input->base.source);
-      if (source && source->techniqueCommon) {
+      if (source && source->tcommon) {
         ak_loadSource(ctx,
-                      source->techniqueCommon,
+                      source->tcommon,
                       glprim,
                       &inputIndex);
       }
