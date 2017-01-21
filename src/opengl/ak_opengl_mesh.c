@@ -15,12 +15,6 @@
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 #define ak__align(size) ((size + 32 - 1) &~ (uint32_t)(32 - 1))
 
-typedef struct AkGLVBODesc {
-  void     *source;
-  GkBuffer *buff;
-  struct AkGLVBODesc *next;
-} AkGLVBODesc;
-
 GLenum
 ak_drawMode(AkMeshPrimitive *primitive) {
   GLenum mode;
