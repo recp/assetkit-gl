@@ -144,7 +144,6 @@ ak_glLoadMesh(AkGLContext * __restrict ctx,
               GkModel    ** __restrict dest) {
   AkMeshPrimitive *prim;
   GkModel         *glmodel;
-  GkBuffer        *buff;
   uint32_t        inputIndex;
 
   glmodel = calloc(sizeof(*glmodel), 1);
@@ -208,7 +207,7 @@ ak_glLoadMesh(AkGLContext * __restrict ctx,
       glprim->bufc++;
 
       GkBuffer *ibuff;
-      ibuff = calloc(sizeof(*buff), 1);
+      ibuff = calloc(sizeof(*ibuff), 1);
       ibuff->size   = (GLsizei)(prim->indices->count * sizeof(AkUInt));
       ibuff->usage  = ctx->usage;
       ibuff->type   = type;
@@ -227,9 +226,9 @@ ak_glLoadMesh(AkGLContext * __restrict ctx,
       glprim->flags |= GK_DRAW_ELEMENTS;
 
       if (glprim->bufs)
-        glprim->bufs->prev = buff;
-      buff->next   = glprim->bufs;
-      glprim->bufs = buff;
+        glprim->bufs->prev = ibuff;
+      ibuff->next  = glprim->bufs;
+      glprim->bufs = ibuff;
     }
 
     /* els direct draw */
