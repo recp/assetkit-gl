@@ -10,10 +10,7 @@
 
 #include "../../../../include/ak-opengl.h"
 
-AkResult
-ak_glPhong(AkGLContext    * __restrict ctx,
-           AkBindMaterial * __restrict bindMaterial,
-           GkModelInst    * __restrict modelInst,
-           GkMaterial    ** __restrict dest);
+GkPhong*
+ak_glPhong(AkPhong * __restrict phong);
 
 #endif /* ak_phong_h */
