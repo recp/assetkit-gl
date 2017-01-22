@@ -9,6 +9,7 @@
 #include "ak_color_or_tex.h"
 #include "ak_phong.h"
 #include "ak_lambert.h"
+#include "ak_constant.h"
 
 AkResult
 ak_glProfileCommon(AkGLContext    * __restrict ctx,
@@ -45,6 +46,14 @@ ak_glProfileCommon(AkGLContext    * __restrict ctx,
 
     if (gllambert)
       material->technique = &gllambert->base;
+  }
+
+  if (tfx->constant) {
+    GkConstant *glconstant;
+    glconstant = ak_glConstant(tfx->constant, "constant");
+
+    if (glconstant)
+      material->technique = &glconstant->base;
   }
 
   *dest = material;
