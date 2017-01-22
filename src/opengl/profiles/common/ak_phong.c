@@ -12,7 +12,8 @@
 #include <string.h>
 
 GkPhong*
-ak_glPhong(AkPhong * __restrict phong) {
+ak_glPhong(AkPhong * __restrict phong,
+           const char *routine) {
   GkPhong *glphong;
 
   glphong = calloc(sizeof(*glphong), 1);
@@ -53,7 +54,7 @@ ak_glPhong(AkPhong * __restrict phong) {
     glphong->indexOfRefraction = *phong->indexOfRefraction->val;
 
   glphong->base.subroutine = malloc(sizeof(char) * 6);
-  strcpy(glphong->base.subroutine, "phong");
+  strcpy(glphong->base.subroutine, routine);
 
   return glphong;
 }

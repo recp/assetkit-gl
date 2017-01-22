@@ -11,6 +11,7 @@
 #include "../../../../include/ak-opengl.h"
 
 GkPhong*
-ak_glPhong(AkPhong * __restrict phong);
+ak_glPhong(AkPhong * __restrict phong,
+           const char *routine);
 
 #endif /* ak_phong_h */

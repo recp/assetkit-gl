@@ -24,10 +24,18 @@ ak_glProfileCommon(AkGLContext    * __restrict ctx,
 
   if (tfx->phong) {
     GkPhong *glphong;
-    glphong = ak_glPhong(tfx->phong);
+    glphong = ak_glPhong(tfx->phong, "phong");
 
     if (glphong)
       material->technique = &glphong->base;
+  }
+
+  if (tfx->blinn) {
+    GkBlinn *glblinn;
+    glblinn = ak_glPhong(tfx->blinn, "blinn");
+
+    if (glblinn)
+      material->technique = &glblinn->base;
   }
 
   *dest = material;
