@@ -9,6 +9,8 @@
 #include "../../../../include/ak-opengl.h"
 #include "ak_color_or_tex.h"
 
+#include <string.h>
+
 GkPhong*
 ak_glPhong(AkPhong * __restrict phong) {
   GkPhong *glphong;
@@ -49,6 +51,9 @@ ak_glPhong(AkPhong * __restrict phong) {
     glphong->transparency = *phong->transparency->val;
   if (phong->indexOfRefraction)
     glphong->indexOfRefraction = *phong->indexOfRefraction->val;
+
+  glphong->base.subroutine = malloc(sizeof(char) * 6);
+  strcpy(glphong->base.subroutine, "phong");
 
   return glphong;
 }
