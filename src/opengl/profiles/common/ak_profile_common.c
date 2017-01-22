@@ -8,6 +8,7 @@
 #include "ak_profile_common.h"
 #include "ak_color_or_tex.h"
 #include "ak_phong.h"
+#include "ak_lambert.h"
 
 AkResult
 ak_glProfileCommon(AkGLContext    * __restrict ctx,
@@ -36,6 +37,14 @@ ak_glProfileCommon(AkGLContext    * __restrict ctx,
 
     if (glblinn)
       material->technique = &glblinn->base;
+  }
+
+  if (tfx->lambert) {
+    GkLambert *gllambert;
+    gllambert = ak_glLambert(tfx->lambert, "lambert");
+
+    if (gllambert)
+      material->technique = &gllambert->base;
   }
 
   *dest = material;
