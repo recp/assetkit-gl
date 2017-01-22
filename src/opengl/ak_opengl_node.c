@@ -6,6 +6,7 @@
  */
 
 #include "../../include/ak-opengl.h"
+#include "ak_opengl_material.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <assetkit.h>
@@ -32,23 +33,32 @@ ak_glLoadNode(AkGLContext * __restrict ctx,
   }
 
   if (node->geometry) {
-    AkInstanceBase *geomInst;
-    AkGeometry     *geom;
-    GkModel        *model;
-    GkModelInst    *modelInst;
-    AkResult        ret;
+    AkInstanceGeometry *geomInst;
+    AkGeometry         *geom;
+    GkModel            *model;
+    GkModelInst        *modelInst;
+    AkResult            ret;
 
-    geomInst = &node->geometry->base;
+    geomInst = node->geometry;
     while (geomInst) {
-      geom = ak_instanceObject(geomInst);
+      geom = ak_instanceObject(&geomInst->base);
       ret  = ak_glLoadGeometry(ctx, geom, &model);
       if (ret == AK_OK) {
         modelInst       = gkMakeInstance(model);
         modelInst->next = glnode->model;
         glnode->model   = modelInst;
+
+        /* bind material */
+        if (geomInst->bindMaterial) {
+          GkMaterial *material;
+          AkResult    ret;
+          ret = ak_glLoadMaterial(ctx, geomInst, &material);
+          if (ret == AK_OK)
+            modelInst->material = material;
+        }
       }
 
-      geomInst = geomInst->next;
+      geomInst = (AkInstanceGeometry *)geomInst->base.next;
     }
   }
 
