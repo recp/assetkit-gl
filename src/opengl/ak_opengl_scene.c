@@ -7,6 +7,7 @@
 
 #include "../../include/ak-opengl.h"
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include <assetkit.h>
 #include <gk.h>
@@ -37,6 +38,20 @@ ak_glLoadScene(AkDoc    *doc,
   ctx->doc      = doc;
   ctx->usage    = usage;
   ctx->scene    = glscene;
+
+  if (visualScene->bbox) {
+    GkBBox *bbox;
+
+    bbox = malloc(sizeof(*glscene->bbox));
+    glm_vec_dup(visualScene->bbox->min, bbox->min);
+    glm_vec_dup(visualScene->bbox->min, bbox->min);
+
+    bbox->isvalid = visualScene->bbox->isvalid;
+    ak_bbox_center(visualScene->bbox, bbox->center);
+    bbox->radius = ak_bbox_radius(visualScene->bbox);
+
+    glscene->bbox = bbox;
+  }
 
   glscene->usage = usage;
   while (node) {
