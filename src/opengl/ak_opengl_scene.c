@@ -44,7 +44,7 @@ ak_glLoadScene(AkDoc    *doc,
 
     bbox = malloc(sizeof(*glscene->bbox));
     glm_vec_dup(visualScene->bbox->min, bbox->min);
-    glm_vec_dup(visualScene->bbox->min, bbox->min);
+    glm_vec_dup(visualScene->bbox->max, bbox->max);
 
     bbox->isvalid = visualScene->bbox->isvalid;
     ak_bbox_center(visualScene->bbox, bbox->center);
