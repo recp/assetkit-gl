@@ -81,6 +81,9 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       spotDest->cutoffCosine = cosf(spotSrc->falloffAngle/2.0);
       spotDest->cutoffExp    = spotSrc->falloffExp;
 
+      glm_vec_dup(spotSrc->conedir,
+                  spotDest->direction);
+
       spotDest->base.type = GK_LIGHT_TYPE_SPOT;
       break;
     }
