@@ -78,7 +78,7 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       spotDest->constAttn    = spotSrc->constAttn;
       spotDest->linearAttn   = spotSrc->linearAttn;
       spotDest->quadAttn     = spotSrc->quadAttn;
-      spotDest->cutoffCosine = cosf(spotSrc->falloffAngle/2.0);
+      spotDest->cutoffCosine = cosf(spotSrc->falloffAngle * 0.5f);
       spotDest->cutoffExp    = spotSrc->falloffExp;
 
       glm_vec_dup(spotSrc->conedir,
