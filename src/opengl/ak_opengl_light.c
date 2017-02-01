@@ -26,7 +26,7 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       AkAmbientLight *ambientSrc;
       GkAmbientLight *ambientDest;
 
-      ambientSrc  = (AkAmbientLight *)light->tcommon;
+      ambientSrc  = (AkAmbientLight *)tcommon;
       ambientDest = calloc(sizeof(*ambientDest), 1);
       gllight     = ambientDest;
       glm_vec4_dup(ambientSrc->color.vec,
@@ -39,7 +39,7 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       AkDirectionalLight *directionalSrc;
       GkDirectionalLight *directionalDest;
 
-      directionalSrc  = (AkDirectionalLight *)light->tcommon;
+      directionalSrc  = (AkDirectionalLight *)tcommon;
       directionalDest = calloc(sizeof(*directionalDest), 1);
       gllight         = &directionalDest->base;
       glm_vec4_dup(directionalSrc->color.vec,
@@ -52,7 +52,7 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       AkPointLight *pointSrc;
       GkPointLight *pointDest;
 
-      pointSrc  = (AkPointLight *)light->tcommon;
+      pointSrc  = (AkPointLight *)tcommon;
       pointDest = calloc(sizeof(*pointDest), 1);
       gllight   = &pointDest->base;
       glm_vec4_dup(pointSrc->base.color.vec,
@@ -69,11 +69,11 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       AkSpotLight *spotSrc;
       GkSpotLight *spotDest;
 
-      spotSrc  = (AkSpotLight *)light->tcommon;
+      spotSrc  = (AkSpotLight *)tcommon;
       spotDest = calloc(sizeof(*spotDest), 1);
       gllight  = &spotDest->base;
       glm_vec4_dup(spotSrc->base.color.vec,
-                  spotDest->base.color.vec);
+                   spotDest->base.color.vec);
 
       spotDest->constAttn    = spotSrc->constAttn;
       spotDest->linearAttn   = spotSrc->linearAttn;
@@ -81,15 +81,15 @@ ak_glLoadLight(AkDoc    * __restrict doc,
       spotDest->cutoffCosine = cosf(spotSrc->falloffAngle * 0.5f);
       spotDest->cutoffExp    = spotSrc->falloffExp;
 
-      glm_vec_dup(spotSrc->conedir,
-                  spotDest->direction);
-
       spotDest->base.type = GK_LIGHT_TYPE_SPOT;
       break;
     }
     default:
       return AK_ETCOMMON;
   }
+
+  glm_vec_dup(tcommon->direction,
+              gllight->direction);
 
   gllight->index   = -1;
   gllight->enabled = 1;
