@@ -16,8 +16,7 @@ ak_glConstant(AkConstantFx * __restrict constant,
               const char *routine) {
   GkConstant *glconstant;
 
-  glconstant = calloc(sizeof(*glconstant), 1);
-  glconstant->base.type = GK_MATERIAL_LAMBERT;
+  glconstant = gkMaterialNewConstant();
 
   if (constant->emission)
     ak_glCopyColorOrTex(constant->emission,

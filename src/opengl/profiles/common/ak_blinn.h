@@ -5,13 +5,13 @@
  * Full license can be found in the LICENSE file
  */
 
-#ifndef ak_glphong_h
-#define ak_glphong_h
+#ifndef ak_glblinn_h
+#define ak_glblinn_h
 
 #include "../../../../include/ak-opengl.h"
 
-GkPhong*
-ak_glPhong(AkPhong * __restrict phong,
+GkBlinn*
+ak_glBlinn(AkBlinn * __restrict blinn,
            const char *routine);
 
-#endif /* ak_glphong_h */
+#endif /* ak_glblinn_h */

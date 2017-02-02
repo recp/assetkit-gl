@@ -16,8 +16,7 @@ ak_glLambert(AkLambert * __restrict lambert,
              const char *routine) {
   GkLambert *gllambert;
 
-  gllambert = calloc(sizeof(*gllambert), 1);
-  gllambert->base.type = GK_MATERIAL_LAMBERT;
+  gllambert = gkMaterialNewLambert();
 
   if (lambert->ambient)
     ak_glCopyColorOrTex(lambert->ambient,

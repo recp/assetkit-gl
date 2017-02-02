@@ -16,8 +16,7 @@ ak_glPhong(AkPhong * __restrict phong,
            const char *routine) {
   GkPhong *glphong;
 
-  glphong = calloc(sizeof(*glphong), 1);
-  glphong->base.type = GK_MATERIAL_PHONG;
+  glphong = gkMaterialNewPhong();
 
   if (phong->ambient)
     ak_glCopyColorOrTex(phong->ambient,

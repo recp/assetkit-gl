@@ -8,6 +8,7 @@
 #include "ak_profile_common.h"
 #include "ak_color_or_tex.h"
 #include "ak_phong.h"
+#include "ak_blinn.h"
 #include "ak_lambert.h"
 #include "ak_constant.h"
 
@@ -34,7 +35,7 @@ ak_glProfileCommon(AkGLContext    * __restrict ctx,
 
   if (tfx->blinn) {
     GkBlinn *glblinn;
-    glblinn = ak_glPhong(tfx->blinn, "blinn");
+    glblinn = ak_glBlinn(tfx->blinn, "blinn");
 
     if (glblinn)
       material->technique = &glblinn->base;
