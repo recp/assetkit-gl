@@ -19,7 +19,7 @@ ak_glLoadGeometry(AkGLContext * __restrict ctx,
   GkModel     *model;
   AkResult     ret;
 
-  model = gk_model_find(geom);
+  model = gk_model_find(ctx->ctx, geom);
   if (model && (model->flags & GK_COMPLEX)) {
     *dest = model;
     return AK_OK;
@@ -37,7 +37,7 @@ ak_glLoadGeometry(AkGLContext * __restrict ctx,
   }
 
   if (*dest)
-    gk_model_add(*dest, geom);
+    gk_model_add(ctx->ctx, *dest, geom);
 
   return ret;
 }

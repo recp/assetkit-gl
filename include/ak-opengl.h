@@ -29,17 +29,19 @@ extern "C" {
 #include <gk-rb.h>
 
 typedef struct AkGLContext {
-  AkDoc   *doc;
-  RBTree  *bufftree;
-  GkScene *scene;
-  GLenum   usage;
+  AkDoc     *doc;
+  RBTree    *bufftree;
+  GkScene   *scene;
+  GkContext *ctx;
+  GLenum     usage;
 } AkGLContext;
 
 AkResult
-ak_glLoadScene(AkDoc    *doc,
-               AkScene  *scene,
-               GLenum    usage,
-               GkScene **dest);
+ak_glLoadScene(GkContext *ctx,
+               AkDoc     *doc,
+               AkScene   *scene,
+               GLenum     usage,
+               GkScene  **dest);
 
 AkResult
 ak_glLoadNode(AkGLContext * __restrict ctx,
