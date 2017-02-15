@@ -28,41 +28,42 @@ extern "C" {
 #include <gk.h>
 #include <gk-rb.h>
 
-typedef struct AkGLContext {
+typedef struct AgkContext {
   AkDoc     *doc;
   RBTree    *bufftree;
   GkScene   *scene;
   GkContext *ctx;
   GLenum     usage;
-} AkGLContext;
+} AgkContext;
 
 AkResult
-ak_glLoadScene(GkContext *ctx,
-               AkDoc     *doc,
-               AkScene   *scene,
-               GLenum     usage,
-               GkScene  **dest);
+agk_loadScene(GkContext *ctx,
+              AkDoc     *doc,
+              AkScene   *scene,
+              GLenum     usage,
+              GkScene  **dest);
 
 AkResult
-ak_glLoadNode(AkGLContext * __restrict ctx,
-              AkNode      * __restrict node,
-              GkNode     ** __restrict dest);
+agk_loadNode(AgkContext * __restrict ctx,
+             AkNode     * __restrict node,
+             GkNode    ** __restrict dest);
   
 AkResult
-ak_glLoadGeometry(AkGLContext * __restrict ctx,
-                  AkGeometry  * __restrict geom,
-                  GkModel    ** __restrict dest);
+agk_loadGeometry(AgkContext * __restrict ctx,
+                 AkGeometry  * __restrict geom,
+                 GkModel    ** __restrict dest);
 
 AkResult
-ak_glLoadMesh(AkGLContext * __restrict ctx,
-              AkMesh      * __restrict mesh,
-              GkModel    ** __restrict dest);
+agk_loadMesh(AgkContext * __restrict ctx,
+             AkMesh     * __restrict mesh,
+             GkModel   ** __restrict dest);
 
 AkResult
-ak_glLoadLight(AkDoc    * __restrict doc,
-               GkNode   * __restrict node,
-               AkLight  * __restrict light,
-               GkLight ** __restrict dest);
+agk_loadLight(AkDoc    * __restrict doc,
+              GkNode   * __restrict node,
+              AkLight  * __restrict light,
+              GkLight ** __restrict dest);
+
 
 #ifdef __cplusplus
 }

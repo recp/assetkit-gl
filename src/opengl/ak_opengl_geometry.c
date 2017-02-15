@@ -12,9 +12,9 @@
 #include <gk.h>
 
 AkResult
-ak_glLoadGeometry(AkGLContext * __restrict ctx,
-                  AkGeometry  * __restrict geom,
-                  GkModel    ** __restrict dest) {
+agk_loadGeometry(AgkContext * __restrict ctx,
+                 AkGeometry  * __restrict geom,
+                 GkModel    ** __restrict dest) {
   AkObject    *prim;
   GkModel     *model;
   AkResult     ret;
@@ -28,7 +28,7 @@ ak_glLoadGeometry(AkGLContext * __restrict ctx,
   prim = geom->gdata;
   switch ((AkGeometryType)prim->type) {
     case AK_GEOMETRY_TYPE_MESH:
-      ret = ak_glLoadMesh(ctx,
+      ret = agk_loadMesh(ctx,
                           ak_objGet(prim),
                           dest);
       break;

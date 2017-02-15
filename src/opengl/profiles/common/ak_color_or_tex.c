@@ -10,7 +10,7 @@
 
 /* TODO: only color for now */
 void
-ak_glCopyColorOrTex(AkFxColorOrTex * __restrict src,
+agk_copyColorOrTex(AkFxColorOrTex * __restrict src,
                     GkColorOrTex   * __restrict dest) {
   if (src->color)
     glm_vec4_dup(src->color->vec, dest->color.vec);

@@ -13,9 +13,9 @@
 #include <gk.h>
 
 AkResult
-ak_glLoadNode(AkGLContext * __restrict ctx,
-              AkNode      * __restrict node,
-              GkNode     ** __restrict dest) {
+agk_loadNode(AgkContext * __restrict ctx,
+             AkNode     * __restrict node,
+             GkNode    ** __restrict dest) {
   GkNode *glnode;
 
   glnode = calloc(sizeof(*glnode), 1);
@@ -42,7 +42,7 @@ ak_glLoadNode(AkGLContext * __restrict ctx,
     geomInst = node->geometry;
     while (geomInst) {
       geom = ak_instanceObject(&geomInst->base);
-      ret  = ak_glLoadGeometry(ctx, geom, &model);
+      ret  = agk_loadGeometry(ctx, geom, &model);
       if (ret == AK_OK) {
         modelInst       = gkMakeInstance(model);
         modelInst->next = glnode->model;
@@ -52,7 +52,7 @@ ak_glLoadNode(AkGLContext * __restrict ctx,
         if (geomInst->bindMaterial) {
           GkMaterial *material;
           AkResult    ret;
-          ret = ak_glLoadMaterial(ctx, geomInst, &material);
+          ret = agk_loadMaterial(ctx, geomInst, &material);
           if (ret == AK_OK)
             modelInst->material = material;
         }
@@ -72,7 +72,7 @@ ak_glLoadNode(AkGLContext * __restrict ctx,
     lightInst = node->light;
     while (lightInst) {
       light = ak_instanceObject(lightInst);
-      ret   = ak_glLoadLight(ctx->doc,
+      ret   = agk_loadLight(ctx->doc,
                              glnode,
                              light,
                              &gllight);
@@ -95,7 +95,7 @@ ak_glLoadNode(AkGLContext * __restrict ctx,
   if (node->node) {
     AkNode *nodei;
     if ((nodei = ak_instanceObjectNode(node)))
-      ak_glLoadNode(ctx, nodei, &glnode->nodeInst);
+      agk_loadNode(ctx, nodei, &glnode->nodeInst);
   }
 
   if (node->chld) {
@@ -105,7 +105,7 @@ ak_glLoadNode(AkGLContext * __restrict ctx,
     nodei   = node->chld;
     glnodei = &glnode->chld;
     do {
-      ak_glLoadNode(ctx, nodei, glnodei);
+      agk_loadNode(ctx, nodei, glnodei);
       glnodei = &(*glnodei)->next;
       nodei   = nodei->next;
     } while (nodei);

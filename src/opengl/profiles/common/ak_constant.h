@@ -5,13 +5,13 @@
  * Full license can be found in the LICENSE file
  */
 
-#ifndef ak_constant_h
-#define ak_constant_h
+#ifndef agk_constant_h
+#define agk_constant_h
 
 #include "../../../../include/ak-opengl.h"
 
 GkConstant*
-ak_glConstant(AkConstantFx * __restrict constant,
-              const char *routine);
+agk_constant(AkConstantFx * __restrict constant,
+             const char *routine);
 
-#endif /* ak_constant_h */
+#endif /* agk_constant_h */

@@ -13,16 +13,16 @@
 #include <gk.h>
 
 AkResult
-ak_glLoadScene(GkContext *ctx,
-               AkDoc     *doc,
-               AkScene   *scene,
-               GLenum     usage,
-               GkScene  **dest) {
+agk_loadScene(GkContext *ctx,
+              AkDoc     *doc,
+              AkScene   *scene,
+              GLenum     usage,
+              GkScene  **dest) {
   AkVisualScene *visualScene;
   AkNode        *node;
   GkScene       *glscene;
   GkNode       **glnodei;
-  AkGLContext   *ctx0;
+  AgkContext   *ctx0;
   AkResult       ret;
 
   if (!scene->visualScene)
@@ -57,7 +57,7 @@ ak_glLoadScene(GkContext *ctx,
 
   glscene->usage = usage;
   while (node) {
-    ret = ak_glLoadNode(ctx0, node, glnodei);
+    ret = agk_loadNode(ctx0, node, glnodei);
     if (ret != AK_OK) {
       free(glscene);
       return AK_ERR;

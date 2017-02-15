@@ -12,30 +12,30 @@
 #include <string.h>
 
 GkLambert*
-ak_glLambert(AkLambert * __restrict lambert,
-             const char *routine) {
+agk_lambert(AkLambert * __restrict lambert,
+            const char *routine) {
   GkLambert *gllambert;
 
   gllambert = gkMaterialNewLambert();
 
   if (lambert->ambient)
-    ak_glCopyColorOrTex(lambert->ambient,
-                        &gllambert->ambient);
+    agk_copyColorOrTex(lambert->ambient,
+                       &gllambert->ambient);
   if (lambert->diffuse)
-    ak_glCopyColorOrTex(lambert->diffuse,
-                        &gllambert->diffuse);
+    agk_copyColorOrTex(lambert->diffuse,
+                       &gllambert->diffuse);
 
   if (lambert->emission)
-    ak_glCopyColorOrTex(lambert->emission,
-                        &gllambert->emission);
+    agk_copyColorOrTex(lambert->emission,
+                       &gllambert->emission);
 
   if (lambert->reflective)
-    ak_glCopyColorOrTex(lambert->reflective,
-                        &gllambert->reflective);
+    agk_copyColorOrTex(lambert->reflective,
+                       &gllambert->reflective);
 
   if (lambert->transparent)
-    ak_glCopyColorOrTex(lambert->transparent,
-                        &gllambert->transparent);
+    agk_copyColorOrTex(lambert->transparent,
+                       &gllambert->transparent);
 
   /* TODO: read param later */
 

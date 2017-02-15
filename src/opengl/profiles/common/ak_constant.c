@@ -12,23 +12,23 @@
 #include <string.h>
 
 GkConstant*
-ak_glConstant(AkConstantFx * __restrict constant,
-              const char *routine) {
+agk_constant(AkConstantFx * __restrict constant,
+             const char *routine) {
   GkConstant *glconstant;
 
   glconstant = gkMaterialNewConstant();
 
   if (constant->emission)
-    ak_glCopyColorOrTex(constant->emission,
-                        &glconstant->emission);
+    agk_copyColorOrTex(constant->emission,
+                       &glconstant->emission);
 
   if (constant->reflective)
-    ak_glCopyColorOrTex(constant->reflective,
-                        &glconstant->reflective);
+    agk_copyColorOrTex(constant->reflective,
+                       &glconstant->reflective);
 
   if (constant->transparent)
-    ak_glCopyColorOrTex(constant->transparent,
-                        &glconstant->transparent);
+    agk_copyColorOrTex(constant->transparent,
+                       &glconstant->transparent);
 
   /* TODO: read param later */
 

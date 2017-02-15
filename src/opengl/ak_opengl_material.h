@@ -11,8 +11,8 @@
 #include "../../include/ak-opengl.h"
 
 AkResult
-ak_glLoadMaterial(AkGLContext        * __restrict ctx,
-                  AkInstanceGeometry * __restrict geomInst,
-                  GkMaterial        ** __restrict dest);
+agk_loadMaterial(AgkContext        * __restrict ctx,
+                 AkInstanceGeometry * __restrict geomInst,
+                 GkMaterial        ** __restrict dest);
 
 #endif /* ak_opengl_material_h */

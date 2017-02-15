@@ -17,9 +17,9 @@
 #include "profiles/common/ak_profile_common.h"
 
 AkResult
-ak_glLoadMaterial(AkGLContext        * __restrict ctx,
-                  AkInstanceGeometry * __restrict geomInst,
-                  GkMaterial        ** __restrict dest) {
+agk_loadMaterial(AgkContext         * __restrict ctx,
+                 AkInstanceGeometry * __restrict geomInst,
+                 GkMaterial        ** __restrict dest) {
   AkMaterial *material;
   AkInstanceMaterial *materialInst;
   materialInst = geomInst->bindMaterial->tcommon;
@@ -32,10 +32,10 @@ ak_glLoadMaterial(AkGLContext        * __restrict ctx,
     if (effect->profile->type == AK_PROFILE_TYPE_COMMON) {
       GkMaterial *material;
       AkResult    ret;
-      ret = ak_glProfileCommon(ctx,
-                               geomInst->bindMaterial,
-                               effect->profile,
-                               &material);
+      ret = agk_profileCommon(ctx,
+                              geomInst->bindMaterial,
+                              effect->profile,
+                              &material);
 
       if (ret == AK_OK)
         *dest = material;

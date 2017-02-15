@@ -5,13 +5,13 @@
  * Full license can be found in the LICENSE file
  */
 
-#ifndef ak_lambert_h
-#define ak_lambert_h
+#ifndef agk_lambert_h
+#define agk_lambert_h
 
 #include "../../../../include/ak-opengl.h"
 
 GkLambert*
-ak_glLambert(AkLambert * __restrict lambert,
-             const char *routine);
+agk_lambert(AkLambert * __restrict lambert,
+            const char *routine);
 
-#endif /* ak_lambert_h */
+#endif /* agk_lambert_h */

@@ -12,34 +12,34 @@
 #include <string.h>
 
 GkBlinn*
-ak_glBlinn(AkBlinn * __restrict blinn,
-           const char *routine) {
+agk_blinn(AkBlinn * __restrict blinn,
+          const char *routine) {
   GkBlinn *glblinn;
 
   glblinn = gkMaterialNewBlinn();
 
   if (blinn->ambient)
-    ak_glCopyColorOrTex(blinn->ambient,
-                        &glblinn->ambient);
+    agk_copyColorOrTex(blinn->ambient,
+                       &glblinn->ambient);
   if (blinn->diffuse)
-    ak_glCopyColorOrTex(blinn->diffuse,
-                        &glblinn->diffuse);
+    agk_copyColorOrTex(blinn->diffuse,
+                       &glblinn->diffuse);
 
   if (blinn->specular)
-    ak_glCopyColorOrTex(blinn->specular,
-                        &glblinn->specular);
+    agk_copyColorOrTex(blinn->specular,
+                       &glblinn->specular);
 
   if (blinn->emission)
-    ak_glCopyColorOrTex(blinn->emission,
-                        &glblinn->emission);
+    agk_copyColorOrTex(blinn->emission,
+                       &glblinn->emission);
 
   if (blinn->reflective)
-    ak_glCopyColorOrTex(blinn->reflective,
-                        &glblinn->reflective);
+    agk_copyColorOrTex(blinn->reflective,
+                       &glblinn->reflective);
 
   if (blinn->transparent)
-    ak_glCopyColorOrTex(blinn->transparent,
-                        &glblinn->transparent);
+    agk_copyColorOrTex(blinn->transparent,
+                       &glblinn->transparent);
 
   /* TODO: read param later */
 

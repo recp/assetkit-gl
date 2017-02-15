@@ -61,7 +61,7 @@ ak_drawMode(AkMeshPrimitive *primitive) {
 }
 
 void
-ak_loadSource(AkGLContext * __restrict ctx,
+ak_loadSource(AgkContext  * __restrict ctx,
               AkAccessor  * __restrict acc,
               GkPrimitive * __restrict glprim,
               uint32_t    * __restrict inputIndex) {
@@ -139,9 +139,9 @@ ak_loadSource(AkGLContext * __restrict ctx,
 }
 
 AkResult
-ak_glLoadMesh(AkGLContext * __restrict ctx,
-              AkMesh      * __restrict mesh,
-              GkModel    ** __restrict dest) {
+agk_loadMesh(AgkContext * __restrict ctx,
+             AkMesh     * __restrict mesh,
+             GkModel   ** __restrict dest) {
   AkMeshPrimitive *prim;
   GkModel         *glmodel;
   uint32_t        inputIndex;

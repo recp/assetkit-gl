@@ -13,10 +13,10 @@
 #include "ak_constant.h"
 
 AkResult
-ak_glProfileCommon(AkGLContext    * __restrict ctx,
-                   AkBindMaterial * __restrict bindMaterial,
-                   AkProfile      * __restrict profileCommon,
-                   GkMaterial    ** __restrict dest) {
+agk_profileCommon(AgkContext     * __restrict ctx,
+                  AkBindMaterial * __restrict bindMaterial,
+                  AkProfile      * __restrict profileCommon,
+                  GkMaterial    ** __restrict dest) {
   AkProfileCommon *profile;
   AkTechniqueFx   *tfx;
   GkMaterial      *material;
@@ -27,7 +27,7 @@ ak_glProfileCommon(AkGLContext    * __restrict ctx,
 
   if (tfx->phong) {
     GkPhong *glphong;
-    glphong = ak_glPhong(tfx->phong, "phong");
+    glphong = agk_phong(tfx->phong, "phong");
 
     if (glphong)
       material->technique = &glphong->base;
@@ -35,7 +35,7 @@ ak_glProfileCommon(AkGLContext    * __restrict ctx,
 
   if (tfx->blinn) {
     GkBlinn *glblinn;
-    glblinn = ak_glBlinn(tfx->blinn, "blinn");
+    glblinn = agk_blinn(tfx->blinn, "blinn");
 
     if (glblinn)
       material->technique = &glblinn->base;
@@ -43,7 +43,7 @@ ak_glProfileCommon(AkGLContext    * __restrict ctx,
 
   if (tfx->lambert) {
     GkLambert *gllambert;
-    gllambert = ak_glLambert(tfx->lambert, "lambert");
+    gllambert = agk_lambert(tfx->lambert, "lambert");
 
     if (gllambert)
       material->technique = &gllambert->base;
@@ -51,7 +51,7 @@ ak_glProfileCommon(AkGLContext    * __restrict ctx,
 
   if (tfx->constant) {
     GkConstant *glconstant;
-    glconstant = ak_glConstant(tfx->constant, "constant");
+    glconstant = agk_constant(tfx->constant, "constant");
 
     if (glconstant)
       material->technique = &glconstant->base;

@@ -13,10 +13,10 @@
 #include <math.h>
 
 AkResult
-ak_glLoadLight(AkDoc    * __restrict doc,
-               GkNode   * __restrict node,
-               AkLight  * __restrict light,
-               GkLight ** __restrict dest) {
+agk_loadLight(AkDoc    * __restrict doc,
+              GkNode   * __restrict node,
+              AkLight  * __restrict light,
+              GkLight ** __restrict dest) {
   AkLightBase *tcommon;
   GkLight     *gllight;
   tcommon = light->tcommon;
