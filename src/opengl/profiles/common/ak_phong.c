@@ -52,8 +52,7 @@ agk_phong(AkPhong * __restrict phong,
   if (phong->indexOfRefraction)
     glphong->indexOfRefraction = *phong->indexOfRefraction->val;
 
-  glphong->base.subroutine = malloc(sizeof(char) * 6);
-  strcpy(glphong->base.subroutine, routine);
+  glphong->base.subroutine = strdup(routine);
 
   return glphong;
 }

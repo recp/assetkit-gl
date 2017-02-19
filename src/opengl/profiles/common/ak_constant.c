@@ -39,8 +39,7 @@ agk_constant(AkConstantFx * __restrict constant,
   if (constant->indexOfRefraction)
     glconstant->indexOfRefraction = *constant->indexOfRefraction->val;
 
-  glconstant->base.subroutine = malloc(sizeof(char) * 6);
-  strcpy(glconstant->base.subroutine, routine);
+  glconstant->base.subroutine = strdup(routine);
 
   return glconstant;
 }

@@ -46,8 +46,7 @@ agk_lambert(AkLambert * __restrict lambert,
   if (lambert->indexOfRefraction)
     gllambert->indexOfRefraction = *lambert->indexOfRefraction->val;
 
-  gllambert->base.subroutine = malloc(sizeof(char) * 6);
-  strcpy(gllambert->base.subroutine, routine);
+  gllambert->base.subroutine = strdup(routine);
   
   return gllambert;
 }

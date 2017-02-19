@@ -52,8 +52,7 @@ agk_blinn(AkBlinn * __restrict blinn,
   if (blinn->indexOfRefraction)
     glblinn->indexOfRefraction = *blinn->indexOfRefraction->val;
 
-  glblinn->base.subroutine = malloc(sizeof(char) * 6);
-  strcpy(glblinn->base.subroutine, routine);
+  glblinn->base.subroutine = strdup(routine);
   
   return glblinn;
 }
