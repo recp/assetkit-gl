@@ -86,11 +86,11 @@ agk_loadSource(AgkContext   * __restrict ctx,
   sourceData = ak_objGet(sourceObj);
   
   if (sourceObj->type == AK_SOURCE_ARRAY_TYPE_INT) {
-    AkSourceIntArray *floatArray;
-    floatArray = (AkSourceIntArray *)sourceData;
+    AkSourceIntArray *intArray;
+    intArray = (AkSourceIntArray *)sourceData;
     type  = GL_INT;
-    count = floatArray->count;
-    items = floatArray->items;
+    count = intArray->count;
+    items = intArray->items;
     isize = sizeof(GLint);
   } else {
     AkSourceFloatArray *floatArray;
