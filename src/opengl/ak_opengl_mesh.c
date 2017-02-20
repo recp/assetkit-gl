@@ -16,7 +16,7 @@
 #define ak__align(size) ((size + 32 - 1) &~ (uint32_t)(32 - 1))
 
 GLenum
-ak_drawMode(AkMeshPrimitive *primitive) {
+agk_drawMode(AkMeshPrimitive *primitive) {
   GLenum mode;
 
   switch (primitive->type) {
@@ -61,10 +61,11 @@ ak_drawMode(AkMeshPrimitive *primitive) {
 }
 
 void
-ak_loadSource(AgkContext  * __restrict ctx,
-              AkAccessor  * __restrict acc,
-              GkPrimitive * __restrict glprim,
-              uint32_t    * __restrict inputIndex) {
+agk_loadSource(AgkContext   * __restrict ctx,
+               AkAccessor   * __restrict acc,
+               GkPrimitive  * __restrict glprim,
+               AkInputBasic * __restrict inp,
+               uint32_t     * __restrict inputIndex) {
   AkObject *sourceObj;
   void     *sourceData;
   void     *items;
@@ -172,12 +173,12 @@ agk_loadMesh(AgkContext * __restrict ctx,
     inputIndex = 0;
     while (vi) {
       source = ak_getObjectByUrl(&vi->source);
-      if (source && source->tcommon) {
-        ak_loadSource(ctx,
-                      source->tcommon,
-                      glprim,
-                      &inputIndex);
-      }
+      if (source && source->tcommon)
+        agk_loadSource(ctx,
+                       source->tcommon,
+                       glprim,
+                       vi,
+                       &inputIndex);
 
       vi = vi->next;
     }
@@ -192,21 +193,22 @@ agk_loadMesh(AgkContext * __restrict ctx,
       }
 
       source = ak_getObjectByUrl(&input->base.source);
-      if (source && source->tcommon) {
-        ak_loadSource(ctx,
-                      source->tcommon,
-                      glprim,
-                      &inputIndex);
-      }
+      if (source && source->tcommon)
+        agk_loadSource(ctx,
+                       source->tcommon,
+                       glprim,
+                       &input->base,
+                       &inputIndex);
 
       input = (AkInput *)input->base.next;
     }
 
     /* indexed draw */
     if (prim->indices) {
+      GkBuffer *ibuff;
+
       glprim->bufc++;
 
-      GkBuffer *ibuff;
       ibuff = calloc(sizeof(*ibuff), 1);
       ibuff->size   = (GLsizei)(prim->indices->count * sizeof(AkUInt));
       ibuff->usage  = ctx->usage;
@@ -236,7 +238,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
       glprim->flags |= GK_DRAW_ARRAYS;
     }
 
-    glprim->mode = ak_drawMode(prim);
+    glprim->mode = agk_drawMode(prim);
 
     if (glmodel->prim)
       glmodel->prim->prev = glprim;

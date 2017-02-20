@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#ifndef ak_render_h
-#define ak_render_h
+#ifndef agk_opengl_h
+#define agk_opengl_h
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -68,4 +68,4 @@ agk_loadLight(AkDoc    * __restrict doc,
 #ifdef __cplusplus
 }
 #endif
-#endif /* ak_render_h */
+#endif /* agk_opengl_h */
