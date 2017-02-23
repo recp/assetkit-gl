@@ -45,8 +45,8 @@ agk_loadScene(GkContext *ctx,
     GkBBox *bbox;
 
     bbox = malloc(sizeof(*glscene->bbox));
-    glm_vec_dup(visualScene->bbox->min, bbox->min);
-    glm_vec_dup(visualScene->bbox->max, bbox->max);
+    glm_vec_copy(visualScene->bbox->min, bbox->min);
+    glm_vec_copy(visualScene->bbox->max, bbox->max);
 
     bbox->isvalid = visualScene->bbox->isvalid;
     ak_bbox_center(visualScene->bbox, bbox->center);

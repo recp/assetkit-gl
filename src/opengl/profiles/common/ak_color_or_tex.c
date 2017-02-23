@@ -13,5 +13,5 @@ void
 agk_copyColorOrTex(AkFxColorOrTex * __restrict src,
                     GkColorOrTex   * __restrict dest) {
   if (src->color)
-    glm_vec4_dup(src->color->vec, dest->color.vec);
+    glm_vec4_copy(src->color->vec, dest->color.vec);
 }
