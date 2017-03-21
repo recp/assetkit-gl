@@ -89,14 +89,14 @@ agk_loadSource(AgkContext   * __restrict ctx,
     AkSourceIntArray *intArray;
     intArray = (AkSourceIntArray *)sourceData;
     type  = GL_INT;
-    count = intArray->count;
+    count = intArray->base.count;
     items = intArray->items;
     isize = sizeof(GLint);
   } else {
     AkSourceFloatArray *floatArray;
     floatArray = (AkSourceFloatArray *)sourceData;
     type  = GL_FLOAT;
-    count = floatArray->count;
+    count = floatArray->base.count;
     items = floatArray->items;
     isize = sizeof(GLfloat);
   }
