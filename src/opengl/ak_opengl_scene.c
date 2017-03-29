@@ -22,7 +22,7 @@ agk_loadScene(GkContext *ctx,
   AkNode        *node;
   GkScene       *glscene;
   GkNode       **glnodei;
-  AgkContext   *ctx0;
+  AgkContext   *agkCtx;
   AkResult       ret;
 
   if (!scene->visualScene)
@@ -33,13 +33,6 @@ agk_loadScene(GkContext *ctx,
 
   node    = visualScene->node;
   glnodei = &glscene->rootNode;
-
-  ctx0 = calloc(sizeof(*ctx0), 1);
-  ctx0->bufftree = rb_newtree_ptr();
-  ctx0->doc      = doc;
-  ctx0->usage    = usage;
-  ctx0->scene    = glscene;
-  ctx0->ctx      = ctx;
 
   if (visualScene->bbox) {
     GkBBox *bbox;
@@ -56,15 +49,26 @@ agk_loadScene(GkContext *ctx,
   }
 
   glscene->usage = usage;
-  while (node) {
-    ret = agk_loadNode(ctx0, node, glnodei);
-    if (ret != AK_OK) {
-      free(glscene);
-      return AK_ERR;
-    }
+  if (node) {
+    agkCtx           = calloc(sizeof(*agkCtx), 1);
+    agkCtx->bufftree = rb_newtree_ptr();
+    agkCtx->doc      = doc;
+    agkCtx->usage    = usage;
+    agkCtx->scene    = glscene;
+    agkCtx->ctx      = ctx;
 
-    glnodei = &(*glnodei)->next;
-    node    = node->next;
+    do {
+      ret = agk_loadNode(agkCtx, node, glnodei);
+      if (ret != AK_OK) {
+        free(glscene);
+        return AK_ERR;
+      }
+
+      glnodei = &(*glnodei)->next;
+      node    = node->next;
+    } while (node);
+
+    free(agkCtx);
   }
 
   *dest = glscene;
