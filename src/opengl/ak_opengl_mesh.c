@@ -155,7 +155,6 @@ agk_loadMesh(AgkContext * __restrict ctx,
     AkInputBasic *vi;
     AkInput      *input;
     AkSource     *source;
-    GLenum        type;
 
     /* there is no position? */
     if (!prim->vertices) {
@@ -212,7 +211,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
       ibuff = calloc(sizeof(*ibuff), 1);
       ibuff->size   = (GLsizei)(prim->indices->count * sizeof(AkUInt));
       ibuff->usage  = ctx->usage;
-      ibuff->type   = type;
+      ibuff->type   = GL_UNSIGNED_INT;
       ibuff->target = GL_ELEMENT_ARRAY_BUFFER;
 
       glGenBuffers(1, &ibuff->vbo);
