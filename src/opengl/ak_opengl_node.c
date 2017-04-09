@@ -72,6 +72,11 @@ agk_loadNode(AgkContext * __restrict ctx,
     lightInst = node->light;
     while (lightInst) {
       light = ak_instanceObject(lightInst);
+      if (!light) {
+        lightInst = lightInst->next;
+        continue;
+      }
+
       ret   = agk_loadLight(ctx->doc,
                              glnode,
                              light,
