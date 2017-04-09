@@ -49,6 +49,8 @@ agk_loadScene(GkContext *ctx,
   }
 
   glscene->usage = usage;
+  glscene->pinfo = ctx->pinfo;
+
   if (node) {
     agkCtx           = calloc(sizeof(*agkCtx), 1);
     agkCtx->bufftree = rb_newtree_ptr();
