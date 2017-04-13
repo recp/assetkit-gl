@@ -20,15 +20,7 @@ agk_loadNode(AgkContext * __restrict ctx,
 
   glnode = calloc(sizeof(*glnode), 1);
   if (node->transform) {
-    GkMatrix *mat;
-
-    mat = malloc(sizeof(*mat));
-    mat->cmatIsValid = 0;
-    mat->refc        = 1;
-    mat->fmat        = NULL;
-    glnode->matrix   = mat;
-    glnode->flags   |= GK_HAVE_MATRIX;
-
+    gkMakeNodeMatrix(glnode);
     ak_transformCombine(node, glnode->matrix->matrix[0]);
   }
 
