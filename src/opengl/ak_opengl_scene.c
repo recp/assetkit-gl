@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <assetkit.h>
 #include <gk.h>
+#include <cglm.h>
 
 AkResult
 agk_loadScene(GkContext *ctx,
@@ -21,7 +22,7 @@ agk_loadScene(GkContext *ctx,
   AkVisualScene *visualScene;
   AkNode        *node;
   GkScene       *glscene;
-  GkNode       **glnodei;
+  GkNode       **glnodei, *glnode;
   AgkContext   *agkCtx;
   AkResult       ret;
 
@@ -31,8 +32,14 @@ agk_loadScene(GkContext *ctx,
   glscene     = calloc(sizeof(*glscene), 1);
   visualScene = ak_instanceObject(scene->visualScene);
 
+  glnode = calloc(sizeof(*glnode), 1);
+  gkMakeNodeMatrix(glnode);
+  glm_mat4_copy(GLM_MAT4_IDENTITY,
+                glnode->matrix->matrix);
+  glscene->rootNode = glnode;
+
   node    = visualScene->node;
-  glnodei = &glscene->rootNode;
+  glnodei = &glscene->rootNode->chld;
 
   if (visualScene->bbox) {
     GkBBox *bbox;
