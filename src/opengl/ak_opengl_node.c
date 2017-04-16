@@ -42,22 +42,23 @@ agk_loadNode(AgkContext * __restrict ctx,
     geomInst = node->geometry;
     while (geomInst) {
       geom = ak_instanceObject(&geomInst->base);
-      ret  = agk_loadGeometry(ctx, geom, &model);
-      if (ret == AK_OK) {
-        modelInst       = gkMakeInstance(model);
-        modelInst->next = glnode->model;
-        glnode->model   = modelInst;
+      if (geom) {
+        ret  = agk_loadGeometry(ctx, geom, &model);
+        if (ret == AK_OK) {
+          modelInst       = gkMakeInstance(model);
+          modelInst->next = glnode->model;
+          glnode->model   = modelInst;
 
-        /* bind material */
-        if (geomInst->bindMaterial) {
-          GkMaterial *material;
-          AkResult    ret;
-          ret = agk_loadMaterial(ctx, geomInst, &material);
-          if (ret == AK_OK)
-            modelInst->material = material;
+          /* bind material */
+          if (geomInst->bindMaterial) {
+            GkMaterial *material;
+            AkResult    ret;
+            ret = agk_loadMaterial(ctx, geomInst, &material);
+            if (ret == AK_OK)
+              modelInst->material = material;
+          }
         }
       }
-
       geomInst = (AkInstanceGeometry *)geomInst->base.next;
     }
   }
