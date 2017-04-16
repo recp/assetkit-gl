@@ -41,19 +41,8 @@ agk_loadScene(GkContext *ctx,
   node    = visualScene->node;
   glnodei = &glscene->rootNode->chld;
 
-  if (visualScene->bbox) {
-    GkBBox *bbox;
-
-    bbox = malloc(sizeof(*glscene->bbox));
-    glm_vec_copy(visualScene->bbox->min, bbox->min);
-    glm_vec_copy(visualScene->bbox->max, bbox->max);
-
-    bbox->isvalid = visualScene->bbox->isvalid;
-    ak_bbox_center(visualScene->bbox, bbox->center);
-    bbox->radius = ak_bbox_radius(visualScene->bbox);
-
-    glscene->bbox = bbox;
-  }
+  if (visualScene->bbox)
+    glscene->bbox = agk_bbox(visualScene->bbox);
 
   glscene->usage = usage;
   glscene->pinfo = ctx->pinfo;

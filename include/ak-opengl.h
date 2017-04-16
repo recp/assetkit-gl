@@ -65,6 +65,9 @@ agk_loadLight(AkDoc    * __restrict doc,
               GkLight ** __restrict dest);
 
 
+GkBBox*
+agk_bbox(AkBoundingBox * __restrict bbox);
+
 #ifdef __cplusplus
 }
 #endif
