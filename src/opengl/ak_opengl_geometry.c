@@ -36,6 +36,9 @@ agk_loadGeometry(AgkContext * __restrict ctx,
       ret = AK_ERR;
   }
 
+  if (geom->bbox)
+    (*dest)->bbox = agk_bbox(geom->bbox);
+
   if (*dest)
     gk_model_add(ctx->ctx, *dest, geom);
 
