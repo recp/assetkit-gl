@@ -64,6 +64,10 @@ agk_loadLight(AkDoc    * __restrict doc,
               AkLight  * __restrict light,
               GkLight ** __restrict dest);
 
+AkResult
+agk_loadMaterial(AgkContext        * __restrict ctx,
+                 AkInstanceGeometry * __restrict geomInst,
+                 GkMaterial        ** __restrict dest);
 
 GkBBox*
 agk_bbox(AkBoundingBox * __restrict bbox);

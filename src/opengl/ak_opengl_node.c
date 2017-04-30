@@ -6,7 +6,6 @@
  */
 
 #include "../../include/ak-opengl.h"
-#include "ak_opengl_material.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <assetkit.h>

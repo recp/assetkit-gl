@@ -5,7 +5,6 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "ak_opengl_material.h"
 #include "../../include/ak-opengl.h"
 #include <stdlib.h>
 #include <assert.h>
