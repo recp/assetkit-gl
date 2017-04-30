@@ -13,9 +13,10 @@
 void
 agk_copyColorOrTex(AkFxColorOrTex * __restrict src,
                    GkColorOrTex   * __restrict dest) {
-  if (src->color)
+  if (src->color) {
     glm_vec4_copy(src->color->vec, dest->color.vec);
-  else {
+    dest->method = GK_ONLY_USE_COLOR;
+  } else {
     AkHeap            *heap;
     AkNewParam        *newparam;
     AkContext          ctx = {0};
@@ -28,5 +29,6 @@ agk_copyColorOrTex(AkFxColorOrTex * __restrict src,
       return;
 
     dest->tex = agk_loadTexture(newparam);
+    dest->method = GK_ONLY_USE_TEX;
   }
 }
