@@ -59,28 +59,29 @@ agk_loadTexture(AkNewParam *newparam) {
     goto err;
 
   ak_imageLoad(image);
-  if (!(imgdata = image->data))
+  if (!(imgdata = image->data)) {
     goto err;
+  }
 
   sampler = calloc(sizeof(*sampler), 1);
   tex     = calloc(sizeof(*tex), 1);
   glimage = calloc(sizeof(*glimage), 1);
 
-  glimage->target      = target;
-  glimage->type        = GL_UNSIGNED_BYTE;
-  glimage->mips.data   = NULL;
+  tex->target    = target;
 
+  if (imgdata->comp == 4) {
+    glimage->format     = GL_RGBA;
+    tex->internalFormat = GL_RGBA8;
+  } else {
+    glimage->format     = GL_RGB;
+    tex->internalFormat = GL_RGB8;
+  }
+
+  glimage->mipLevels   = 1;
   glimage->mips.data   = imgdata->data;
   glimage->mips.width  = imgdata->width;
   glimage->mips.height = imgdata->height;
-
-  if (imgdata->comp == 4) {
-    glimage->format  = GL_RGBA;
-    glimage->iformat = GL_RGBA;
-  } else {
-    glimage->format  = GL_RGB;
-    glimage->iformat = GL_RGB;
-  }
+  glimage->type        = GL_UNSIGNED_BYTE;
 
   if (samplerCommon->borderColor) {
     GkColor *borderColor;
@@ -105,24 +106,24 @@ agk_loadTexture(AkNewParam *newparam) {
   tex->sampler = sampler;
   tex->image   = glimage;
 
-  glGenTextures(1, &tex->texId);
-  glBindTexture(glimage->target, tex->texId);
-
   glActiveTexture(GL_TEXTURE0); /* TODO: Texture Unit */
-
-  gkImageLoad(glimage, image->data->data);
+  gkTexLoad(tex, false);
 
   /* TODO: check existing mips */
   glGenerateMipmap(GL_TEXTURE_2D);
 
-  glTexParameteri(glimage->target, GL_TEXTURE_WRAP_S, sampler->wrapS);
-  glTexParameteri(glimage->target, GL_TEXTURE_WRAP_T, sampler->wrapT);
-  glTexParameteri(glimage->target, GL_TEXTURE_WRAP_T, sampler->wrapT);
+  glTexParameteri(tex->target, GL_TEXTURE_WRAP_S, sampler->wrapS);
+  glTexParameteri(tex->target, GL_TEXTURE_WRAP_T, sampler->wrapT);
+  glTexParameteri(tex->target, GL_TEXTURE_WRAP_R, sampler->wrapP);
 
-  glTexParameteri(glimage->target, GL_TEXTURE_MIN_FILTER, sampler->minfilter);
-  glTexParameteri(glimage->target, GL_TEXTURE_MAG_FILTER, sampler->magfilter);
+  glTexParameteri(tex->target, GL_TEXTURE_MIN_FILTER, sampler->minfilter);
+  glTexParameteri(tex->target, GL_TEXTURE_MAG_FILTER, sampler->magfilter);
 
   /* TODO: mip filter */
+
+  /* cleanup */
+  ak_free(imgdata);
+  image->data = NULL;
 
 ret:
   return tex;
