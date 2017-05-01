@@ -28,22 +28,22 @@ agk_loadTexture(AkNewParam *newparam) {
   GLenum             target;
 
   switch (newparam->valType) {
-    case AK_VALUE_TYPE_SAMPLER1D:
+    case AK_VALUE_SAMPLER1D:
       target = GL_TEXTURE_1D;
       break;
-    case AK_VALUE_TYPE_SAMPLER2D:
+    case AK_VALUE_SAMPLER2D:
       target = GL_TEXTURE_2D;
       break;
-    case AK_VALUE_TYPE_SAMPLER3D:
+    case AK_VALUE_SAMPLER3D:
       target = GL_TEXTURE_3D;
       break;
-    case AK_VALUE_TYPE_SAMPLER_CUBE:
+    case AK_VALUE_SAMPLER_CUBE:
       target = GL_TEXTURE_CUBE_MAP;
       break;
-    case AK_VALUE_TYPE_SAMPLER_RECT:
+    case AK_VALUE_SAMPLER_RECT:
       target = GL_TEXTURE_RECTANGLE;
       break;
-    case AK_VALUE_TYPE_SAMPLER_DEPTH:
+    case AK_VALUE_SAMPLER_DEPTH:
       target = GL_TEXTURE_DEPTH;
       break;
     default:
