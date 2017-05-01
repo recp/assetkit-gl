@@ -263,6 +263,8 @@ agk_loadMesh(AgkContext * __restrict ctx,
     glBindVertexArray(0);
 
     glmodel->primc++;
+    prim->udata = glprim;
+
     prim = prim->next;
   }
 

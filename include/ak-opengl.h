@@ -68,9 +68,9 @@ GkTexture*
 agk_loadTexture(AkNewParam *newparam);
 
 AkResult
-agk_loadMaterial(AgkContext        * __restrict ctx,
+agk_loadMaterial(AgkContext         * __restrict ctx,
                  AkInstanceGeometry * __restrict geomInst,
-                 GkMaterial        ** __restrict dest);
+                 GkModelInst        * __restrict modelInst);
 
 GkBBox*
 agk_bbox(AkBoundingBox * __restrict bbox);

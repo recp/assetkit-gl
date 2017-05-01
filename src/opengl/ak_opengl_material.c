@@ -18,28 +18,63 @@
 AkResult
 agk_loadMaterial(AgkContext         * __restrict ctx,
                  AkInstanceGeometry * __restrict geomInst,
-                 GkMaterial        ** __restrict dest) {
-  AkMaterial *material;
+                 GkModelInst        * __restrict modelInst) {
+  AkMaterial         *material;
   AkInstanceMaterial *materialInst;
+
   materialInst = geomInst->bindMaterial->tcommon;
-  material     = ak_instanceObject(&materialInst->base);
-  if (material && material->effect) {
-    AkEffect *effect;
-    effect = ak_instanceObject(&material->effect->base);
 
-    /* TODO: other profiles */
-    if (effect->profile->type == AK_PROFILE_TYPE_COMMON) {
-      GkMaterial *material;
-      AkResult    ret;
-      ret = agk_profileCommon(ctx,
-                              geomInst->bindMaterial,
-                              effect->profile,
-                              &material);
+  while (materialInst) {
+    AkGeometry *geom;
+    GkMaterial *glmaterial;
+    AkResult    ret;
 
-      if (ret == AK_OK)
-        *dest = material;
+    ret        = AK_ERR;
+    glmaterial = NULL;
+    geom       = ak_instanceObject(&geomInst->base);
+
+    /* load material */
+    material = ak_instanceObject(&materialInst->base);
+    if (material && material->effect) {
+      AkEffect *effect;
+      effect = ak_instanceObject(&material->effect->base);
+
+      /* TODO: other profiles */
+      if (effect->profile->type == AK_PROFILE_TYPE_COMMON)
+        ret = agk_profileCommon(ctx,
+                                geomInst->bindMaterial,
+                                effect->profile,
+                                &glmaterial);
     }
+
+    /* there is symbol, bind only to specified primitive */
+    if (materialInst->symbol) {
+      AkMapItem *mi;
+      mi = ak_map_find(geom->materialMap,
+                       (void *)materialInst->symbol);
+      while (mi) {
+        AkMeshPrimitive *prim;
+        GkPrimitive     *glprim;
+        GkPrimInst      *glprimInst;
+
+        prim   = mi->data;
+        glprim = prim->udata;
+        if (glprim) {
+          glprimInst = gkMakePrimInst(modelInst, glprim);
+          glprimInst->material = glmaterial;
+        }
+        mi = mi->next;
+      }
+    }
+
+    /* bind to whole geometry  */
+    else {
+      if (ret == AK_OK)
+        modelInst->material = glmaterial;
+    }
+
+    materialInst = (AkInstanceMaterial *)materialInst->base.next;
   }
   
-  return AK_OK;
+  return AK_ERR;
 }
