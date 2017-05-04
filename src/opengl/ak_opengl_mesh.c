@@ -82,10 +82,7 @@ agk_loadSource(AgkContext   * __restrict ctx,
   if (!inp->semanticRaw)
     return;
 
-  strcpy(attribName, inp->semanticRaw);
-  if (set > 0)
-    sprintf(attribName + strlen(attribName), "%d", set);
-
+  ak_inputNameIndexed(inp, attribName);
   attribIndex = gk_progAttribIndex(ctx->ctx->pinfo,
                                    attribName);
 
@@ -165,6 +162,8 @@ agk_loadMesh(AgkContext * __restrict ctx,
   GkModel         *glmodel;
 
   glmodel = calloc(sizeof(*glmodel), 1);
+
+  ak_meshReIndexInputs(mesh);
 
   prim = mesh->primitive;
   while (prim) {
