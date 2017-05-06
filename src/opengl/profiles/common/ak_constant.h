@@ -11,7 +11,8 @@
 #include "../../../../include/ak-opengl.h"
 
 GkConstant*
-agk_constant(AkConstantFx * __restrict constant,
-             const char *routine);
+agk_constant(AkContext    * __restrict actx,
+             AkConstantFx * __restrict constant,
+             const char   * routine);
 
 #endif /* agk_constant_h */

@@ -11,9 +11,9 @@
 #include "../../../../include/ak-opengl.h"
 
 AkResult
-agk_profileCommon(AgkContext     * __restrict ctx,
-                  AkBindMaterial * __restrict bindMaterial,
-                  AkProfile      * __restrict profile,
-                  GkMaterial    ** __restrict dest);
+agk_profileCommon(AgkContext  * __restrict ctx,
+                  AkContext   * __restrict actx,
+                  AkEffect    * __restrict effect,
+                  GkMaterial ** __restrict dest);
 
 #endif /* agk_profile_common_h */

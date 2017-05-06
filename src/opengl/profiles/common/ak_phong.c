@@ -12,33 +12,40 @@
 #include <string.h>
 
 GkPhong*
-agk_phong(AkPhong * __restrict phong,
-          const char *routine) {
+agk_phong(AkContext  * __restrict actx,
+          AkPhong    * __restrict phong,
+          const char * routine) {
   GkPhong *glphong;
 
   glphong = gkMaterialNewPhong();
 
   if (phong->ambient)
-    agk_copyColorOrTex(phong->ambient,
+    agk_copyColorOrTex(actx,
+                       phong->ambient,
                        &glphong->ambient);
   if (phong->diffuse)
-    agk_copyColorOrTex(phong->diffuse,
+    agk_copyColorOrTex(actx,
+                       phong->diffuse,
                        &glphong->diffuse);
 
   if (phong->specular)
-    agk_copyColorOrTex(phong->specular,
+    agk_copyColorOrTex(actx,
+                       phong->specular,
                        &glphong->specular);
 
   if (phong->emission)
-    agk_copyColorOrTex(phong->emission,
+    agk_copyColorOrTex(actx,
+                       phong->emission,
                        &glphong->emission);
 
   if (phong->reflective)
-    agk_copyColorOrTex(phong->reflective,
+    agk_copyColorOrTex(actx,
+                       phong->reflective,
                        &glphong->reflective);
 
   if (phong->transparent)
-    agk_copyColorOrTex(phong->transparent,
+    agk_copyColorOrTex(actx,
+                       phong->transparent,
                        &glphong->transparent);
 
   /* TODO: read param later */

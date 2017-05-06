@@ -36,15 +36,21 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
     /* load material */
     material = ak_instanceObject(&materialInst->base);
     if (material && material->effect) {
+      AkHeap   *heap;
       AkEffect *effect;
+      AkContext actx = {0};
+
+      heap               = ak_heap_getheap(material);
+      actx.doc           = ak_heap_data(heap);
+      actx.techniqueHint = material->effect->techniqueHint;
+
       effect = ak_instanceObject(&material->effect->base);
 
       /* TODO: other profiles */
-      if (effect->profile->type == AK_PROFILE_TYPE_COMMON)
-        ret = agk_profileCommon(ctx,
-                                geomInst->bindMaterial,
-                                effect->profile,
-                                &glmaterial);
+      ret = agk_profileCommon(ctx,
+                              &actx,
+                              effect,
+                              &glmaterial);
     }
 
     /* there is symbol, bind only to specified primitive */

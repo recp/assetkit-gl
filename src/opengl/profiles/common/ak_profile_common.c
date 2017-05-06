@@ -13,21 +13,35 @@
 #include "ak_constant.h"
 
 AkResult
-agk_profileCommon(AgkContext     * __restrict ctx,
-                  AkBindMaterial * __restrict bindMaterial,
-                  AkProfile      * __restrict profileCommon,
-                  GkMaterial    ** __restrict dest) {
+agk_profileCommon(AgkContext  * __restrict ctx,
+                  AkContext   * __restrict actx,
+                  AkEffect    * __restrict effect,
+                  GkMaterial ** __restrict dest) {
+  AkProfile       *profilei;
   AkProfileCommon *profile;
   AkTechniqueFx   *tfx;
   GkMaterial      *material;
 
+  /* find profile common */
+  profilei = effect->profile;
+  while (profilei) {
+    if (profilei->type == AK_PROFILE_TYPE_COMMON)
+      break;
+    profilei = profilei->next;
+  }
+
+  if (!profilei) {
+    *dest = NULL;
+    return AK_EFOUND;
+  }
+
+  profile  = (AkProfileCommon *)profilei;
   material = calloc(sizeof(*material), 1);
-  profile  = (AkProfileCommon *)profileCommon;
   tfx      = profile->technique;
 
   if (tfx->phong) {
     GkPhong *glphong;
-    glphong = agk_phong(tfx->phong, "phong");
+    glphong = agk_phong(actx, tfx->phong, "phong");
 
     if (glphong)
       material->technique = &glphong->base;
@@ -35,7 +49,7 @@ agk_profileCommon(AgkContext     * __restrict ctx,
 
   if (tfx->blinn) {
     GkBlinn *glblinn;
-    glblinn = agk_blinn(tfx->blinn, "blinn");
+    glblinn = agk_blinn(actx, tfx->blinn, "blinn");
 
     if (glblinn)
       material->technique = &glblinn->base;
@@ -43,7 +57,7 @@ agk_profileCommon(AgkContext     * __restrict ctx,
 
   if (tfx->lambert) {
     GkLambert *gllambert;
-    gllambert = agk_lambert(tfx->lambert, "lambert");
+    gllambert = agk_lambert(actx, tfx->lambert, "lambert");
 
     if (gllambert)
       material->technique = &gllambert->base;
@@ -51,7 +65,7 @@ agk_profileCommon(AgkContext     * __restrict ctx,
 
   if (tfx->constant) {
     GkConstant *glconstant;
-    glconstant = agk_constant(tfx->constant, "constant");
+    glconstant = agk_constant(actx, tfx->constant, "constant");
 
     if (glconstant)
       material->technique = &glconstant->base;

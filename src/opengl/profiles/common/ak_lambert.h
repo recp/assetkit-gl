@@ -11,7 +11,8 @@
 #include "../../../../include/ak-opengl.h"
 
 GkLambert*
-agk_lambert(AkLambert * __restrict lambert,
-            const char *routine);
+agk_lambert(AkContext  * __restrict actx,
+            AkLambert  * __restrict lambert,
+            const char * routine);
 
 #endif /* agk_lambert_h */

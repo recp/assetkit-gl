@@ -18,7 +18,9 @@ agk_loadSampler(AkFxSamplerCommon *samplerCommon){
 }
 
 GkTexture*
-agk_loadTexture(AkNewParam *newparam) {
+agk_loadTexture(AkContext   * __restrict actx,
+                AkFxTexture * __restrict texref) {
+  AkNewParam        *newparam;
   AkFxSamplerCommon *samplerCommon;
   GkSampler         *sampler;
   GkTexture         *tex;
@@ -26,6 +28,11 @@ agk_loadTexture(AkNewParam *newparam) {
   GkImage           *glimage;
   AkImageData       *imgdata;
   GLenum             target;
+
+  newparam  = ak_sid_resolve(actx, texref->texture);
+
+  if (!newparam)
+    return NULL;
 
   switch (newparam->valType) {
     case AK_VALUE_SAMPLER1D:
@@ -105,6 +112,7 @@ agk_loadTexture(AkNewParam *newparam) {
 
   tex->sampler = sampler;
   tex->image   = glimage;
+
 
   glActiveTexture(GL_TEXTURE0); /* TODO: Texture Unit */
   gkTexLoad(tex, false);

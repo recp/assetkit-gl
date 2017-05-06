@@ -11,7 +11,8 @@
 #include "../../../../include/ak-opengl.h"
 
 GkBlinn*
-agk_blinn(AkBlinn * __restrict blinn,
-          const char *routine);
+agk_blinn(AkContext  * __restrict actx,
+          AkBlinn    * __restrict blinn,
+          const char * routine);
 
 #endif /* agk_blinn_h */

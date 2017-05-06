@@ -65,7 +65,8 @@ agk_loadLight(AkDoc    * __restrict doc,
               GkLight ** __restrict dest);
 
 GkTexture*
-agk_loadTexture(AkNewParam *newparam);
+agk_loadTexture(AkContext   * __restrict actx,
+                AkFxTexture * __restrict texture);
 
 AkResult
 agk_loadMaterial(AgkContext         * __restrict ctx,
