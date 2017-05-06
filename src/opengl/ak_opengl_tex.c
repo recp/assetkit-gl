@@ -8,15 +8,6 @@
 #include "../../include/ak-opengl.h"
 #include "ak_enum.h"
 
-GkSampler*
-agk_loadSampler(AkFxSamplerCommon *samplerCommon){
-  GkSampler *sampler;
-
-  sampler = calloc(sizeof(*sampler), 1);
-
-  return sampler;
-}
-
 GkTexture*
 agk_loadTexture(AkContext   * __restrict actx,
                 AkFxTexture * __restrict texref) {
