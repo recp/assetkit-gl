@@ -7,6 +7,7 @@
 
 #include "../../include/ak-opengl.h"
 #include "ak_enum.h"
+#include <string.h>
 
 GkTexture*
 agk_loadTexture(AkContext   * __restrict actx,
@@ -104,12 +105,11 @@ agk_loadTexture(AkContext   * __restrict actx,
   tex->sampler = sampler;
   tex->image   = glimage;
 
-
-  glActiveTexture(GL_TEXTURE0); /* TODO: Texture Unit */
+  glEnable(target);
   gkTexLoad(tex, false);
 
   /* TODO: check existing mips */
-  glGenerateMipmap(GL_TEXTURE_2D);
+  glGenerateMipmap(target);
 
   glTexParameteri(tex->target, GL_TEXTURE_WRAP_S, sampler->wrapS);
   glTexParameteri(tex->target, GL_TEXTURE_WRAP_T, sampler->wrapT);
@@ -124,6 +124,10 @@ agk_loadTexture(AkContext   * __restrict actx,
   ak_free(imgdata);
   image->data = NULL;
 
+  if (texref->texcoord)
+    ak_multimap_add(actx->bindVertexInputIndex,
+                    &tex->sampler->unit,
+                    (void *)texref->texcoord);
 ret:
   return tex;
 

@@ -11,6 +11,7 @@
 #include <assetkit.h>
 #include <gk.h>
 #include <math.h>
+#include <string.h>
 
 /* currently only common profile until full-impl */
 #include "profiles/common/ak_profile_common.h"
@@ -25,25 +26,27 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
   materialInst = geomInst->bindMaterial->tcommon;
 
   while (materialInst) {
-    AkGeometry *geom;
     GkMaterial *glmaterial;
+    AkGeometry *geom;
+    AkHeap     *heap;
+    AkContext   actx = {0};
     AkResult    ret;
 
     ret        = AK_ERR;
     glmaterial = NULL;
     geom       = ak_instanceObject(&geomInst->base);
 
+    heap                      = ak_heap_getheap(materialInst);
+    actx.doc                  = ak_heap_data(heap);
+    actx.instanceMaterial     = materialInst;
+    actx.bindVertexInputIndex = ak_map_new(ak_cmp_str);
+
     /* load material */
     material = ak_instanceObject(&materialInst->base);
     if (material && material->effect) {
-      AkHeap   *heap;
       AkEffect *effect;
-      AkContext actx = {0};
 
-      heap               = ak_heap_getheap(material);
-      actx.doc           = ak_heap_data(heap);
       actx.techniqueHint = material->effect->techniqueHint;
-
       effect = ak_instanceObject(&material->effect->base);
 
       /* TODO: other profiles */
@@ -68,6 +71,37 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
         if (glprim) {
           glprimInst = gkMakePrimInst(modelInst, glprim);
           glprimInst->material = glmaterial;
+
+          /* bind inputs (textures...) */
+          if (materialInst->bindVertexInput) {
+            AkBindVertexInput *bvi;
+
+            /* bind vertex input */
+            bvi = materialInst->bindVertexInput;
+            while (bvi) {
+              AkInputBasic *input;
+              if (!bvi->semantic)
+                goto cont;
+              input = ak_meshInputGet(prim,
+                                      bvi->inputSemantic,
+                                      bvi->inputSet);
+              if (input) {
+                AkMapItem *boundVertexIndexItem;
+                boundVertexIndexItem = ak_map_find(actx.bindVertexInputIndex,
+                                                   (void *)bvi->semantic);
+                while (boundVertexIndexItem) {
+                  int32_t *inputIndex;
+
+                  inputIndex = boundVertexIndexItem->data;
+                  *inputIndex = input->index;
+
+                  boundVertexIndexItem = boundVertexIndexItem->next;
+                }
+              }
+            cont:
+              bvi = bvi->next;
+            }
+          }
         }
         mi = mi->next;
       }
@@ -77,8 +111,11 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
     else {
       if (ret == AK_OK)
         modelInst->material = glmaterial;
+
+      /* TODO: bind vertex inputs? */
     }
 
+    ak_map_destroy(actx.bindVertexInputIndex);
     materialInst = (AkInstanceMaterial *)materialInst->base.next;
   }
   
