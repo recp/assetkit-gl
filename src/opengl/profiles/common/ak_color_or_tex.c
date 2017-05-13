@@ -21,5 +21,10 @@ agk_copyColorOrTex(AkContext      * __restrict actx,
     dest->tex = agk_loadTexture(actx, src->texture);
     if (dest->tex)
       dest->method = GK_ONLY_TEX;
+    else {
+      glm_vec4_copy((vec4){1.0f, 1.0f, 1.0f, 1.0f},
+                    dest->color.vec);
+      dest->method = GK_ONLY_COLOR;
+    }
   }
 }
