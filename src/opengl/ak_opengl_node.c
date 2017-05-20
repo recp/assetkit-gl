@@ -24,7 +24,7 @@ agk_loadNode(AgkContext * __restrict ctx,
 
     if (node->matrixWorld) {
       glm_mat4_copy(node->matrixWorld->val, glnode->matrix->cmat);
-      glnode->matrix->cmatIsValid = 1;
+      glnode->matrix->flags |= GK_MATRIXF_CMAT_ISVALID;
     }
   } else if (node->transform) {
     gkMakeNodeMatrix(glnode);
