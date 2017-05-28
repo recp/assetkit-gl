@@ -35,7 +35,7 @@ agk_loadScene(GkContext *ctx,
   glnode = calloc(sizeof(*glnode), 1);
   gkMakeNodeMatrix(glnode);
   glm_mat4_copy(GLM_MAT4_IDENTITY,
-                glnode->matrix->matrix);
+                glnode->trans->local);
   glscene->rootNode = glnode;
 
   node    = visualScene->node;

@@ -20,15 +20,15 @@ agk_loadNode(AgkContext * __restrict ctx,
   glnode = calloc(sizeof(*glnode), 1);
   if (node->matrix) {
     gkMakeNodeMatrix(glnode);
-    glm_mat4_copy(node->matrix->val, glnode->matrix->matrix);
+    glm_mat4_copy(node->matrix->val, glnode->trans->local);
 
     if (node->matrixWorld) {
-      glm_mat4_copy(node->matrixWorld->val, glnode->matrix->cmat);
-      glnode->matrix->flags |= GK_MATRIXF_CMAT_ISVALID;
+      glm_mat4_copy(node->matrixWorld->val, glnode->trans->world);
+      glnode->trans->flags |= GK_TRANSF_WORLD_ISVALID;
     }
   } else if (node->transform) {
     gkMakeNodeMatrix(glnode);
-    ak_transformCombine(node, glnode->matrix->matrix[0]);
+    ak_transformCombine(node, glnode->trans->local[0]);
   }
 
   if (node->geometry) {
