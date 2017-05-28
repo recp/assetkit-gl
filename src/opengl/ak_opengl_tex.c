@@ -87,6 +87,8 @@ agk_loadTexture(AkContext   * __restrict actx,
     borderColor = malloc(sizeof(*borderColor));
     glm_vec4_copy(samplerCommon->borderColor->vec,
                   borderColor->vec);
+
+    sampler->borderColor = borderColor;
   }
 
   sampler->wrapS         = agk_wrapMode(samplerCommon->wrapS);
