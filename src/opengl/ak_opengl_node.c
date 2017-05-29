@@ -19,16 +19,18 @@ agk_loadNode(AgkContext * __restrict ctx,
 
   glnode = calloc(sizeof(*glnode), 1);
   if (node->matrix) {
-    gkMakeNodeMatrix(glnode);
+    gkMakeNodeTransform(glnode);
     glm_mat4_copy(node->matrix->val, glnode->trans->local);
+    glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID;
 
     if (node->matrixWorld) {
       glm_mat4_copy(node->matrixWorld->val, glnode->trans->world);
       glnode->trans->flags |= GK_TRANSF_WORLD_ISVALID;
     }
   } else if (node->transform) {
-    gkMakeNodeMatrix(glnode);
+    gkMakeNodeTransform(glnode);
     ak_transformCombine(node, glnode->trans->local[0]);
+    glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID;
   }
 
   if (node->geometry) {

@@ -33,9 +33,11 @@ agk_loadScene(GkContext *ctx,
   visualScene = ak_instanceObject(scene->visualScene);
 
   glnode = calloc(sizeof(*glnode), 1);
-  gkMakeNodeMatrix(glnode);
+  gkMakeNodeTransform(glnode);
   glm_mat4_copy(GLM_MAT4_IDENTITY,
                 glnode->trans->local);
+  glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID;
+
   glscene->rootNode = glnode;
 
   node    = visualScene->node;
