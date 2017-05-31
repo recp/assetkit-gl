@@ -6,6 +6,7 @@
  */
 
 #include "../../include/ak-opengl.h"
+#include "../ak_transform.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <assetkit.h>
@@ -29,7 +30,8 @@ agk_loadNode(AgkContext * __restrict ctx,
     }
   } else if (node->transform) {
     gkMakeNodeTransform(glnode);
-    ak_transformCombine(node, glnode->trans->local[0]);
+    agk_loadTransforms(node, glnode->trans);
+    /* ak_transformCombine(node, glnode->trans->local[0]); */
     glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID;
   }
 
