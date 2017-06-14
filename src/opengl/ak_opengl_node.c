@@ -31,8 +31,9 @@ agk_loadNode(AgkContext * __restrict ctx,
   } else if (node->transform) {
     gkMakeNodeTransform(glnode);
     agk_loadTransforms(node, glnode->trans);
-    /* ak_transformCombine(node, glnode->trans->local[0]); */
-    glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID;
+    /* ak_transformCombine(node, glnode->trans->local[0]);
+       glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID; 
+     */
   }
 
   if (node->geometry) {
