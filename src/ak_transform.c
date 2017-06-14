@@ -11,14 +11,20 @@
 void
 agk_loadTransforms(AkNode      * __restrict node,
                    GkTransform * __restrict gltrans) {
-  AkObject        *transform;
+  AkObject        *transform, *transformGroup;
   GkTransformItem *first, *last;
 
+  if (!node->transform)
+    return;
+
   first = last = NULL;
-  transform = node->transform;
+  transformGroup = node->transform->base;
+
+again:
+  transform = transformGroup;
   while (transform) {
     switch (transform->type) {
-      case AK_NODE_TRANSFORM_TYPE_MATRIX: {
+      case AK_TRANSFORM_MATRIX: {
         AkMatrix *matrix;
         GkMatrix *glmatrix;
         matrix = ak_objGet(transform);
@@ -37,7 +43,7 @@ agk_loadTransforms(AkNode      * __restrict node,
         glm_mat4_copy(matrix->val, glmatrix->value);
         break;
       }
-      case AK_NODE_TRANSFORM_TYPE_LOOK_AT: {
+      case AK_TRANSFORM_LOOKAT: {
         AkLookAt *lookAt;
         GkLookAt *gllookat;
         lookAt = ak_objGet(transform);
@@ -56,7 +62,7 @@ agk_loadTransforms(AkNode      * __restrict node,
         memcpy(gllookat->value, lookAt->val, sizeof(vec3) * 3);
         break;
       }
-      case AK_NODE_TRANSFORM_TYPE_ROTATE: {
+      case AK_TRANSFORM_ROTATE: {
         AkRotate *rotate;
         GkRotate *glrotate;
         rotate = ak_objGet(transform);
@@ -75,7 +81,7 @@ agk_loadTransforms(AkNode      * __restrict node,
         glm_vec4_copy(rotate->val, glrotate->value);
         break;
       }
-      case AK_NODE_TRANSFORM_TYPE_SCALE: {
+      case AK_TRANSFORM_SCALE: {
         AkScale *scale;
         GkScale *glscale;
         scale = ak_objGet(transform);
@@ -94,7 +100,7 @@ agk_loadTransforms(AkNode      * __restrict node,
         glm_vec_copy(scale->val, glscale->value);
         break;
       }
-      case AK_NODE_TRANSFORM_TYPE_TRANSLATE: {
+      case AK_TRANSFORM_TRANSLATE: {
         AkTranslate *translate;
         GkTranslate *gltranslate;
         translate = ak_objGet(transform);
@@ -113,7 +119,7 @@ agk_loadTransforms(AkNode      * __restrict node,
         glm_vec_copy(translate->val, gltranslate->value);
         break;
       }
-      case AK_NODE_TRANSFORM_TYPE_SKEW: {
+      case AK_TRANSFORM_SKEW: {
         AkSkew *skew;
         GkSkew *glskew;
         skew = ak_objGet(transform);
@@ -138,7 +144,12 @@ agk_loadTransforms(AkNode      * __restrict node,
 
     transform = transform->next;
   }
-  
+
+  if (transformGroup != node->transform->item) {
+    transformGroup = node->transform->item;
+    goto again;
+  }
+
   gltrans->item = first;
 }
 
