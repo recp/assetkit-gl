@@ -23,10 +23,10 @@ agk_loadTexture(AkContext   * __restrict actx,
 
   newparam  = ak_sid_resolve(actx, texref->texture);
 
-  if (!newparam)
+  if (!newparam || !newparam->val)
     return NULL;
 
-  switch (newparam->valType) {
+  switch (newparam->val->type.type) {
     case AK_VALUE_SAMPLER1D:
       target = GL_TEXTURE_1D;
       break;
@@ -49,7 +49,7 @@ agk_loadTexture(AkContext   * __restrict actx,
       goto err;
   }
 
-  samplerCommon = newparam->val;
+  samplerCommon = newparam->val->value;
   if (!samplerCommon->instanceImage)
     goto err;
 
