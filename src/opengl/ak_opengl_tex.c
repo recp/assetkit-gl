@@ -123,8 +123,9 @@ agk_loadTexture(AkContext   * __restrict actx,
   /* TODO: mip filter */
 
   /* cleanup */
-  ak_free(imgdata);
-  image->data = NULL;
+  /* ak_free(imgdata);
+     image->data = NULL;
+   */
 
   if (texref->texcoord)
     ak_multimap_add(actx->bindVertexInputIndex,
