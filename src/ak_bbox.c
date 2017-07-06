@@ -10,7 +10,7 @@
 #include <string.h>
 #include <assert.h>
 #include <assetkit.h>
-#include <gk.h>
+#include <gk/gk.h>
 #include <cglm.h>
 
 GkBBox*

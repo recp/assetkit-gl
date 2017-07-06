@@ -9,7 +9,7 @@
 #include <assetkit.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <gk.h>
+#include <gk/gk.h>
 
 AkResult
 agk_loadGeometry(AgkContext * __restrict ctx,

@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <assetkit.h>
-#include <gk.h>
+#include <gk/gk.h>
 #include <math.h>
 
 AkResult

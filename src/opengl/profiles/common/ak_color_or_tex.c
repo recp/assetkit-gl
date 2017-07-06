@@ -6,7 +6,7 @@
  */
 
 #include "ak_color_or_tex.h"
-#include <gk-texture.h>
+#include <gk/texture.h>
 #include <cglm.h>
 
 /* TODO: only color for now */

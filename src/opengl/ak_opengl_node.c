@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <assetkit.h>
-#include <gk.h>
+#include <gk/gk.h>
 
 AkResult
 agk_loadNode(AgkContext * __restrict ctx,
