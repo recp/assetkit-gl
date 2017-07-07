@@ -12,6 +12,7 @@
 #include <assetkit.h>
 #include <gk/gk.h>
 #include <cglm.h>
+#include <ds/rb.h>
 
 AkResult
 agk_loadScene(GkContext *ctx,

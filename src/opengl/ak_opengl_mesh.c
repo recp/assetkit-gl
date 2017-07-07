@@ -10,7 +10,6 @@
 #include <assert.h>
 #include <assetkit.h>
 #include <gk/gk.h>
-#include <gk/rb.h>
 
 #include <string.h>
 

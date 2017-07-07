@@ -26,7 +26,6 @@ extern "C" {
 
 #include "assetkit.h"
 #include <gk/gk.h>
-#include <gk/rb.h>
 
 typedef struct AgkContext {
   AkDoc     *doc;
