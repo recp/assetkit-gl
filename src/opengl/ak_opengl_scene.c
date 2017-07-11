@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <assetkit.h>
 #include <gk/gk.h>
-#include <cglm.h>
+#include <cglm/cglm.h>
 #include <ds/rb.h>
 
 AkResult

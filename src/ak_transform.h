@@ -14,7 +14,7 @@
 #include <assert.h>
 #include <assetkit.h>
 #include <gk/gk.h>
-#include <cglm.h>
+#include <cglm/cglm.h>
 
 void
 agk_loadTransforms(AkNode      * __restrict node,
