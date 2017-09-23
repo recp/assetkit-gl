@@ -56,6 +56,9 @@ agk_drawMode(AkMeshPrimitive *primitive) {
           break;
       }
     }
+    default:
+      mode = GL_TRIANGLES;
+      break;
   }
 
   return mode;
@@ -67,12 +70,8 @@ agk_loadSource(AgkContext   * __restrict ctx,
                GkPrimitive  * __restrict glprim,
                AkInputBasic * __restrict inp,
                uint32_t set) {
-  AkObject *sourceObj;
-  void     *sourceData;
-  void     *items;
+  AkBuffer *akbuff;
   GkBuffer *buff;
-  size_t    count;
-  GLsizei   isize;
   GLenum    type;
   GLint     attribIndex;
   char      attribName[64];
@@ -89,39 +88,22 @@ agk_loadSource(AgkContext   * __restrict ctx,
   if (attribIndex < 0)
     return;
 
-  sourceObj = ak_getObjectByUrl(&acc->source);
-  if (!sourceObj)
+  akbuff = ak_getObjectByUrl(&acc->source);
+  if (!akbuff)
     return; /* TODO: assert or log */
 
-  assert((sourceObj->type == AK_SOURCE_ARRAY_TYPE_FLOAT
-          || sourceObj->type == AK_SOURCE_ARRAY_TYPE_INT)
-         && "*Currently* only single floats and integers "
-         "are supported!");
-
-  sourceData = ak_objGet(sourceObj);
-  
-  if (sourceObj->type == AK_SOURCE_ARRAY_TYPE_INT) {
-    AkSourceIntArray *intArray;
-    intArray = (AkSourceIntArray *)sourceData;
+  if (acc->itemTypeId == AKT_INT) {
     type  = GL_INT;
-    count = intArray->base.count;
-    items = intArray->items;
-    isize = sizeof(GLint);
   } else {
-    AkSourceFloatArray *floatArray;
-    floatArray = (AkSourceFloatArray *)sourceData;
     type  = GL_FLOAT;
-    count = floatArray->base.count;
-    items = floatArray->items;
-    isize = sizeof(GLfloat);
   }
 
-  buff = rb_find(ctx->bufftree, sourceData);
+  buff = rb_find(ctx->bufftree, akbuff);
   if (!buff) {
     glprim->bufc++;
 
     buff = calloc(sizeof(*buff), 1);
-    buff->size   = (GLsizei)(count * isize);
+    buff->size   = (GLsizei)akbuff->length;
     buff->usage  = ctx->usage;
     buff->type   = type;
     buff->target = GL_ARRAY_BUFFER;
@@ -131,10 +113,10 @@ agk_loadSource(AgkContext   * __restrict ctx,
     glBindBuffer(buff->target, buff->vbo);
     glBufferData(buff->target,
                  buff->size,
-                 items,
+                 akbuff->data,
                  ctx->usage);
 
-    rb_insert(ctx->bufftree, sourceData, buff);
+    rb_insert(ctx->bufftree, akbuff, buff);
 
     if (glprim->bufs)
       glprim->bufs->prev = buff;
@@ -148,8 +130,8 @@ agk_loadSource(AgkContext   * __restrict ctx,
                         acc->bound,
                         type,
                         GL_FALSE,
-                        acc->stride * isize,
-                        BUFFER_OFFSET(acc->offset * isize));
+                        acc->byteStride,
+                        BUFFER_OFFSET(acc->byteOffset));
   glEnableVertexAttribArray(attribIndex);
 }
 
