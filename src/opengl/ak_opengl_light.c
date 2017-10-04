@@ -7,6 +7,7 @@
 
 #include "../../include/ak-opengl.h"
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include <assetkit.h>
 #include <gk/gk.h>
@@ -33,6 +34,7 @@ agk_loadLight(AkDoc    * __restrict doc,
                     ambientDest->color.vec);
 
       ambientDest->type = GK_LIGHT_TYPE_AMBIENT;
+      ambientDest->name = strdup("ambient");
       break;
     }
     case AK_LIGHT_TYPE_DIRECTIONAL: {
@@ -46,6 +48,7 @@ agk_loadLight(AkDoc    * __restrict doc,
                     directionalDest->base.color.vec);
 
       directionalDest->base.type = GK_LIGHT_TYPE_DIRECTIONAL;
+      directionalDest->base.name = strdup("directional");
       break;
     }
     case AK_LIGHT_TYPE_POINT: {
@@ -63,6 +66,7 @@ agk_loadLight(AkDoc    * __restrict doc,
       pointDest->quadAttn   = pointSrc->quadAttn;
 
       pointDest->base.type = GK_LIGHT_TYPE_POINT;
+      pointDest->base.name = strdup("point");
       break;
     }
     case AK_LIGHT_TYPE_SPOT: {
@@ -82,6 +86,7 @@ agk_loadLight(AkDoc    * __restrict doc,
       spotDest->cutoffExp    = spotSrc->falloffExp;
 
       spotDest->base.type = GK_LIGHT_TYPE_SPOT;
+      spotDest->base.name = strdup("spot");
       break;
     }
     default:
