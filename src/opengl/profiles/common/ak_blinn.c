@@ -19,34 +19,47 @@ agk_blinn(AkContext  * __restrict actx,
 
   glblinn = gkMaterialNewBlinn();
 
-  if (blinn->ambient)
+  if (blinn->ambient) {
+    glblinn->ambient = calloc(sizeof(*blinn->ambient), 1);
     agk_copyColorOrTex(actx,
                        blinn->ambient,
-                       &glblinn->ambient);
-  if (blinn->diffuse)
+                       glblinn->ambient);
+  }
+
+  if (blinn->diffuse) {
+    glblinn->diffuse = calloc(sizeof(*glblinn->diffuse), 1);
     agk_copyColorOrTex(actx,
                        blinn->diffuse,
-                       &glblinn->diffuse);
+                       glblinn->diffuse);
+  }
 
-  if (blinn->specular)
+  if (blinn->specular) {
+    glblinn->specular = calloc(sizeof(*glblinn->specular), 1);
     agk_copyColorOrTex(actx,
                        blinn->specular,
-                       &glblinn->specular);
+                       glblinn->specular);
+  }
 
-  if (blinn->emission)
+  if (blinn->emission) {
+    glblinn->emission = calloc(sizeof(*glblinn->emission), 1);
     agk_copyColorOrTex(actx,
                        blinn->emission,
-                       &glblinn->emission);
+                       glblinn->emission);
+  }
 
-  if (blinn->reflective)
+  if (blinn->reflective) {
+    glblinn->reflective = calloc(sizeof(*glblinn->reflective), 1);
     agk_copyColorOrTex(actx,
                        blinn->reflective,
-                       &glblinn->reflective);
+                       glblinn->reflective);
+  }
 
-  if (blinn->transparent)
+  if (blinn->transparent) {
+    glblinn->transparent = calloc(sizeof(*glblinn->transparent), 1);
     agk_copyColorOrTex(actx,
                        blinn->transparent,
-                       &glblinn->transparent);
+                       glblinn->transparent);
+  }
 
   /* TODO: read param later */
 

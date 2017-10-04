@@ -19,34 +19,47 @@ agk_phong(AkContext  * __restrict actx,
 
   glphong = gkMaterialNewPhong();
 
-  if (phong->ambient)
+  if (phong->ambient) {
+    glphong->ambient = calloc(sizeof(*glphong->ambient), 1);
     agk_copyColorOrTex(actx,
                        phong->ambient,
-                       &glphong->ambient);
-  if (phong->diffuse)
+                       glphong->ambient);
+  }
+
+  if (phong->diffuse) {
+    glphong->diffuse = calloc(sizeof(*glphong->diffuse), 1);
     agk_copyColorOrTex(actx,
                        phong->diffuse,
-                       &glphong->diffuse);
+                       glphong->diffuse);
+  }
 
-  if (phong->specular)
+  if (phong->specular) {
+    glphong->specular = calloc(sizeof(*glphong->specular), 1);
     agk_copyColorOrTex(actx,
                        phong->specular,
-                       &glphong->specular);
+                       glphong->specular);
+  }
 
-  if (phong->emission)
+  if (phong->emission) {
+    glphong->emission = calloc(sizeof(*glphong->emission), 1);
     agk_copyColorOrTex(actx,
                        phong->emission,
-                       &glphong->emission);
+                       glphong->emission);
+  }
 
-  if (phong->reflective)
+  if (phong->reflective) {
+    glphong->reflective = calloc(sizeof(*glphong->reflective), 1);
     agk_copyColorOrTex(actx,
                        phong->reflective,
-                       &glphong->reflective);
+                       glphong->reflective);
+  }
 
-  if (phong->transparent)
+  if (phong->transparent) {
+    glphong->transparent = calloc(sizeof(*glphong->transparent), 1);
     agk_copyColorOrTex(actx,
                        phong->transparent,
-                       &glphong->transparent);
+                       glphong->transparent);
+  }
 
   /* TODO: read param later */
 

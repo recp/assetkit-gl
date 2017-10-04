@@ -19,20 +19,26 @@ agk_constant(AkContext    * __restrict actx,
 
   glconstant = gkMaterialNewConstant();
 
-  if (constant->emission)
+  if (constant->emission) {
+    glconstant->emission = calloc(sizeof(*glconstant->emission), 1);
     agk_copyColorOrTex(actx,
                        constant->emission,
-                       &glconstant->emission);
+                       glconstant->emission);
+  }
 
-  if (constant->reflective)
+  if (constant->reflective) {
+    glconstant->reflective = calloc(sizeof(*glconstant->reflective), 1);
     agk_copyColorOrTex(actx,
                        constant->reflective,
-                       &glconstant->reflective);
+                       glconstant->reflective);
+  }
 
-  if (constant->transparent)
+  if (constant->transparent) {
+    glconstant->transparent = calloc(sizeof(*glconstant->transparent), 1);
     agk_copyColorOrTex(actx,
                        constant->transparent,
-                       &glconstant->transparent);
+                       glconstant->transparent);
+  }
 
   /* TODO: read param later */
 

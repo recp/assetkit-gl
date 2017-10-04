@@ -15,16 +15,25 @@ agk_copyColorOrTex(AkContext      * __restrict actx,
                    AkFxColorOrTex * __restrict src,
                    GkColorOrTex   * __restrict dest) {
   if (src->color) {
-    glm_vec4_copy(src->color->vec, dest->color.vec);
-    dest->method = GK_ONLY_COLOR;
-  } else {
-    dest->tex = agk_loadTexture(actx, src->texture);
-    if (dest->tex)
-      dest->method = GK_ONLY_TEX;
+    GkColor *color;
+    color = malloc(sizeof(*color));
+    glm_vec4_copy(src->color->vec, color->vec);
+
+    dest->val    = color;
+    dest->method = GK_COLOR_COLOR;
+  } else if (src->texture) {
+    dest->val = agk_loadTexture(actx, src->texture);
+    if (dest->val)
+      dest->method = GK_COLOR_TEX;
     else {
+      GkColor *color;
+      color = malloc(sizeof(*color));
+
       glm_vec4_copy((vec4){1.0f, 1.0f, 1.0f, 1.0f},
-                    dest->color.vec);
-      dest->method = GK_ONLY_COLOR;
+                    color->vec);
+
+      dest->val    = color;
+      dest->method = GK_COLOR_COLOR;
     }
   }
 }
