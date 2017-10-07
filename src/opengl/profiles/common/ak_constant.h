@@ -10,7 +10,7 @@
 
 #include "../../../../include/ak-opengl.h"
 
-GkConstant*
+GkMaterial*
 agk_constant(AkContext    * __restrict actx,
              AkConstantFx * __restrict constant,
              const char   * routine);

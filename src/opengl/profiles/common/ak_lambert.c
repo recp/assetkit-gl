@@ -11,12 +11,14 @@
 
 #include <string.h>
 
-GkLambert*
+GkMaterial*
 agk_lambert(AkContext  * __restrict actx,
             AkLambert  * __restrict lambert,
             const char * routine) {
-  GkLambert *gllambert;
+  GkMaterial *material;
+  GkLambert  *gllambert;
 
+  material  = calloc(sizeof(*material), 1);
   gllambert = gkMaterialNewLambert();
 
   if (lambert->ambient) {
@@ -40,30 +42,43 @@ agk_lambert(AkContext  * __restrict actx,
                        gllambert->emission);
   }
 
-  if (lambert->reflective) {
-    gllambert->reflective = calloc(sizeof(*gllambert->reflective), 1);
-    agk_copyColorOrTex(actx,
-                       lambert->reflective,
-                       gllambert->reflective);
-  }
+  if (lambert->indexOfRefraction)
+    material->indexOfRefraction = *lambert->indexOfRefraction->val;
 
   if (lambert->transparent) {
-    gllambert->transparent = calloc(sizeof(*gllambert->transparent), 1);
+    GkTransparent *transp;
+
+    transp = calloc(sizeof(*material->transparent), 1);
+
+    if (lambert->transparency)
+      transp->amount = *lambert->transparency->val;
+
+    transp->color = calloc(sizeof(transp->color), 1);
     agk_copyColorOrTex(actx,
                        lambert->transparent,
-                       gllambert->transparent);
+                       transp->color);
+
+    transp->mode = GK_ALPHA_BLEND;
+    material->transparent = transp;
+  }
+
+  if (lambert->reflective) {
+    GkReflective *refl;
+
+    refl = calloc(sizeof(*refl), 1);
+    if (lambert->reflectivity)
+      refl->amount = *lambert->reflectivity->val;
+
+    refl->color = calloc(sizeof(*refl->color), 1);
+    agk_copyColorOrTex(actx,
+                       lambert->reflective,
+                       refl->color);
   }
 
   /* TODO: read param later */
 
-  if (lambert->reflectivity)
-    gllambert->reflectivity = *lambert->reflectivity->val;
-  if (lambert->transparency)
-    gllambert->transparency = *lambert->transparency->val;
-  if (lambert->indexOfRefraction)
-    gllambert->indexOfRefraction = *lambert->indexOfRefraction->val;
 
   gllambert->base.subroutine = strdup(routine);
-  
-  return gllambert;
+  material->technique = &gllambert->base;
+  return material;
 }

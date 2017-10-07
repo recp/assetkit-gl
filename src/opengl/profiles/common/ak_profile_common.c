@@ -40,35 +40,13 @@ agk_profileCommon(AgkContext  * __restrict ctx,
   tfx      = profile->technique;
 
   if (tfx->phong) {
-    GkPhong *glphong;
-    glphong = agk_phong(actx, tfx->phong, "phong");
-
-    if (glphong)
-      material->technique = &glphong->base;
-  }
-
-  if (tfx->blinn) {
-    GkBlinn *glblinn;
-    glblinn = agk_blinn(actx, tfx->blinn, "blinn");
-
-    if (glblinn)
-      material->technique = &glblinn->base;
-  }
-
-  if (tfx->lambert) {
-    GkLambert *gllambert;
-    gllambert = agk_lambert(actx, tfx->lambert, "lambert");
-
-    if (gllambert)
-      material->technique = &gllambert->base;
-  }
-
-  if (tfx->constant) {
-    GkConstant *glconstant;
-    glconstant = agk_constant(actx, tfx->constant, "constant");
-
-    if (glconstant)
-      material->technique = &glconstant->base;
+    material = agk_phong(actx, tfx->phong, "phong");
+  } else if (tfx->blinn) {
+    material = agk_blinn(actx, tfx->blinn, "blinn");
+  } else if (tfx->lambert) {
+    material = agk_lambert(actx, tfx->lambert, "lambert");
+  } else if (tfx->constant) {
+    material = agk_constant(actx, tfx->constant, "constant");
   }
 
   *dest = material;

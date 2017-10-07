@@ -10,7 +10,7 @@
 
 #include "../../../../include/ak-opengl.h"
 
-GkLambert*
+GkMaterial*
 agk_lambert(AkContext  * __restrict actx,
             AkLambert  * __restrict lambert,
             const char * routine);

@@ -11,12 +11,14 @@
 
 #include <string.h>
 
-GkConstant*
+GkMaterial*
 agk_constant(AkContext    * __restrict actx,
              AkConstantFx * __restrict constant,
              const char   * routine) {
+  GkMaterial *material;
   GkConstant *glconstant;
 
+  material   = calloc(sizeof(*material), 1);
   glconstant = gkMaterialNewConstant();
 
   if (constant->emission) {
@@ -26,30 +28,42 @@ agk_constant(AkContext    * __restrict actx,
                        glconstant->emission);
   }
 
-  if (constant->reflective) {
-    glconstant->reflective = calloc(sizeof(*glconstant->reflective), 1);
-    agk_copyColorOrTex(actx,
-                       constant->reflective,
-                       glconstant->reflective);
-  }
+  if (constant->indexOfRefraction)
+    material->indexOfRefraction = *constant->indexOfRefraction->val;
 
   if (constant->transparent) {
-    glconstant->transparent = calloc(sizeof(*glconstant->transparent), 1);
+    GkTransparent *transp;
+
+    transp = calloc(sizeof(*material->transparent), 1);
+
+    if (constant->transparency)
+      transp->amount = *constant->transparency->val;
+
+    transp->color = calloc(sizeof(transp->color), 1);
     agk_copyColorOrTex(actx,
                        constant->transparent,
-                       glconstant->transparent);
+                       transp->color);
+
+    transp->mode = GK_ALPHA_BLEND;
+    material->transparent = transp;
+  }
+
+  if (constant->reflective) {
+    GkReflective *refl;
+
+    refl = calloc(sizeof(*refl), 1);
+    if (constant->reflectivity)
+      refl->amount = *constant->reflectivity->val;
+
+    refl->color = calloc(sizeof(*refl->color), 1);
+    agk_copyColorOrTex(actx,
+                       constant->reflective,
+                       refl->color);
   }
 
   /* TODO: read param later */
 
-  if (constant->reflectivity)
-    glconstant->reflectivity = *constant->reflectivity->val;
-  if (constant->transparency)
-    glconstant->transparency = *constant->transparency->val;
-  if (constant->indexOfRefraction)
-    glconstant->indexOfRefraction = *constant->indexOfRefraction->val;
-
   glconstant->base.subroutine = strdup(routine);
-
-  return glconstant;
+  material->technique = &glconstant->base;
+  return material;
 }

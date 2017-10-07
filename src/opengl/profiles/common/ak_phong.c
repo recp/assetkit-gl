@@ -11,13 +11,15 @@
 
 #include <string.h>
 
-GkPhong*
+GkMaterial*
 agk_phong(AkContext  * __restrict actx,
           AkPhong    * __restrict phong,
           const char * routine) {
-  GkPhong *glphong;
+  GkMaterial *material;
+  GkPhong    *glphong;
 
-  glphong = gkMaterialNewPhong();
+  material = calloc(sizeof(*material), 1);
+  glphong  = gkMaterialNewPhong();
 
   if (phong->ambient) {
     glphong->ambient = calloc(sizeof(*glphong->ambient), 1);
@@ -47,32 +49,45 @@ agk_phong(AkContext  * __restrict actx,
                        glphong->emission);
   }
 
-  if (phong->reflective) {
-    glphong->reflective = calloc(sizeof(*glphong->reflective), 1);
-    agk_copyColorOrTex(actx,
-                       phong->reflective,
-                       glphong->reflective);
-  }
+  if (phong->shininess)
+    glphong->shininess = *phong->shininess->val;
+
+  if (phong->indexOfRefraction)
+    material->indexOfRefraction = *phong->indexOfRefraction->val;
 
   if (phong->transparent) {
-    glphong->transparent = calloc(sizeof(*glphong->transparent), 1);
+    GkTransparent *transp;
+
+    transp = calloc(sizeof(*material->transparent), 1);
+
+    if (phong->transparency)
+      transp->amount = *phong->transparency->val;
+
+    transp->color = calloc(sizeof(transp->color), 1);
     agk_copyColorOrTex(actx,
                        phong->transparent,
-                       glphong->transparent);
+                       transp->color);
+
+    transp->mode = GK_ALPHA_BLEND;
+    material->transparent = transp;
+  }
+
+  if (phong->reflective) {
+    GkReflective *refl;
+
+    refl = calloc(sizeof(*refl), 1);
+    if (phong->reflectivity)
+      refl->amount = *phong->reflectivity->val;
+
+    refl->color = calloc(sizeof(*refl->color), 1);
+    agk_copyColorOrTex(actx,
+                       phong->reflective,
+                       refl->color);
   }
 
   /* TODO: read param later */
 
-  if (phong->shininess)
-    glphong->shininess = *phong->shininess->val;
-  if (phong->reflectivity)
-    glphong->reflectivity = *phong->reflectivity->val;
-  if (phong->transparency)
-    glphong->transparency = *phong->transparency->val;
-  if (phong->indexOfRefraction)
-    glphong->indexOfRefraction = *phong->indexOfRefraction->val;
-
   glphong->base.subroutine = strdup(routine);
-
-  return glphong;
+  material->technique = &glphong->base;
+  return material;
 }

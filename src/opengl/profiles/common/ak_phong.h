@@ -10,7 +10,7 @@
 
 #include "../../../../include/ak-opengl.h"
 
-GkPhong*
+GkMaterial*
 agk_phong(AkContext  * __restrict actx,
           AkPhong    * __restrict phong,
           const char * routine);

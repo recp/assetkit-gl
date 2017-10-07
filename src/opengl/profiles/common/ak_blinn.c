@@ -11,13 +11,15 @@
 
 #include <string.h>
 
-GkBlinn*
+GkMaterial*
 agk_blinn(AkContext  * __restrict actx,
           AkBlinn    * __restrict blinn,
           const char * routine) {
-  GkBlinn *glblinn;
+  GkMaterial *material;
+  GkBlinn    *glblinn;
 
-  glblinn = gkMaterialNewBlinn();
+  material = calloc(sizeof(*material), 1);
+  glblinn  = gkMaterialNewBlinn();
 
   if (blinn->ambient) {
     glblinn->ambient = calloc(sizeof(*glblinn->ambient), 1);
@@ -47,32 +49,45 @@ agk_blinn(AkContext  * __restrict actx,
                        glblinn->emission);
   }
 
-  if (blinn->reflective) {
-    glblinn->reflective = calloc(sizeof(*glblinn->reflective), 1);
-    agk_copyColorOrTex(actx,
-                       blinn->reflective,
-                       glblinn->reflective);
-  }
+  if (blinn->shininess)
+    glblinn->shininess = *blinn->shininess->val;
+
+  if (blinn->indexOfRefraction)
+    material->indexOfRefraction = *blinn->indexOfRefraction->val;
 
   if (blinn->transparent) {
-    glblinn->transparent = calloc(sizeof(*glblinn->transparent), 1);
+    GkTransparent *transp;
+
+    transp = calloc(sizeof(*material->transparent), 1);
+
+    if (blinn->transparency)
+      transp->amount = *blinn->transparency->val;
+
+    transp->color = calloc(sizeof(transp->color), 1);
     agk_copyColorOrTex(actx,
                        blinn->transparent,
-                       glblinn->transparent);
+                       transp->color);
+
+    transp->mode = GK_ALPHA_BLEND;
+    material->transparent = transp;
+  }
+
+  if (blinn->reflective) {
+    GkReflective *refl;
+
+    refl = calloc(sizeof(*refl), 1);
+    if (blinn->reflectivity)
+      refl->amount = *blinn->reflectivity->val;
+
+    refl->color = calloc(sizeof(*refl->color), 1);
+    agk_copyColorOrTex(actx,
+                       blinn->reflective,
+                       refl->color);
   }
 
   /* TODO: read param later */
 
-  if (blinn->shininess)
-    glblinn->shininess = *blinn->shininess->val;
-  if (blinn->reflectivity)
-    glblinn->reflectivity = *blinn->reflectivity->val;
-  if (blinn->transparency)
-    glblinn->transparency = *blinn->transparency->val;
-  if (blinn->indexOfRefraction)
-    glblinn->indexOfRefraction = *blinn->indexOfRefraction->val;
-
   glblinn->base.subroutine = strdup(routine);
-  
-  return glblinn;
+  material->technique = &glblinn->base;
+  return material;
 }
