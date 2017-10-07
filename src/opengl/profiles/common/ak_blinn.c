@@ -20,7 +20,7 @@ agk_blinn(AkContext  * __restrict actx,
   glblinn = gkMaterialNewBlinn();
 
   if (blinn->ambient) {
-    glblinn->ambient = calloc(sizeof(*blinn->ambient), 1);
+    glblinn->ambient = calloc(sizeof(*glblinn->ambient), 1);
     agk_copyColorOrTex(actx,
                        blinn->ambient,
                        glblinn->ambient);

@@ -55,6 +55,8 @@ agk_drawMode(AkMeshPrimitive *primitive) {
           mode = GL_LINE_LOOP;
           break;
       }
+
+      break;
     }
     default:
       mode = GL_TRIANGLES;
@@ -130,7 +132,7 @@ agk_loadSource(AgkContext   * __restrict ctx,
                         acc->bound,
                         type,
                         GL_FALSE,
-                        acc->byteStride,
+                        (GLsizei)acc->byteStride,
                         BUFFER_OFFSET(acc->byteOffset));
   glEnableVertexAttribArray(attribIndex);
 }
