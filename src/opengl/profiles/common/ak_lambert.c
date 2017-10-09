@@ -42,37 +42,48 @@ agk_lambert(AkContext  * __restrict actx,
                        gllambert->emission);
   }
 
-  if (lambert->indexOfRefraction)
-    material->indexOfRefraction = *lambert->indexOfRefraction->val;
+  if (lambert->base.indexOfRefraction)
+    material->indexOfRefraction = *lambert->base.indexOfRefraction->val;
 
-  if (lambert->transparent) {
+  if (lambert->base.transparent) {
+    AkTransparent *aktransp;
     GkTransparent *transp;
 
-    transp = calloc(sizeof(*material->transparent), 1);
+    transp   = calloc(sizeof(*material->transparent), 1);
+    aktransp = lambert->base.transparent;
 
-    if (lambert->transparency)
-      transp->amount = *lambert->transparency->val;
+    if (aktransp->amount)
+      transp->amount = *aktransp->amount->val;
 
-    transp->color = calloc(sizeof(transp->color), 1);
-    agk_copyColorOrTex(actx,
-                       lambert->transparent,
-                       transp->color);
+    if (transp->color) {
+      transp->color = calloc(sizeof(transp->color), 1);
+      agk_copyColorOrTex(actx,
+                         aktransp->color,
+                         transp->color);
+    }
 
-    transp->mode = GK_ALPHA_BLEND;
+    transp->cutoff = aktransp->cutoff;
+    transp->mode   = GK_ALPHA_BLEND;
+
     material->transparent = transp;
   }
 
-  if (lambert->reflective) {
+  if (lambert->base.reflective) {
+    AkReflective *akrefl;
     GkReflective *refl;
 
-    refl = calloc(sizeof(*refl), 1);
-    if (lambert->reflectivity)
-      refl->amount = *lambert->reflectivity->val;
+    refl   = calloc(sizeof(*refl), 1);
+    akrefl = lambert->base.reflective;
 
-    refl->color = calloc(sizeof(*refl->color), 1);
-    agk_copyColorOrTex(actx,
-                       lambert->reflective,
-                       refl->color);
+    if (akrefl->amount)
+      refl->amount = *akrefl->amount->val;
+
+    if (akrefl->color) {
+      refl->color = calloc(sizeof(*refl->color), 1);
+      agk_copyColorOrTex(actx,
+                         akrefl->color,
+                         refl->color);
+    }
   }
 
   /* TODO: read param later */
