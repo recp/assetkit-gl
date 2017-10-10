@@ -35,8 +35,8 @@ agk_profileCommon(AgkContext  * __restrict ctx,
     return AK_EFOUND;
   }
 
+  material = NULL;
   profile  = (AkProfileCommon *)profilei;
-  material = calloc(sizeof(*material), 1);
   tfx      = profile->technique;
 
   if (tfx->phong) {

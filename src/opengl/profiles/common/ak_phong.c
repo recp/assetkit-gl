@@ -66,7 +66,7 @@ agk_phong(AkContext  * __restrict actx,
       transp->amount = *aktransp->amount->val;
 
     if (transp->color) {
-      transp->color = calloc(sizeof(transp->color), 1);
+      transp->color = calloc(sizeof(*transp->color), 1);
       agk_copyColorOrTex(actx,
                          aktransp->color,
                          transp->color);
@@ -94,6 +94,8 @@ agk_phong(AkContext  * __restrict actx,
                          akrefl->color,
                          refl->color);
     }
+
+    material->reflective = refl;
   }
 
   /* TODO: read param later */
