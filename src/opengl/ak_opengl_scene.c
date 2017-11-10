@@ -32,7 +32,8 @@ agk_loadScene(GkContext *ctx,
 
   glscene     = calloc(sizeof(*glscene), 1);
   visualScene = ak_instanceObject(scene->visualScene);
-
+  glscene->_priv.ctx = ctx;
+  
   glnode = calloc(sizeof(*glnode), 1);
   gkMakeNodeTransform(glnode);
   glm_mat4_copy(GLM_MAT4_IDENTITY,
