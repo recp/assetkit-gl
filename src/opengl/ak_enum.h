@@ -22,4 +22,7 @@ agk_magFilter(AkMagFilter magfilter);
 GLenum
 agk_mipFilter(AkMipFilter mipfilter);
 
+GLenum
+agk_drawMode(AkMeshPrimitive *primitive);
+
 #endif /* ak_enum_h */

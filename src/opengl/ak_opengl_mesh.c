@@ -6,65 +6,16 @@
  */
 
 #include "../../include/ak-opengl.h"
-#include <stdlib.h>
-#include <assert.h>
+#include "ak_enum.h"
+
 #include <assetkit.h>
 #include <gk/gk.h>
 
+#include <stdlib.h>
+#include <assert.h>
 #include <string.h>
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
-#define ak__align(size) ((size + 32 - 1) &~ (uint32_t)(32 - 1))
-
-GLenum
-agk_drawMode(AkMeshPrimitive *primitive) {
-  GLenum mode;
-
-  switch (primitive->type) {
-    case AK_MESH_PRIMITIVE_TYPE_POLYGONS:
-      mode = GL_TRIANGLES;
-      break;
-    case AK_MESH_PRIMITIVE_TYPE_TRIANGLES: {
-      AkTriangles *triangles;
-      triangles = (AkTriangles *)primitive;
-      switch (triangles->mode) {
-        case AK_TRIANGLE_MODE_TRIANGLES:
-          mode = GL_TRIANGLES;
-          break;
-        case AK_TRIANGLE_MODE_TRIANGLE_STRIP:
-          mode = GL_TRIANGLE_STRIP;
-          break;
-        case AK_TRIANGLE_MODE_TRIANGLE_FAN:
-          mode = GL_TRIANGLE_FAN;
-          break;
-      }
-      break;
-    }
-    case AK_MESH_PRIMITIVE_TYPE_LINES: {
-      AkLines *lines;
-
-      lines = (AkLines *)primitive;
-      switch (lines->mode) {
-        case AK_LINE_MODE_LINES:
-          mode = GL_LINES;
-          break;
-        case AK_LINE_MODE_LINE_STRIP:
-          mode = GL_LINE_STRIP;
-          break;
-        case AK_LINE_MODE_LINE_LOOP:
-          mode = GL_LINE_LOOP;
-          break;
-      }
-
-      break;
-    }
-    default:
-      mode = GL_TRIANGLES;
-      break;
-  }
-
-  return mode;
-}
 
 void
 agk_loadSource(AgkContext   * __restrict ctx,
