@@ -9,30 +9,33 @@
 #include <gk/texture.h>
 #include <cglm/cglm.h>
 
-/* TODO: only color for now */
-void
-agk_copyColorOrTex(AkContext      * __restrict actx,
-                   AkFxColorOrTex * __restrict src,
-                   GkColorOrTex   * __restrict dest) {
+GkColorOrTex*
+agk_colorOrTex(AkContext      * __restrict actx,
+               AkFxColorOrTex * __restrict src) {
+  GkColorOrTex *crtx;
+
+  crtx = calloc(sizeof(*crtx), 1);
   if (src->color) {
     GkColor *color;
     color = malloc(sizeof(*color));
     glm_vec4_copy(src->color->vec, color->vec);
 
-    dest->val    = color;
-    dest->method = GK_COLOR_COLOR;
+    crtx->val    = color;
+    crtx->method = GK_COLOR_COLOR;
   } else if (src->texture) {
-    dest->val = agk_loadTexture(actx, src->texture);
-    if (dest->val) {
-      dest->method = GK_COLOR_TEX;
+    crtx->val = agk_loadTexture(actx, src->texture);
+    if (crtx->val) {
+      crtx->method = GK_COLOR_TEX;
     } else {
       GkColor *color;
       color = malloc(sizeof(*color));
 
       glm_vec4_copy(GLM_VEC4_ONE, color->vec);
 
-      dest->val    = color;
-      dest->method = GK_COLOR_COLOR;
+      crtx->val    = color;
+      crtx->method = GK_COLOR_COLOR;
     }
   }
+  
+  return crtx;
 }

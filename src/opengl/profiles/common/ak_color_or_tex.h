@@ -10,9 +10,8 @@
 
 #include "../../../../include/ak-opengl.h"
 
-void
-agk_copyColorOrTex(AkContext      * __restrict actx,
-                   AkFxColorOrTex * __restrict src,
-                   GkColorOrTex   * __restrict dest);
+GkColorOrTex*
+agk_colorOrTex(AkContext      * __restrict actx,
+               AkFxColorOrTex * __restrict src);
 
 #endif /* ak_color_or_tex_h */
