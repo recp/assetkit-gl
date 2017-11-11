@@ -87,19 +87,18 @@ agk_loadTexture(AkContext   * __restrict actx,
   tex->sampler = sampler;
   tex->image   = glimage;
 
-  glEnable(target);
   gkTexLoad(tex, false);
 
   /* TODO: check existing mips */
   glGenerateMipmap(target);
-
+  
   glTexParameteri(tex->target, GL_TEXTURE_WRAP_S, sampler->wrapS);
   glTexParameteri(tex->target, GL_TEXTURE_WRAP_T, sampler->wrapT);
   glTexParameteri(tex->target, GL_TEXTURE_WRAP_R, sampler->wrapP);
 
   glTexParameteri(tex->target, GL_TEXTURE_MIN_FILTER, sampler->minfilter);
   glTexParameteri(tex->target, GL_TEXTURE_MAG_FILTER, sampler->magfilter);
-
+  
   /* TODO: mip filter */
 
   /* cleanup */
