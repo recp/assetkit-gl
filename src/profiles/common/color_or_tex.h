@@ -5,13 +5,13 @@
  * Full license can be found in the LICENSE file
  */
 
-#ifndef ak_color_or_tex_h
-#define ak_color_or_tex_h
+#ifndef agk_color_or_tex_h
+#define agk_color_or_tex_h
 
-#include "../../../../include/ak-opengl.h"
+#include "../../../include/agk.h"
 
 GkColorOrTex*
 agk_colorOrTex(AkContext      * __restrict actx,
                AkFxColorOrTex * __restrict src);
 
-#endif /* ak_color_or_tex_h */
+#endif /* agk_color_or_tex_h */

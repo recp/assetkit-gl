@@ -8,7 +8,7 @@
 #ifndef agk_transform_h
 #define agk_transform_h
 
-#include "../include/ak-opengl.h"
+#include "../include/agk.h"
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>

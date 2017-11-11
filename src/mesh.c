@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../include/ak-opengl.h"
-#include "ak_enum.h"
+#include "../include/agk.h"
+#include "enum.h"
 
 #include <assetkit.h>
 #include <gk/gk.h>

@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../include/ak-opengl.h"
-#include "../ak_transform.h"
+#include "../include/agk.h"
+#include "transform.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <assetkit.h>

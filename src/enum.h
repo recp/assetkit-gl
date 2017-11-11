@@ -5,10 +5,10 @@
  * Full license can be found in the LICENSE file
  */
 
-#ifndef ak_enum_h
-#define ak_enum_h
+#ifndef agk_enum_h
+#define agk_enum_h
 
-#include "../../include/ak-opengl.h"
+#include "../include/agk.h"
 
 GLenum
 agk_wrapMode(AkWrapMode wrapMode);
@@ -28,4 +28,4 @@ agk_drawMode(AkMeshPrimitive *primitive);
 GLenum
 agk_textureTarget(AkTypeId typeId);
 
-#endif /* ak_enum_h */
+#endif /* agk_enum_h */

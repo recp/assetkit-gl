@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../include/ak-opengl.h"
+#include "../include/agk.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <assetkit.h>
@@ -14,7 +14,7 @@
 #include <string.h>
 
 /* currently only common profile until full-impl */
-#include "profiles/common/ak_profile_common.h"
+#include "profiles/common/profile_common.h"
 
 AkResult
 agk_loadMaterial(AgkContext         * __restrict ctx,

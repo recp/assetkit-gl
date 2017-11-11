@@ -5,12 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "ak_profile_common.h"
-#include "ak_color_or_tex.h"
-#include "ak_phong.h"
-#include "ak_blinn.h"
-#include "ak_lambert.h"
-#include "ak_constant.h"
+#include "profile_common.h"
+#include "color_or_tex.h"
 
 #include <string.h>
 #include <stdlib.h>

@@ -8,7 +8,7 @@
 #ifndef agk_profile_common_h
 #define agk_profile_common_h
 
-#include "../../../../include/ak-opengl.h"
+#include "../../../include/agk.h"
 
 AkResult
 agk_profileCommon(AgkContext  * __restrict ctx,

@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "../../../../include/ak-opengl.h"
-#include "ak_color_or_tex.h"
+#include "../../../include/agk.h"
+#include "color_or_tex.h"
 
 #include <string.h>
 

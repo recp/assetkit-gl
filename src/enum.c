@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "ak_enum.h"
+#include "enum.h"
 
 GLenum
 agk_wrapMode(AkWrapMode wrapMode) {

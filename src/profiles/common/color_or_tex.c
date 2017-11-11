@@ -5,7 +5,7 @@
  * Full license can be found in the LICENSE file
  */
 
-#include "ak_color_or_tex.h"
+#include "color_or_tex.h"
 #include <gk/texture.h>
 #include <cglm/cglm.h>
 

@@ -5,8 +5,8 @@
  * Full license can be found in the LICENSE file
  */
 
-#ifndef agk_opengl_h
-#define agk_opengl_h
+#ifndef agk_h
+#define agk_h
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -78,4 +78,4 @@ agk_bbox(AkBoundingBox * __restrict bbox);
 #ifdef __cplusplus
 }
 #endif
-#endif /* agk_opengl_h */
+#endif /* agk_h */
