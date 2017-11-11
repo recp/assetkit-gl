@@ -23,14 +23,13 @@ agk_copyColorOrTex(AkContext      * __restrict actx,
     dest->method = GK_COLOR_COLOR;
   } else if (src->texture) {
     dest->val = agk_loadTexture(actx, src->texture);
-    if (dest->val)
+    if (dest->val) {
       dest->method = GK_COLOR_TEX;
-    else {
+    } else {
       GkColor *color;
       color = malloc(sizeof(*color));
 
-      glm_vec4_copy((vec4){1.0f, 1.0f, 1.0f, 1.0f},
-                    color->vec);
+      glm_vec4_copy(GLM_VEC4_ONE, color->vec);
 
       dest->val    = color;
       dest->method = GK_COLOR_COLOR;

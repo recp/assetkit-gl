@@ -97,3 +97,32 @@ agk_drawMode(AkMeshPrimitive *primitive) {
   return mode;
 }
 
+GLenum
+agk_textureTarget(AkTypeId typeId) {
+  GLenum target;
+
+  switch (typeId) {
+    case AKT_SAMPLER1D:
+      target = GL_TEXTURE_1D;
+      break;
+    case AKT_SAMPLER2D:
+      target = GL_TEXTURE_2D;
+      break;
+    case AKT_SAMPLER3D:
+      target = GL_TEXTURE_3D;
+      break;
+    case AKT_SAMPLER_CUBE:
+      target = GL_TEXTURE_CUBE_MAP;
+      break;
+    case AKT_SAMPLER_RECT:
+      target = GL_TEXTURE_RECTANGLE;
+      break;
+    case AKT_SAMPLER_DEPTH:
+      target = GL_TEXTURE_DEPTH;
+      break;
+    default:
+      return -1;
+  }
+  
+  return target;
+}

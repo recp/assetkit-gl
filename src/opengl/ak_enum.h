@@ -25,4 +25,7 @@ agk_mipFilter(AkMipFilter mipfilter);
 GLenum
 agk_drawMode(AkMeshPrimitive *primitive);
 
+GLenum
+agk_textureTarget(AkTypeId typeId);
+
 #endif /* ak_enum_h */

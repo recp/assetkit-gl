@@ -26,28 +26,8 @@ agk_loadTexture(AkContext   * __restrict actx,
   if (!newparam || !newparam->val)
     return NULL;
 
-  switch (newparam->val->type.typeId) {
-    case AKT_SAMPLER1D:
-      target = GL_TEXTURE_1D;
-      break;
-    case AKT_SAMPLER2D:
-      target = GL_TEXTURE_2D;
-      break;
-    case AKT_SAMPLER3D:
-      target = GL_TEXTURE_3D;
-      break;
-    case AKT_SAMPLER_CUBE:
-      target = GL_TEXTURE_CUBE_MAP;
-      break;
-    case AKT_SAMPLER_RECT:
-      target = GL_TEXTURE_RECTANGLE;
-      break;
-    case AKT_SAMPLER_DEPTH:
-      target = GL_TEXTURE_DEPTH;
-      break;
-    default:
-      goto err;
-  }
+  if ((target = agk_textureTarget(newparam->val->type.typeId)) == -1)
+    goto err;
 
   samplerCommon = newparam->val->value;
   if (!samplerCommon->instanceImage)
