@@ -11,6 +11,9 @@
 #include "../include/agk.h"
 
 GLenum
+agk_type(AkTypeId typeId);
+
+GLenum
 agk_wrapMode(AkWrapMode wrapMode);
 
 GLenum

@@ -8,6 +8,24 @@
 #include "enum.h"
 
 GLenum
+agk_type(AkTypeId typeId) {
+  GLenum type;
+
+  switch (typeId) {
+    case AKT_INT:    type = GL_INT;                break;
+    case AKT_UINT:   type = GL_UNSIGNED_INT;       break;
+    case AKT_SHORT:  type = GL_SHORT;              break;
+    case AKT_USHORT: type = GL_UNSIGNED_SHORT;     break;
+    case AKT_FLOAT:  type = GL_FLOAT;              break;
+    case AKT_BYTE:   type = GL_BYTE;               break;
+    case AKT_UBYTE:  type = GL_UNSIGNED_BYTE;      break;
+    default:         type = GL_INT;
+  }
+
+  return type;
+}
+
+GLenum
 agk_wrapMode(AkWrapMode wrapMode) {
   switch (wrapMode) {
     case AK_WRAP_MODE_WRAP:        return GL_REPEAT;

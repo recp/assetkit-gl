@@ -40,16 +40,11 @@ agk_loadSource(AgkContext   * __restrict ctx,
   /* optimization: ignore unused input */
   if (attribIndex < 0)
     return;
+  type = agk_type(acc->itemTypeId);
 
   akbuff = ak_getObjectByUrl(&acc->source);
   if (!akbuff)
     return; /* TODO: assert or log */
-
-  if (acc->itemTypeId == AKT_INT) {
-    type  = GL_INT;
-  } else {
-    type  = GL_FLOAT;
-  }
 
   buff = rb_find(ctx->bufftree, akbuff);
   if (!buff) {
