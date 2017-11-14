@@ -10,6 +10,7 @@
 
 #include <assetkit.h>
 #include <gk/gk.h>
+#include <gk/vertex.h>
 
 #include <stdlib.h>
 #include <assert.h>
@@ -22,26 +23,24 @@ agk_loadSource(AgkContext   * __restrict ctx,
                AkAccessor   * __restrict acc,
                GkPrimitive  * __restrict glprim,
                AkInputBasic * __restrict inp,
-               uint32_t set) {
-  AkBuffer *akbuff;
-  GkBuffer *buff;
-  GLenum    type;
-  GLint     attribIndex;
-  char      attribName[64];
+               uint32_t     * __restrict inputIndex) {
+  AkBuffer      *akbuff;
+  GkBuffer      *buff;
+  GkVertexInput *vi;
+  GLenum         type;
+  char           attribName[64];
 
   /* optimization: check if this input is bound or not */
   if (!inp->semanticRaw)
     return;
-
+  
   ak_inputNameIndexed(inp, attribName);
-  attribIndex = gk_progAttribIndex(ctx->ctx->pinfo,
-                                   attribName);
-
-  /* optimization: ignore unused input */
-  if (attribIndex < 0)
-    return;
+  
   type = agk_type(acc->itemTypeId);
+  vi   = gkMakeVertexInput(attribName, type, 0);
 
+  flist_sp_append(&glprim->inputs, vi);
+  
   akbuff = ak_getObjectByUrl(&acc->source);
   if (!akbuff)
     return; /* TODO: assert or log */
@@ -74,13 +73,14 @@ agk_loadSource(AgkContext   * __restrict ctx,
     glBindBuffer(buff->target, buff->vbo);
   }
 
-  glVertexAttribPointer(attribIndex,
+  glVertexAttribPointer(*inputIndex,
                         acc->bound,
                         type,
                         GL_FALSE,
                         (GLsizei)acc->byteStride,
                         BUFFER_OFFSET(acc->byteOffset));
-  glEnableVertexAttribArray(attribIndex);
+  glEnableVertexAttribArray(*inputIndex);
+  (*inputIndex)++;
 }
 
 AkResult
@@ -89,6 +89,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
              GkModel   ** __restrict dest) {
   AkMeshPrimitive *prim;
   GkModel         *glmodel;
+  uint32_t        inputIndex;
 
   glmodel = calloc(sizeof(*glmodel), 1);
 
@@ -114,6 +115,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
     /* vertices */
     vi = prim->vertices->input;
 
+    inputIndex = 0;
     while (vi) {
       source = ak_getObjectByUrl(&vi->source);
       if (source && source->tcommon)
@@ -121,7 +123,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
                        source->tcommon,
                        glprim,
                        vi,
-                       0);
+                       &inputIndex);
 
       vi = vi->next;
     }
@@ -141,7 +143,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
                        source->tcommon,
                        glprim,
                        &input->base,
-                       input->set);
+                       &inputIndex);
 
       input = (AkInput *)input->base.next;
     }
