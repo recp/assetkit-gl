@@ -49,9 +49,13 @@ agk_loadTexture(AkContext   * __restrict actx,
   tex->target    = target;
 
   if (imgdata->comp == 4) {
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
     glimage->format     = GL_RGBA;
     tex->internalFormat = GL_RGBA8;
   } else {
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
     glimage->format     = GL_RGB;
     tex->internalFormat = GL_RGB8;
   }
