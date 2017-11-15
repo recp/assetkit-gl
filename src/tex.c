@@ -110,10 +110,12 @@ agk_loadTexture(AkContext   * __restrict actx,
      image->data = NULL;
    */
 
+  /*
   if (texref->texcoord)
     ak_multimap_add(actx->bindVertexInputIndex,
                     &tex->sampler->unit,
                     (void *)texref->texcoord);
+  */
 ret:
   return tex;
 
