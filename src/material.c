@@ -36,10 +36,10 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
     glmaterial = NULL;
     geom       = ak_instanceObject(&geomInst->base);
 
-    heap                      = ak_heap_getheap(materialInst);
-    actx.doc                  = ak_heap_data(heap);
-    actx.instanceMaterial     = materialInst;
-    actx.bindVertexInputIndex = ak_map_new(ak_cmp_str);
+    heap                  = ak_heap_getheap(materialInst);
+    actx.doc              = ak_heap_data(heap);
+    actx.instanceMaterial = materialInst;
+    actx.bindVertexInput  = ak_map_new(ak_cmp_str);
 
     /* load material */
     material = ak_instanceObject(&materialInst->base);
@@ -86,16 +86,19 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
                                       bvi->inputSemantic,
                                       bvi->inputSet);
               if (input) {
-                AkMapItem *boundVertexIndexItem;
-                boundVertexIndexItem = ak_map_find(actx.bindVertexInputIndex,
+                AkMapItem *boundVertexItem;
+                boundVertexItem = ak_map_find(actx.bindVertexInput,
                                                    (void *)bvi->semantic);
-                while (boundVertexIndexItem) {
-                  int32_t *inputIndex;
+                while (boundVertexItem) {
+                  char **boundInputName;
+                  char   attribName[64];
 
-                  inputIndex = boundVertexIndexItem->data;
-                  *inputIndex = input->index;
+                  ak_inputNameIndexed(input, attribName);
 
-                  boundVertexIndexItem = boundVertexIndexItem->next;
+                  boundInputName  = boundVertexItem->data;
+                  *boundInputName = strdup(attribName);
+
+                  boundVertexItem = boundVertexItem->next;
                 }
               }
             cont:
@@ -115,7 +118,7 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
       /* TODO: bind vertex inputs? */
     }
 
-    ak_map_destroy(actx.bindVertexInputIndex);
+    ak_map_destroy(actx.bindVertexInput);
     materialInst = (AkInstanceMaterial *)materialInst->base.next;
   }
   
