@@ -49,7 +49,7 @@ agk_loadScene(GkContext *ctx,
     glscene->bbox = agk_bbox(visualScene->bbox);
 
   glscene->usage = usage;
-  glscene->pinfo = ctx->pinfo;
+  glscene->prog  = ctx->prog;
 
   if (node) {
     agkCtx           = calloc(sizeof(*agkCtx), 1);
