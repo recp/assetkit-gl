@@ -46,7 +46,7 @@ agk_loadTexture(AkContext   * __restrict actx,
   tex     = calloc(sizeof(*tex), 1);
   glimage = calloc(sizeof(*glimage), 1);
 
-  tex->target    = target;
+  tex->target = target;
 
   if (imgdata->comp == 4) {
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
