@@ -13,6 +13,7 @@
 #include <gk/gk.h>
 #include <cglm/cglm.h>
 #include <ds/rb.h>
+#include <ds/forward-list.h>
 
 AkResult
 agk_loadScene(GkContext *ctx,
@@ -33,9 +34,10 @@ agk_loadScene(GkContext *ctx,
   glscene     = calloc(sizeof(*glscene), 1);
   visualScene = ak_instanceObject(scene->visualScene);
   glscene->_priv.ctx = ctx;
+  glscene->_priv.transfCacheSlots = flist_new(NULL);
   
   glnode = calloc(sizeof(*glnode), 1);
-  gkMakeNodeTransform(glnode);
+  gkMakeNodeTransform(glscene, glnode);
   glm_mat4_copy(GLM_MAT4_IDENTITY,
                 glnode->trans->local);
   glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID;
