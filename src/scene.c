@@ -31,10 +31,8 @@ agk_loadScene(GkContext *ctx,
   if (!scene->visualScene)
     return AK_ERR;
 
-  glscene     = calloc(sizeof(*glscene), 1);
-  visualScene = ak_instanceObject(scene->visualScene);
-  glscene->_priv.ctx = ctx;
-  glscene->_priv.transfCacheSlots = flist_new(NULL);
+  glscene      = gkAllocScene(ctx);
+  visualScene  = ak_instanceObject(scene->visualScene);
   
   glnode = calloc(1, sizeof(*glnode));
   gkMakeNodeTransform(glscene, glnode);
@@ -49,9 +47,6 @@ agk_loadScene(GkContext *ctx,
 
   if (visualScene->bbox)
     glscene->bbox = agk_bbox(visualScene->bbox);
-
-  glscene->usage = usage;
-  glscene->prog  = ctx->prog;
 
   if (node) {
     agkCtx           = calloc(1, sizeof(*agkCtx));
