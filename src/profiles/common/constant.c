@@ -16,7 +16,7 @@ agk_constant(AkContext    * __restrict actx,
   GkMaterial *material;
   GkConstant *glconstant;
 
-  material   = calloc(sizeof(*material), 1);
+  material   = calloc(1, sizeof(*material));
   glconstant = gkMaterialNewConstant();
 
   if (constant->emission)

@@ -16,7 +16,7 @@ agk_blinn(AkContext  * __restrict actx,
   GkMaterial *material;
   GkBlinn    *glblinn;
 
-  material = calloc(sizeof(*material), 1);
+  material = calloc(1, sizeof(*material));
   glblinn  = gkMaterialNewBlinn();
 
   if (blinn->ambient)

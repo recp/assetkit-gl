@@ -28,7 +28,7 @@ agk_loadLight(AkDoc    * __restrict doc,
       GkAmbientLight *ambientDest;
 
       ambientSrc  = (AkAmbientLight *)tcommon;
-      ambientDest = calloc(sizeof(*ambientDest), 1);
+      ambientDest = calloc(1, sizeof(*ambientDest));
       gllight     = ambientDest;
       glm_vec4_copy(ambientSrc->color.vec,
                     ambientDest->color.vec);
@@ -42,7 +42,7 @@ agk_loadLight(AkDoc    * __restrict doc,
       GkDirectionalLight *directionalDest;
 
       directionalSrc  = (AkDirectionalLight *)tcommon;
-      directionalDest = calloc(sizeof(*directionalDest), 1);
+      directionalDest = calloc(1, sizeof(*directionalDest));
       gllight         = &directionalDest->base;
       glm_vec4_copy(directionalSrc->color.vec,
                     directionalDest->base.color.vec);
@@ -56,7 +56,7 @@ agk_loadLight(AkDoc    * __restrict doc,
       GkPointLight *pointDest;
 
       pointSrc  = (AkPointLight *)tcommon;
-      pointDest = calloc(sizeof(*pointDest), 1);
+      pointDest = calloc(1, sizeof(*pointDest));
       gllight   = &pointDest->base;
       glm_vec4_copy(pointSrc->base.color.vec,
                     pointDest->base.color.vec);
@@ -74,7 +74,7 @@ agk_loadLight(AkDoc    * __restrict doc,
       GkSpotLight *spotDest;
 
       spotSrc  = (AkSpotLight *)tcommon;
-      spotDest = calloc(sizeof(*spotDest), 1);
+      spotDest = calloc(1, sizeof(*spotDest));
       gllight  = &spotDest->base;
       glm_vec4_copy(spotSrc->base.color.vec,
                     spotDest->base.color.vec);

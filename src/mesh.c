@@ -49,7 +49,7 @@ agk_loadSource(AgkContext   * __restrict ctx,
   if (!buff) {
     glprim->bufc++;
 
-    buff = calloc(sizeof(*buff), 1);
+    buff = calloc(1, sizeof(*buff));
     buff->size   = (GLsizei)akbuff->length;
     buff->usage  = ctx->usage;
     buff->type   = type;
@@ -91,7 +91,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
   GkModel         *glmodel;
   uint32_t        inputIndex;
 
-  glmodel = calloc(sizeof(*glmodel), 1);
+  glmodel = calloc(1, sizeof(*glmodel));
 
   ak_meshReIndexInputs(mesh);
 
@@ -108,7 +108,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
       continue;
     }
 
-    glprim = calloc(sizeof(*glprim), 1);
+    glprim = calloc(1, sizeof(*glprim));
     glGenVertexArrays(1, &glprim->vao);
     glBindVertexArray(glprim->vao);
 
@@ -154,7 +154,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
 
       glprim->bufc++;
 
-      ibuff = calloc(sizeof(*ibuff), 1);
+      ibuff = calloc(1, sizeof(*ibuff));
       ibuff->size   = (GLsizei)(prim->indices->count * sizeof(AkUInt));
       ibuff->usage  = ctx->usage;
       ibuff->type   = GL_UNSIGNED_INT;

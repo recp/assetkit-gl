@@ -69,7 +69,7 @@ agk_profileCommon(AgkContext  * __restrict ctx,
     AkTransparent *aktransp;
     GkTransparent *transp;
     
-    transp   = calloc(sizeof(*material->transparent), 1);
+    transp   = calloc(1, sizeof(*material->transparent));
     aktransp = technBase->transparent;
     
     if (aktransp->amount)
@@ -88,7 +88,7 @@ agk_profileCommon(AgkContext  * __restrict ctx,
     AkReflective *akrefl;
     GkReflective *refl;
     
-    refl   = calloc(sizeof(*refl), 1);
+    refl   = calloc(1, sizeof(*refl));
     akrefl = technBase->reflective;
     
     if (akrefl->amount)

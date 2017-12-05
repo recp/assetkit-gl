@@ -36,7 +36,7 @@ agk_loadScene(GkContext *ctx,
   glscene->_priv.ctx = ctx;
   glscene->_priv.transfCacheSlots = flist_new(NULL);
   
-  glnode = calloc(sizeof(*glnode), 1);
+  glnode = calloc(1, sizeof(*glnode));
   gkMakeNodeTransform(glscene, glnode);
   glm_mat4_copy(GLM_MAT4_IDENTITY,
                 glnode->trans->local);
@@ -54,7 +54,7 @@ agk_loadScene(GkContext *ctx,
   glscene->prog  = ctx->prog;
 
   if (node) {
-    agkCtx           = calloc(sizeof(*agkCtx), 1);
+    agkCtx           = calloc(1, sizeof(*agkCtx));
     agkCtx->bufftree = rb_newtree_ptr();
     agkCtx->doc      = doc;
     agkCtx->usage    = usage;

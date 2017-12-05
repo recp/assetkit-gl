@@ -18,7 +18,7 @@ agk_loadNode(AgkContext * __restrict ctx,
              GkNode    ** __restrict dest) {
   GkNode *glnode;
 
-  glnode = calloc(sizeof(*glnode), 1);
+  glnode = calloc(1, sizeof(*glnode));
   if (node->matrix) {
     gkMakeNodeTransform(ctx->scene, glnode);
     glm_mat4_copy(node->matrix->val, glnode->trans->local);

@@ -16,7 +16,7 @@ agk_phong(AkContext  * __restrict actx,
   GkMaterial *material;
   GkPhong    *glphong;
 
-  material = calloc(sizeof(*material), 1);
+  material = calloc(1, sizeof(*material));
   glphong  = gkMaterialNewPhong();
 
   if (phong->ambient)

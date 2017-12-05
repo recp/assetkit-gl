@@ -42,9 +42,9 @@ agk_loadTexture(AkContext   * __restrict actx,
     goto err;
   }
 
-  sampler = calloc(sizeof(*sampler), 1);
-  tex     = calloc(sizeof(*tex), 1);
-  glimage = calloc(sizeof(*glimage), 1);
+  sampler = calloc(1, sizeof(*sampler));
+  tex     = calloc(1, sizeof(*tex));
+  glimage = calloc(1, sizeof(*glimage));
 
   tex->target = target;
 

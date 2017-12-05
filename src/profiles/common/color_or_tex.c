@@ -14,7 +14,7 @@ agk_colorOrTex(AkContext      * __restrict actx,
                AkFxColorOrTex * __restrict src) {
   GkColorOrTex *crtx;
 
-  crtx = calloc(sizeof(*crtx), 1);
+  crtx = calloc(1, sizeof(*crtx));
   if (src->color) {
     GkColor *color;
     color = malloc(sizeof(*color));

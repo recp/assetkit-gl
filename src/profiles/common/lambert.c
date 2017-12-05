@@ -16,7 +16,7 @@ agk_lambert(AkContext  * __restrict actx,
   GkMaterial *material;
   GkLambert  *gllambert;
 
-  material  = calloc(sizeof(*material), 1);
+  material  = calloc(1, sizeof(*material));
   gllambert = gkMaterialNewLambert();
 
   if (lambert->ambient)
