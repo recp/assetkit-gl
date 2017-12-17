@@ -36,6 +36,8 @@ agk_loadNode(AgkContext * __restrict ctx,
      */
   }
 
+  glnode->bbox = agk_bbox(node->bbox);
+
   if (node->geometry) {
     AkInstanceGeometry *geomInst;
     AkGeometry         *geom;

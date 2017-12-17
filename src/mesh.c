@@ -195,12 +195,16 @@ agk_loadMesh(AgkContext * __restrict ctx,
     glmodel->primc++;
     prim->udata = glprim;
 
+    glprim->bbox = agk_bbox(prim->bbox);
+
     prim = prim->next;
   }
 
   /* nothing to render */
   if (glmodel->primc < 1)
     goto err;
+
+  glmodel->bbox = agk_bbox(mesh->bbox);
 
   *dest = glmodel;
 

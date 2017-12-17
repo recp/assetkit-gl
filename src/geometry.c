@@ -28,16 +28,11 @@ agk_loadGeometry(AgkContext * __restrict ctx,
   prim = geom->gdata;
   switch ((AkGeometryType)prim->type) {
     case AK_GEOMETRY_TYPE_MESH:
-      ret = agk_loadMesh(ctx,
-                          ak_objGet(prim),
-                          dest);
+      ret = agk_loadMesh(ctx, ak_objGet(prim), dest);
       break;
     default:
       ret = AK_ERR;
   }
-
-  if (geom->bbox)
-    (*dest)->bbox = agk_bbox(geom->bbox);
 
   if (*dest)
     gk_model_add(ctx->ctx, *dest, geom);
