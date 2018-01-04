@@ -63,6 +63,7 @@ agk_loadScene(GkContext *ctx,
         return AK_ERR;
       }
 
+      (*glnodei)->parent = glnode;
       glnodei = &(*glnodei)->next;
       node    = node->next;
     } while (node);

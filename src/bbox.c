@@ -21,8 +21,8 @@ agk_bbox(AkBoundingBox * __restrict bbox) {
     return NULL;
 
   glbbox = malloc(sizeof(*glbbox));
-  glm_vec_copy(bbox->min, glbbox->boxMin);
-  glm_vec_copy(bbox->max, glbbox->boxMax);
+  glm_vec_copy(bbox->min, glbbox->local.vec.min);
+  glm_vec_copy(bbox->max, glbbox->local.vec.max);
 
   return glbbox;
 }
