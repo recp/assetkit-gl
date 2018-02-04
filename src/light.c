@@ -84,6 +84,7 @@ agk_loadLight(AkDoc    * __restrict doc,
       spotDest->quadAttn     = spotSrc->quadAttn;
       spotDest->cutoffCosine = cosf(spotSrc->falloffAngle * 0.5f);
       spotDest->cutoffExp    = spotSrc->falloffExp;
+      spotDest->falloffAngle = spotSrc->falloffAngle;
 
       spotDest->base.type = GK_LIGHT_TYPE_SPOT;
       spotDest->base.name = strdup("spot");
@@ -93,7 +94,7 @@ agk_loadLight(AkDoc    * __restrict doc,
       return AK_ETCOMMON;
   }
 
-  glm_vec_copy(tcommon->direction, gllight->dir);
+  glm_vec_copy(tcommon->direction, gllight->defdir);
 
   gllight->index   = -1;
   gllight->isvalid = 0;

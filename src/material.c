@@ -63,13 +63,10 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
                        (void *)materialInst->symbol);
       while (mi) {
         AkMeshPrimitive *prim;
-        GkPrimitive     *glprim;
         GkPrimInst      *glprimInst;
 
-        prim   = mi->data;
-        glprim = prim->udata;
-        if (glprim) {
-          glprimInst = gkMakePrimInst(modelInst, glprim);
+        if ((prim = mi->data)) {
+          glprimInst = &modelInst->prims[(uintptr_t)prim->udata];
           glprimInst->material = glmaterial;
 
           /* bind inputs (textures...) */
@@ -88,7 +85,7 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
               if (input) {
                 AkMapItem *boundVertexItem;
                 boundVertexItem = ak_map_find(actx.bindVertexInput,
-                                                   (void *)bvi->semantic);
+                                              (void *)bvi->semantic);
                 while (boundVertexItem) {
                   char **boundInputName;
                   char   attribName[64];

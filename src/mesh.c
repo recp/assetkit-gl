@@ -89,9 +89,10 @@ agk_loadMesh(AgkContext * __restrict ctx,
              GkModel   ** __restrict dest) {
   AkMeshPrimitive *prim;
   GkModel         *glmodel;
-  uint32_t        inputIndex;
+  uint32_t         inputIndex, primc;
 
-  glmodel = calloc(1, sizeof(*glmodel));
+  primc   = mesh->primitiveCount;
+  glmodel = calloc(1, sizeof(*glmodel) + sizeof(GkPrimitive) * primc);
 
   ak_meshReIndexInputs(mesh);
 
@@ -108,7 +109,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
       continue;
     }
 
-    glprim = calloc(1, sizeof(*glprim));
+    glprim = &glmodel->prims[glmodel->primc];
     glGenVertexArrays(1, &glprim->vao);
     glBindVertexArray(glprim->vao);
 
@@ -185,17 +186,13 @@ agk_loadMesh(AgkContext * __restrict ctx,
 
     glprim->mode = agk_drawMode(prim);
 
-    if (glmodel->prim)
-      glmodel->prim->prev = glprim;
-    glprim->next  = glmodel->prim;
-    glmodel->prim = glprim;
-
     glBindVertexArray(0);
 
+    prim->udata = (void *)(uintptr_t)glmodel->primc;
     glmodel->primc++;
-    prim->udata = glprim;
 
-    glprim->bbox = agk_bbox(prim->bbox);
+    glm_vec_copy(prim->bbox->min, glprim->bbox[0]);
+    glm_vec_copy(prim->bbox->max, glprim->bbox[1]);
 
     prim = prim->next;
   }
@@ -204,7 +201,8 @@ agk_loadMesh(AgkContext * __restrict ctx,
   if (glmodel->primc < 1)
     goto err;
 
-  glmodel->bbox = agk_bbox(mesh->bbox);
+  glm_vec_copy(mesh->bbox->min, glmodel->bbox[0]);
+  glm_vec_copy(mesh->bbox->max, glmodel->bbox[1]);
 
   *dest = glmodel;
 
