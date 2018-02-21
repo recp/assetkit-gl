@@ -31,4 +31,7 @@ agk_drawMode(AkMeshPrimitive *primitive);
 GLenum
 agk_textureTarget(AkTypeId typeId);
 
+GkOpaque
+agk_opaque(AkOpaque opaque);
+
 #endif /* agk_enum_h */

@@ -144,3 +144,17 @@ agk_textureTarget(AkTypeId typeId) {
   
   return target;
 }
+
+GkOpaque
+agk_opaque(AkOpaque opaque) {
+  GkOpaque glOpaque;
+
+  switch (opaque) {
+    case AK_OPAQUE_A_ONE:    glOpaque = GK_OPAQUE_A_ONE;        break;
+    case AK_OPAQUE_A_ZERO:   glOpaque = GK_OPAQUE_A_ZERO;       break;
+    case AK_OPAQUE_RGB_ONE:  glOpaque = GK_OPAQUE_RGB_ONE;      break;
+    case AK_OPAQUE_RGB_ZERO: glOpaque = GK_OPAQUE_RGB_ZERO;     break;
+  }
+
+  return glOpaque;
+}

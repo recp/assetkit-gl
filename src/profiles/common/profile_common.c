@@ -7,6 +7,7 @@
 
 #include "profile_common.h"
 #include "color_or_tex.h"
+#include "../../enum.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -74,13 +75,16 @@ agk_profileCommon(AgkContext  * __restrict ctx,
     
     if (aktransp->amount)
       transp->amount = *aktransp->amount->val;
-    
-    if (transp->color)
+    else
+      transp->amount = 1.0f;
+
+    if (aktransp->color)
       transp->color = agk_colorOrTex(actx, aktransp->color);
-    
+
     transp->cutoff = aktransp->cutoff;
     transp->mode   = GK_ALPHA_BLEND;
-    
+    transp->opaque = agk_opaque(aktransp->opaque);
+
     material->transparent = transp;
   }
   
