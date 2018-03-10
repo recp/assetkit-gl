@@ -23,18 +23,8 @@ agk_colorOrTex(AkContext      * __restrict actx,
     crtx->val    = color;
     crtx->method = GK_COLOR_COLOR;
   } else if (src->texture) {
-    crtx->val = agk_loadTexture(actx, src->texture);
-    if (crtx->val) {
-      crtx->method = GK_COLOR_TEX;
-    } else {
-      GkColor *color;
-      color = malloc(sizeof(*color));
-
-      glm_vec4_copy(GLM_VEC4_ONE, color->vec);
-
-      crtx->val    = color;
-      crtx->method = GK_COLOR_COLOR;
-    }
+    crtx->val    = agk_loadTexture(actx, src->texture);
+    crtx->method = GK_COLOR_TEX;
   }
   
   return crtx;
