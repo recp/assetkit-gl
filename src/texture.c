@@ -21,7 +21,10 @@ agk_loadTexture(AkContext   * __restrict actx,
   AkImageData *imgdata;
   GLenum       target;
 
-  newparam  = ak_sid_resolve(actx, texref->texture);
+  if (!texref)
+    return NULL;
+
+  newparam = ak_sid_resolve(actx, texref->texture);
 
   if (!newparam || !newparam->val)
     return NULL;

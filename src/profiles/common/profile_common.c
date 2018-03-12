@@ -41,7 +41,11 @@ agk_profileCommon(AgkContext  * __restrict ctx,
   profile  = (AkProfileCommon *)profilei;
   tfx      = profile->technique;
 
-  if (tfx->phong) {
+  if (tfx->metallicRoughness) {
+    material = agk_metalRough(actx, tfx->metallicRoughness);
+    technBase = &tfx->metallicRoughness->base;
+    subrtn    = "mtlrough";
+  } else if (tfx->phong) {
     material  = agk_phong(actx, tfx->phong);
     technBase = &tfx->phong->base;
     subrtn    = "phong";
