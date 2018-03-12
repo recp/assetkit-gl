@@ -12,14 +12,14 @@
 GkTexture*
 agk_loadTexture(AkContext   * __restrict actx,
                 AkFxTexture * __restrict texref) {
-  AkNewParam        *newparam;
-  AkFxSamplerCommon *samplerCommon;
-  GkSampler         *sampler;
-  GkTexture         *tex;
-  AkImage           *image;
-  GkImage           *glimage;
-  AkImageData       *imgdata;
-  GLenum             target;
+  AkNewParam  *newparam;
+  AkSampler   *akSampler;
+  GkSampler   *sampler;
+  GkTexture   *tex;
+  AkImage     *image;
+  GkImage     *glimage;
+  AkImageData *imgdata;
+  GLenum       target;
 
   newparam  = ak_sid_resolve(actx, texref->texture);
 
@@ -29,11 +29,11 @@ agk_loadTexture(AkContext   * __restrict actx,
   if ((target = agk_textureTarget(newparam->val->type.typeId)) == -1)
     goto err;
 
-  samplerCommon = newparam->val->value;
-  if (!samplerCommon->instanceImage)
+  akSampler = newparam->val->value;
+  if (!akSampler->instanceImage)
     goto err;
 
-  image = ak_instanceObject(samplerCommon->instanceImage);
+  image = ak_instanceObject(akSampler->instanceImage);
   if (!image)
     goto err;
 
@@ -66,27 +66,27 @@ agk_loadTexture(AkContext   * __restrict actx,
   glimage->mips.height = imgdata->height;
   glimage->type        = GL_UNSIGNED_BYTE;
 
-  if (samplerCommon->borderColor) {
+  if (akSampler->borderColor) {
     GkColor *borderColor;
     borderColor = malloc(sizeof(*borderColor));
-    glm_vec4_copy(samplerCommon->borderColor->vec,
+    glm_vec4_copy(akSampler->borderColor->vec,
                   borderColor->vec);
 
     sampler->borderColor = borderColor;
   }
 
-  sampler->wrapS         = agk_wrapMode(samplerCommon->wrapS);
-  sampler->wrapT         = agk_wrapMode(samplerCommon->wrapT);
-  sampler->wrapP         = agk_wrapMode(samplerCommon->wrapP);
+  sampler->wrapS         = agk_wrapMode(akSampler->wrapS);
+  sampler->wrapT         = agk_wrapMode(akSampler->wrapT);
+  sampler->wrapP         = agk_wrapMode(akSampler->wrapP);
 
-  sampler->minfilter     = agk_minFilter(samplerCommon->minfilter);
-  sampler->magfilter     = agk_magFilter(samplerCommon->magfilter);
-  sampler->mipfilter     = agk_mipFilter(samplerCommon->mipfilter);
+  sampler->minfilter     = agk_minFilter(akSampler->minfilter);
+  sampler->magfilter     = agk_magFilter(akSampler->magfilter);
+  sampler->mipfilter     = agk_mipFilter(akSampler->mipfilter);
 
-  sampler->maxAnisotropy = samplerCommon->maxAnisotropy;
-  sampler->mipMaxLevel   = samplerCommon->mipMaxLevel;
-  sampler->mipMinLevel   = samplerCommon->mipMinLevel;
-  sampler->mipBias       = samplerCommon->mipBias;
+  sampler->maxAnisotropy = akSampler->maxAnisotropy;
+  sampler->mipMaxLevel   = akSampler->mipMaxLevel;
+  sampler->mipMinLevel   = akSampler->mipMinLevel;
+  sampler->mipBias       = akSampler->mipBias;
 
   tex->sampler = sampler;
   tex->image   = glimage;
