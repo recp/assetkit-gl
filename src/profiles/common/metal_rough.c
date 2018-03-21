@@ -6,6 +6,7 @@
  */
 
 #include "metal_rough.h"
+#include "color_or_tex.h"
 
 GkMaterial*
 agk_metalRough(AkContext           * __restrict actx,
@@ -22,6 +23,21 @@ agk_metalRough(AkContext           * __restrict actx,
   metalRough->roughness     = akmat->roughness;
   metalRough->albedoMap     = agk_loadTexture(actx, akmat->baseColorTex);
   metalRough->metalRoughMap = agk_loadTexture(actx, akmat->metalRoughTex);
+
+  /* Other Properties */
+
+  if (akmat->base.emission)
+    metalRough->base.emission = agk_colorOrTex(actx, akmat->base.emission);
+
+  if (akmat->base.occlusion) {
+    GkOcclusion *occlusion;
+
+    occlusion           = calloc(1, sizeof(*occlusion));
+    occlusion->tex      = agk_loadTexture(actx, akmat->base.occlusion->tex);
+    occlusion->strength = akmat->base.occlusion->strength;
+
+    metalRough->base.occlusion = occlusion;
+  }
 
   material->technique = &metalRough->base;
   return material;
