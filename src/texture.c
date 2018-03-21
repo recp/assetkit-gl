@@ -11,7 +11,7 @@
 
 GkTexture*
 agk_loadTexture(AkContext   * __restrict actx,
-                AkFxTexture * __restrict texref) {
+                AkTextureRef * __restrict texref) {
   AkNewParam  *newparam;
   AkSampler   *akSampler;
   GkSampler   *sampler;

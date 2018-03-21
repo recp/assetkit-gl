@@ -17,20 +17,20 @@ agk_profileCommon(AgkContext  * __restrict ctx,
                   GkMaterial ** __restrict dest);
 
 GkMaterial*
-agk_phong(AkContext  * __restrict actx,
-          AkPhong    * __restrict phong);
+agk_phong(AkContext           * __restrict actx,
+          AkTechniqueFxCommon * __restrict phong);
 
 GkMaterial*
-agk_blinn(AkContext  * __restrict actx,
-          AkBlinn    * __restrict blinn);
+agk_blinn(AkContext           * __restrict actx,
+          AkTechniqueFxCommon * __restrict blinn);
 
 GkMaterial*
-agk_lambert(AkContext  * __restrict actx,
-            AkLambert  * __restrict lambert);
+agk_lambert(AkContext           * __restrict actx,
+            AkTechniqueFxCommon * __restrict lambert);
 
 GkMaterial*
-agk_constant(AkContext    * __restrict actx,
-             AkConstantFx * __restrict constant);
+agk_constant(AkContext           * __restrict actx,
+             AkTechniqueFxCommon * __restrict constant);
 
 GkMaterial*
 agk_metalRough(AkContext           * __restrict actx,

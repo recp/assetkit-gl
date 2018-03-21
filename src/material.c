@@ -50,17 +50,14 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
       effect = ak_instanceObject(&material->effect->base);
 
       /* TODO: other profiles */
-      ret = agk_profileCommon(ctx,
-                              &actx,
-                              effect,
-                              &glmaterial);
+      ret = agk_profileCommon(ctx, &actx, effect, &glmaterial);
     }
 
     /* there is symbol, bind only to specified primitive */
     if (materialInst->symbol) {
       AkMapItem *mi;
-      mi = ak_map_find(geom->materialMap,
-                       (void *)materialInst->symbol);
+      mi = ak_map_find(geom->materialMap, (void *)materialInst->symbol);
+
       while (mi) {
         AkMeshPrimitive *prim;
         GkPrimInst      *glprimInst;
@@ -77,8 +74,10 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
             bvi = materialInst->bindVertexInput;
             while (bvi) {
               AkInputBasic *input;
+
               if (!bvi->semantic)
                 goto cont;
+
               input = ak_meshInputGet(prim,
                                       bvi->inputSemantic,
                                       bvi->inputSet);

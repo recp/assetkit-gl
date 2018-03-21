@@ -9,10 +9,10 @@
 #include <gk/texture.h>
 #include <cglm/cglm.h>
 
-GkColorOrTex*
+GkColorDesc*
 agk_colorOrTex(AkContext      * __restrict actx,
-               AkFxColorOrTex * __restrict src) {
-  GkColorOrTex *crtx;
+               AkColorDesc * __restrict src) {
+  GkColorDesc *crtx;
 
   crtx = calloc(1, sizeof(*crtx));
   if (src->color) {

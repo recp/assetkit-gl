@@ -21,8 +21,8 @@ agk_profileCommon(AgkContext  * __restrict ctx,
   AkProfileCommon      *profile;
   AkTechniqueFx        *tfx;
   GkMaterial           *material;
-  AkEffectCmnTechnique *technBase;
-  const char           *subrtn;
+  GkTechnique          *gltechn;
+  AkTechniqueFxCommon  *techn;
 
   /* find profile common */
   profilei = effect->profile;
@@ -37,45 +37,62 @@ agk_profileCommon(AgkContext  * __restrict ctx,
     return AK_EFOUND;
   }
 
-  material = NULL;
+  material = calloc(1, sizeof(*material));
   profile  = (AkProfileCommon *)profilei;
   tfx      = profile->technique;
 
-  if (tfx->metallicRoughness) {
-    material = agk_metalRough(actx, tfx->metallicRoughness);
-    technBase = &tfx->metallicRoughness->base;
-    subrtn    = "mtlrough";
-  } else if (tfx->phong) {
-    material  = agk_phong(actx, tfx->phong);
-    technBase = &tfx->phong->base;
-    subrtn    = "phong";
-  } else if (tfx->blinn) {
-    material  = agk_blinn(actx, tfx->blinn);
-    technBase = &tfx->blinn->base;
-    subrtn    = "blinn";
-  } else if (tfx->lambert) {
-    material  = agk_lambert(actx, tfx->lambert);
-    technBase = &tfx->lambert->base;
-    subrtn    = "lambert";
-  } else if (tfx->constant) {
-    material  = agk_constant(actx, tfx->constant);
-    technBase = &tfx->constant->base;
-    subrtn    = "constant";
-  } else {
-    goto ret;
+  techn   = tfx->common;
+
+  switch (tfx->common->type) {
+    case AK_MATERIAL_METALLIC_ROUGHNESS:
+      material = agk_metalRough(actx, techn);
+      break;
+    case AK_MATERIAL_PHONG:
+      material  = agk_phong(actx, techn);
+      break;
+    case AK_MATERIAL_BLINN:
+      material  = agk_blinn(actx, techn);
+      break;
+    case AK_MATERIAL_LAMBERT:
+      material  = agk_lambert(actx, techn);
+      break;
+    case AK_MATERIAL_CONSTANT:
+      material  = agk_constant(actx, techn);
+      break;
+    default:
+      goto ret;
   }
+
+  gltechn = material->technique;
+
+//  if (tfx->metallicRoughness) {
+//    material  = agk_metalRough(actx, tfx->metallicRoughness);
+//    technBase = &tfx->metallicRoughness->base;
+//  } else if (tfx->phong) {
+//    material  = agk_phong(actx, tfx->phong);
+//    technBase = &tfx->phong->base;
+//  } else if (tfx->blinn) {
+//    material  = agk_blinn(actx, tfx->blinn);
+//    technBase = &tfx->blinn->base;
+//  } else if (tfx->lambert) {
+//    material  = agk_lambert(actx, tfx->lambert);
+//    technBase = &tfx->lambert->base;
+//  } else if (tfx->constant) {
+//    material  = agk_constant(actx, tfx->constant);
+//    technBase = &tfx->constant->base;
+//  } else {
+//    goto ret;
+//  }
+
+  if (techn->indexOfRefraction)
+    material->indexOfRefraction = *techn->indexOfRefraction->val;
   
-  material->technique->subroutine = strdup(subrtn);
-  
-  if (technBase->indexOfRefraction)
-    material->indexOfRefraction = *technBase->indexOfRefraction->val;
-  
-  if (technBase->transparent) {
+  if (techn->transparent) {
     AkTransparent *aktransp;
     GkTransparent *transp;
     
-    transp   = calloc(1, sizeof(*material->transparent));
-    aktransp = technBase->transparent;
+    transp   = calloc(1, sizeof(*gltechn->transparent));
+    aktransp = techn->transparent;
     
     if (aktransp->amount)
       transp->amount = *aktransp->amount->val;
@@ -89,15 +106,15 @@ agk_profileCommon(AgkContext  * __restrict ctx,
     transp->mode   = GK_ALPHA_BLEND;
     transp->opaque = agk_opaque(aktransp->opaque);
 
-    material->transparent = transp;
+    gltechn->transparent = transp;
   }
   
-  if (technBase->reflective) {
+  if (techn->reflective) {
     AkReflective *akrefl;
     GkReflective *refl;
-    
+
     refl   = calloc(1, sizeof(*refl));
-    akrefl = technBase->reflective;
+    akrefl = techn->reflective;
     
     if (akrefl->amount)
       refl->amount = *akrefl->amount->val;
@@ -105,7 +122,7 @@ agk_profileCommon(AgkContext  * __restrict ctx,
     if (akrefl->color)
       refl->color = agk_colorOrTex(actx, akrefl->color);
     
-    material->reflective = refl;
+    gltechn->reflective = refl;
   }
   
 ret:

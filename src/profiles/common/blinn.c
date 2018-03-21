@@ -11,10 +11,10 @@
 #include <string.h>
 
 GkMaterial*
-agk_blinn(AkContext  * __restrict actx,
-          AkBlinn    * __restrict blinn) {
+agk_blinn(AkContext           * __restrict actx,
+          AkTechniqueFxCommon * __restrict blinn) {
   GkMaterial *material;
-  GkBlinn    *glblinn;
+  GkTechnique *glblinn;
 
   material = calloc(1, sizeof(*material));
   glblinn  = gkMaterialNewBlinn();
@@ -36,6 +36,6 @@ agk_blinn(AkContext  * __restrict actx,
 
   /* TODO: read param later */
 
-  material->technique = &glblinn->base;
+  material->technique = glblinn;
   return material;
 }

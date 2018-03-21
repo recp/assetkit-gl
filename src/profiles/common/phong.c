@@ -11,10 +11,10 @@
 #include <string.h>
 
 GkMaterial*
-agk_phong(AkContext  * __restrict actx,
-          AkPhong    * __restrict phong) {
-  GkMaterial *material;
-  GkPhong    *glphong;
+agk_phong(AkContext           * __restrict actx,
+          AkTechniqueFxCommon * __restrict phong) {
+  GkMaterial  *material;
+  GkTechnique *glphong;
 
   material = calloc(1, sizeof(*material));
   glphong  = gkMaterialNewPhong();
@@ -36,6 +36,6 @@ agk_phong(AkContext  * __restrict actx,
 
   /* TODO: read param later */
 
-  material->technique = &glphong->base;
+  material->technique = glphong;
   return material;
 }

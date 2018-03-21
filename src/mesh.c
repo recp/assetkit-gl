@@ -35,7 +35,7 @@ agk_loadSource(AgkContext   * __restrict ctx,
     return;
   
   ak_inputNameIndexed(inp, attribName);
-  
+
   type = agk_type(acc->itemTypeId);
   vi   = gkMakeVertexInput(attribName, type, 0);
 

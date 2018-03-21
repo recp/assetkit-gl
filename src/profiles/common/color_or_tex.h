@@ -10,8 +10,8 @@
 
 #include "../../../include/agk.h"
 
-GkColorOrTex*
+GkColorDesc*
 agk_colorOrTex(AkContext      * __restrict actx,
-               AkFxColorOrTex * __restrict src);
+               AkColorDesc * __restrict src);
 
 #endif /* agk_color_or_tex_h */

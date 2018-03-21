@@ -11,10 +11,10 @@
 #include <string.h>
 
 GkMaterial*
-agk_constant(AkContext    * __restrict actx,
-             AkConstantFx * __restrict constant) {
-  GkMaterial *material;
-  GkConstant *glconstant;
+agk_constant(AkContext           * __restrict actx,
+             AkTechniqueFxCommon * __restrict constant) {
+  GkMaterial  *material;
+  GkTechnique *glconstant;
 
   material   = calloc(1, sizeof(*material));
   glconstant = gkMaterialNewConstant();
@@ -24,6 +24,6 @@ agk_constant(AkContext    * __restrict actx,
 
   /* TODO: read param later */
 
-  material->technique = &glconstant->base;
+  material->technique = glconstant;
   return material;
 }

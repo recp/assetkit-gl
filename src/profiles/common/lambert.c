@@ -11,10 +11,10 @@
 #include <string.h>
 
 GkMaterial*
-agk_lambert(AkContext  * __restrict actx,
-            AkLambert  * __restrict lambert) {
-  GkMaterial *material;
-  GkLambert  *gllambert;
+agk_lambert(AkContext           * __restrict actx,
+            AkTechniqueFxCommon * __restrict lambert) {
+  GkMaterial  *material;
+  GkTechnique *gllambert;
 
   material  = calloc(1, sizeof(*material));
   gllambert = gkMaterialNewLambert();
@@ -30,6 +30,6 @@ agk_lambert(AkContext  * __restrict actx,
 
   /* TODO: read param later */
 
-  material->technique = &gllambert->base;
+  material->technique = gllambert;
   return material;
 }
