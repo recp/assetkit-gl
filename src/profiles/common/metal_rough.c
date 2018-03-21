@@ -39,6 +39,16 @@ agk_metalRough(AkContext           * __restrict actx,
     metalRough->base.occlusion = occlusion;
   }
 
+  if (akmat->base.normal) {
+    GkNormalMap *normal;
+
+    normal        = calloc(1, sizeof(*normal));
+    normal->tex   = agk_loadTexture(actx, akmat->base.normal->tex);
+    normal->scale = akmat->base.normal->scale;
+
+    metalRough->base.normal = normal;
+  }
+
   material->technique = &metalRough->base;
   return material;
 }
