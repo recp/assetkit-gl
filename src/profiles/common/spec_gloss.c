@@ -9,25 +9,25 @@
 #include "color_or_tex.h"
 
 GkMaterial*
-agk_metalRough(AkContext           * __restrict actx,
-               AkMetallicRoughness * __restrict akmat) {
+agk_specGloss(AkContext            * __restrict actx,
+              AkSpecularGlossiness * __restrict akmat) {
   GkMaterial   *material;
-  GkMetalRough *metalRough;
+  GkSpecGloss  *specGloss;
 
-  material   = calloc(1, sizeof(*material));
-  metalRough = gkMaterialNewMetalRough();
+  material  = calloc(1, sizeof(*material));
+  specGloss = gkMaterialNewSpecGloss();
 
-  glm_vec4_copy(akmat->baseColor.vec, metalRough->albedo.vec);
+  glm_vec4_copy(akmat->diffuse.vec,  specGloss->diffuse.vec);
+  glm_vec4_copy(akmat->specular.vec, specGloss->specular.vec);
 
-  metalRough->metallic      = akmat->metallic;
-  metalRough->roughness     = akmat->roughness;
-  metalRough->albedoMap     = agk_loadTexture(actx, akmat->baseColorTex);
-  metalRough->metalRoughMap = agk_loadTexture(actx, akmat->metalRoughTex);
+  specGloss->gloss        = akmat->glossiness;
+  specGloss->diffuseMap   = agk_loadTexture(actx, akmat->diffuseTex);
+  specGloss->specGlossMap = agk_loadTexture(actx, akmat->specGlossTex);
 
   /* Other Properties */
 
   if (akmat->base.emission)
-    metalRough->base.emission = agk_colorOrTex(actx, akmat->base.emission);
+    specGloss->base.emission = agk_colorOrTex(actx, akmat->base.emission);
 
   if (akmat->base.occlusion) {
     GkOcclusion *occlusion;
@@ -36,7 +36,7 @@ agk_metalRough(AkContext           * __restrict actx,
     occlusion->tex      = agk_loadTexture(actx, akmat->base.occlusion->tex);
     occlusion->strength = akmat->base.occlusion->strength;
 
-    metalRough->base.occlusion = occlusion;
+    specGloss->base.occlusion = occlusion;
   }
 
   if (akmat->base.normal) {
@@ -46,9 +46,9 @@ agk_metalRough(AkContext           * __restrict actx,
     normal->tex   = agk_loadTexture(actx, akmat->base.normal->tex);
     normal->scale = akmat->base.normal->scale;
 
-    metalRough->base.normal = normal;
+    specGloss->base.normal = normal;
   }
 
-  material->technique = &metalRough->base;
+  material->technique = &specGloss->base;
   return material;
 }

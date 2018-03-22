@@ -36,4 +36,8 @@ GkMaterial*
 agk_metalRough(AkContext           * __restrict actx,
                AkMetallicRoughness * __restrict akmat);
 
+GkMaterial*
+agk_specGloss(AkContext            * __restrict actx,
+              AkSpecularGlossiness * __restrict akmat);
+
 #endif /* agk_profile_common_h */
