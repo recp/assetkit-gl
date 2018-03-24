@@ -17,11 +17,11 @@ agk_metalRough(AkContext           * __restrict actx,
   material   = calloc(1, sizeof(*material));
   metalRough = gkMaterialNewMetalRough();
 
-  glm_vec4_copy(akmat->baseColor.vec, metalRough->albedo.vec);
+  glm_vec4_copy(akmat->albedo.vec, metalRough->albedo.vec);
 
   metalRough->metallic      = akmat->metallic;
   metalRough->roughness     = akmat->roughness;
-  metalRough->albedoMap     = agk_loadTexture(actx, akmat->baseColorTex);
+  metalRough->albedoMap     = agk_loadTexture(actx, akmat->albedoTex);
   metalRough->metalRoughMap = agk_loadTexture(actx, akmat->metalRoughTex);
 
   /* Other Properties */

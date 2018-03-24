@@ -16,9 +16,11 @@ AkResult
 agk_loadNode(AgkContext * __restrict ctx,
              AkNode     * __restrict node,
              GkNode    ** __restrict dest) {
-  GkNode *glnode;
+  AkInstanceBase *instNode;
+  GkNode         *glnode;
+
   glnode = gkAllocNode(ctx->scene);
-  
+
   if (node->matrix) {
     gkMakeNodeTransform(ctx->scene, glnode);
     glm_mat4_copy(node->matrix->val, glnode->trans->local);
@@ -32,7 +34,7 @@ agk_loadNode(AgkContext * __restrict ctx,
     gkMakeNodeTransform(ctx->scene, glnode);
     agk_loadTransforms(node, glnode->trans);
     /* ak_transformCombine(node, glnode->trans->local[0]);
-       glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID; 
+       glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID;
      */
   }
 
@@ -114,19 +116,25 @@ agk_loadNode(AgkContext * __restrict ctx,
     } while (nodei);
   }
 
-  /* append instance node as child node,
-     todo: this behavior may be changed */
-  if (node->node) {
-    AkNode *nodei;
-    if ((nodei = ak_instanceObjectNode(node))) {
-      GkNode *inst;
-      agk_loadNode(ctx, nodei, &inst);
+  /* Append instance node as child node,
 
-      if (node->chld)
-      inst->next   = glnode->chld;
-      glnode->chld = inst;
-      inst->parent = glnode;
-    }
+     TODO: this behavior may be changed in the future,
+     because gk may support node instances */
+  if ((instNode = (AkInstanceBase *)node->node)) {
+    AkNode *nodei;
+
+    do {
+      if ((nodei = ak_instanceObject(instNode))) {
+        GkNode *inst;
+        agk_loadNode(ctx, nodei, &inst);
+
+        inst->next   = glnode->chld;
+        glnode->chld = inst;
+        inst->parent = glnode;
+      }
+
+      instNode = instNode->next;
+    } while (instNode);
   }
 
   *dest = glnode;
