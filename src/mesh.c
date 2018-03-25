@@ -8,7 +8,6 @@
 #include "../include/agk.h"
 #include "enum.h"
 
-#include <assetkit.h>
 #include <gk/gk.h>
 #include <gk/vertex.h>
 

@@ -9,7 +9,6 @@
 #include "transform.h"
 #include <stdlib.h>
 #include <assert.h>
-#include <assetkit.h>
 #include <gk/gk.h>
 
 AkResult

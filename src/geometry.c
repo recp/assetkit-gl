@@ -6,7 +6,6 @@
  */
 
 #include "../include/agk.h"
-#include <assetkit.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <gk/gk.h>

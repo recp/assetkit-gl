@@ -12,7 +12,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include <assetkit.h>
 #include <gk/gk.h>
 #include <cglm/cglm.h>
 

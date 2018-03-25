@@ -8,7 +8,6 @@
 #include "../include/agk.h"
 #include <stdlib.h>
 #include <assert.h>
-#include <assetkit.h>
 #include <gk/gk.h>
 #include <math.h>
 #include <string.h>

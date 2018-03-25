@@ -24,7 +24,7 @@ extern "C" {
 #  include <GL/gl.h>
 #endif
 
-#include "assetkit.h"
+#include <ak/assetkit.h>
 #include <gk/gk.h>
 
 typedef struct AgkContext {
