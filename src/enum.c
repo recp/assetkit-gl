@@ -150,10 +150,13 @@ agk_opaque(AkOpaque opaque) {
   GkOpaque glOpaque;
 
   switch (opaque) {
+    case AK_OPAQUE_OPAQUE:   glOpaque = GK_OPAQUE_OPAQUE;       break;
     case AK_OPAQUE_A_ONE:    glOpaque = GK_OPAQUE_A_ONE;        break;
     case AK_OPAQUE_A_ZERO:   glOpaque = GK_OPAQUE_A_ZERO;       break;
     case AK_OPAQUE_RGB_ONE:  glOpaque = GK_OPAQUE_RGB_ONE;      break;
     case AK_OPAQUE_RGB_ZERO: glOpaque = GK_OPAQUE_RGB_ZERO;     break;
+    case AK_OPAQUE_BLEND:    glOpaque = GK_OPAQUE_BLEND;        break;
+    case AK_OPAQUE_MASK:     glOpaque = GK_OPAQUE_MASK;         break;
   }
 
   return glOpaque;
