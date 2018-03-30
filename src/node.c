@@ -22,8 +22,6 @@ agk_loadNode(AgkContext * __restrict ctx,
 
   if (node->matrix) {
     gkMakeNodeTransform(ctx->scene, glnode);
-    glm_mat4_copy(node->matrix->val, glnode->trans->local);
-    glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID;
 
     if (node->matrixWorld) {
       glm_mat4_copy(node->matrixWorld->val, glnode->trans->world);
@@ -31,6 +29,7 @@ agk_loadNode(AgkContext * __restrict ctx,
     }
   } else if (node->transform) {
     gkMakeNodeTransform(ctx->scene, glnode);
+    glnode->trans->flags &= ~GK_TRANSF_LOCAL_ISVALID;
     agk_loadTransforms(node, glnode->trans);
     /* ak_transformCombine(node, glnode->trans->local[0]);
        glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID;
