@@ -190,8 +190,10 @@ agk_loadMesh(AgkContext * __restrict ctx,
     prim->udata = (void *)(uintptr_t)glmodel->primc;
     glmodel->primc++;
 
-    glm_vec_copy(prim->bbox->min, glprim->bbox[0]);
-    glm_vec_copy(prim->bbox->max, glprim->bbox[1]);
+    if (prim->bbox) {
+      glm_vec_copy(prim->bbox->min, glprim->bbox[0]);
+      glm_vec_copy(prim->bbox->max, glprim->bbox[1]);
+    }
 
     prim = prim->next;
   }
@@ -200,8 +202,10 @@ agk_loadMesh(AgkContext * __restrict ctx,
   if (glmodel->primc < 1)
     goto err;
 
-  glm_vec_copy(mesh->bbox->min, glmodel->bbox[0]);
-  glm_vec_copy(mesh->bbox->max, glmodel->bbox[1]);
+  if (mesh->bbox) {
+    glm_vec_copy(mesh->bbox->min, glmodel->bbox[0]);
+    glm_vec_copy(mesh->bbox->max, glmodel->bbox[1]);
+  }
 
   *dest = glmodel;
 
