@@ -65,6 +65,7 @@ agk_profileCommon(AgkContext  * __restrict ctx,
       goto ret;
   }
 
+  material->doubleSided = techn->doubleSided;
   gltechn = material->technique;
 
   if (techn->indexOfRefraction)
