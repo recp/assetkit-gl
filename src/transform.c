@@ -140,6 +140,25 @@ again:
         glm_vec_copy(skew->aroundAxis, glskew->aroundAxis);
         break;
       }
+      case AK_TRANSFORM_QUAT: {
+        AkQuaternion *quat;
+        GkQuaternion *glquat;
+        quat = ak_objGet(transform);
+
+        glquat = malloc(sizeof(*glquat));
+        glquat->base.next = NULL;
+        glquat->base.prev = last;
+        glquat->base.type = GK_TRANS_QUAT;
+
+        last = &glquat->base;
+        if (last->prev)
+        last->prev->next = last;
+        if (!first)
+        first = last;
+
+        glm_vec4_copy(quat->val, glquat->value);
+        break;
+      }
     }
 
     transform = transform->next;
