@@ -72,9 +72,6 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
                  AkInstanceGeometry * __restrict geomInst,
                  GkModelInst        * __restrict modelInst);
 
-GkBBox*
-agk_bbox(AkBoundingBox * __restrict bbox);
-
 #ifdef __cplusplus
 }
 #endif

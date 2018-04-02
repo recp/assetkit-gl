@@ -41,9 +41,6 @@ agk_loadScene(GkContext *ctx,
   node    = visualScene->node;
   glnodei = &glscene->rootNode->chld;
 
-  if (visualScene->bbox)
-    glscene->bbox = agk_bbox(visualScene->bbox);
-
   if (node) {
     agkCtx           = calloc(1, sizeof(*agkCtx));
     agkCtx->bufftree = rb_newtree_ptr();
