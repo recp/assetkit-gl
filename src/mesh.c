@@ -108,23 +108,6 @@ agk_loadMesh(AgkContext * __restrict ctx,
     glGenVertexArrays(1, &glprim->vao);
     glBindVertexArray(glprim->vao);
 
-    /* vertices */
-    if (prim->vertices) {
-      vi = prim->vertices->input;
-
-      while (vi) {
-        source = ak_getObjectByUrl(&vi->source);
-        if (source && source->tcommon)
-          agk_loadSource(ctx,
-                         source->tcommon,
-                         glprim,
-                         vi,
-                         &inputIndex);
-
-        vi = vi->next;
-      }
-    }
-
     /* per-primitive inputs */
     input = prim->input;
     while (input) {
