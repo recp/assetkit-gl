@@ -111,12 +111,6 @@ agk_loadMesh(AgkContext * __restrict ctx,
     /* per-primitive inputs */
     input = prim->input;
     while (input) {
-      /* vertices are already processed, skip */
-      if (input->base.semantic == AK_INPUT_SEMANTIC_VERTEX) {
-        input = (AkInput *)input->base.next;
-        continue;
-      }
-
       source = ak_getObjectByUrl(&input->base.source);
       if (source && source->tcommon)
         agk_loadSource(ctx,
