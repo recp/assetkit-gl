@@ -21,7 +21,7 @@ void
 agk_loadSource(AgkContext   * __restrict ctx,
                AkAccessor   * __restrict acc,
                GkPrimitive  * __restrict glprim,
-               AkInputBasic * __restrict inp,
+               AkInput      * __restrict inp,
                uint32_t     * __restrict inputIndex) {
   AkBuffer      *akbuff;
   GkBuffer      *buff;
@@ -98,7 +98,6 @@ agk_loadMesh(AgkContext * __restrict ctx,
   prim = mesh->primitive;
   while (prim) {
     GkPrimitive  *glprim;
-    AkInputBasic *vi;
     AkInput      *input;
     AkSource     *source;
 
@@ -111,15 +110,15 @@ agk_loadMesh(AgkContext * __restrict ctx,
     /* per-primitive inputs */
     input = prim->input;
     while (input) {
-      source = ak_getObjectByUrl(&input->base.source);
+      source = ak_getObjectByUrl(&input->source);
       if (source && source->tcommon)
         agk_loadSource(ctx,
                        source->tcommon,
                        glprim,
-                       &input->base,
+                       input,
                        &inputIndex);
 
-      input = (AkInput *)input->base.next;
+      input = input->next;
     }
 
     /* indexed draw */

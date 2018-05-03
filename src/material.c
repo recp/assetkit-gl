@@ -72,7 +72,7 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
             /* bind vertex input */
             bvi = materialInst->bindVertexInput;
             while (bvi) {
-              AkInputBasic *input;
+              AkInput *input;
 
               if (!bvi->semantic)
                 goto cont;
