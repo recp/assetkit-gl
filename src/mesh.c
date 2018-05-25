@@ -168,6 +168,8 @@ agk_loadMesh(AgkContext * __restrict ctx,
       glm_vec_copy(prim->bbox->max, glprim->bbox[1]);
     }
 
+    glm_vec4_copy(prim->center, glprim->center);
+
     prim = prim->next;
   }
 
