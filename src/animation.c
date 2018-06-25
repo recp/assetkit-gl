@@ -43,8 +43,8 @@ agk_loadAnimations(AgkContext  * __restrict ctx) {
         AkSource      *src;
 
         glSampler               = calloc(1, sizeof(*glSampler));
-        glSampler->preBehavior  = (GkSamplerBehavior)sampler->preBehavior;
-        glSampler->postBehavior = (GkSamplerBehavior)sampler->postBehavior;
+        glSampler->preBehavior  = (GkSamplerBehavior)sampler->pre;
+        glSampler->postBehavior = (GkSamplerBehavior)sampler->post;
 
         inp = sampler->input;
         while (inp) {
