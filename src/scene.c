@@ -30,10 +30,10 @@ agk_loadScene(GkContext *ctx,
   if (!scene->visualScene)
     return AK_ERR;
 
-  glscene      = gkAllocScene(ctx);
-  visualScene  = ak_instanceObject(scene->visualScene);
-  
-  glnode = calloc(1, sizeof(*glnode));
+  glscene     = gkAllocScene(ctx);
+  visualScene = ak_instanceObject(scene->visualScene);
+  glnode      = gkAllocNode(glscene);
+
   gkMakeNodeTransform(glscene, glnode);
 
   glscene->rootNode = glnode;
