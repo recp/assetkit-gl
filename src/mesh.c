@@ -24,7 +24,7 @@ agk_loadSource(AgkContext   * __restrict ctx,
                AkInput      * __restrict inp,
                uint32_t     * __restrict inputIndex) {
   AkBuffer      *akbuff;
-  GkBuffer      *buff;
+  GkGPUBuffer   *buff;
   GkVertexInput *vi;
   GLenum         type;
   char           attribName[64];
@@ -123,7 +123,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
 
     /* indexed draw */
     if (prim->indices) {
-      GkBuffer *ibuff;
+      GkGPUBuffer *ibuff;
 
       glprim->bufc++;
 
