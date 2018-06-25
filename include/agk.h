@@ -72,6 +72,9 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
                  AkInstanceGeometry * __restrict geomInst,
                  GkModelInst        * __restrict modelInst);
 
+void
+agk_loadAnimations(AgkContext * __restrict ctx);
+
 #ifdef __cplusplus
 }
 #endif
