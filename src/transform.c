@@ -24,7 +24,7 @@ again:
   transform = transformGroup;
   while (transform) {
     switch (transform->type) {
-      case AK_TRANSFORM_MATRIX: {
+      case AKT_MATRIX: {
         AkMatrix *matrix;
         GkMatrix *glmatrix;
         matrix = ak_objGet(transform);
@@ -43,7 +43,7 @@ again:
         glm_mat4_copy(matrix->val, glmatrix->value);
         break;
       }
-      case AK_TRANSFORM_LOOKAT: {
+      case AKT_LOOKAT: {
         AkLookAt *lookAt;
         GkLookAt *gllookat;
         lookAt = ak_objGet(transform);
@@ -62,7 +62,7 @@ again:
         memcpy(gllookat->value, lookAt->val, sizeof(vec3) * 3);
         break;
       }
-      case AK_TRANSFORM_ROTATE: {
+      case AKT_ROTATE: {
         AkRotate *rotate;
         GkRotate *glrotate;
         rotate = ak_objGet(transform);
@@ -81,7 +81,7 @@ again:
         glm_vec4_copy(rotate->val, glrotate->value);
         break;
       }
-      case AK_TRANSFORM_SCALE: {
+      case AKT_SCALE: {
         AkScale *scale;
         GkScale *glscale;
         scale = ak_objGet(transform);
@@ -100,7 +100,7 @@ again:
         glm_vec_copy(scale->val, glscale->value);
         break;
       }
-      case AK_TRANSFORM_TRANSLATE: {
+      case AKT_TRANSLATE: {
         AkTranslate *translate;
         GkTranslate *gltranslate;
         translate = ak_objGet(transform);
@@ -119,7 +119,7 @@ again:
         glm_vec_copy(translate->val, gltranslate->value);
         break;
       }
-      case AK_TRANSFORM_SKEW: {
+      case AKT_SKEW: {
         AkSkew *skew;
         GkSkew *glskew;
         skew = ak_objGet(transform);
@@ -140,7 +140,7 @@ again:
         glm_vec_copy(skew->aroundAxis, glskew->aroundAxis);
         break;
       }
-      case AK_TRANSFORM_QUAT: {
+      case AKT_QUATERNION: {
         AkQuaternion *quat;
         GkQuaternion *glquat;
         quat = ak_objGet(transform);
