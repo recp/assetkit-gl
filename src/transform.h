@@ -16,7 +16,8 @@
 #include <cglm/cglm.h>
 
 void
-agk_loadTransforms(AkNode      * __restrict node,
+agk_loadTransforms(AgkContext  * __restrict ctx,
+                   AkNode      * __restrict node,
                    GkTransform * __restrict gltrans);
 
 #endif /* agk_transform_h */

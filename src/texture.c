@@ -24,7 +24,7 @@ agk_loadTexture(AkContext   * __restrict actx,
   if (!texref)
     return NULL;
 
-  newparam = ak_sid_resolve(actx, texref->texture);
+  newparam = ak_sid_resolve(actx, texref->texture, NULL);
 
   if (!newparam || !newparam->val)
     return NULL;

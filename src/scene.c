@@ -44,6 +44,7 @@ agk_loadScene(GkContext *ctx,
   if (node) {
     agkCtx           = calloc(1, sizeof(*agkCtx));
     agkCtx->bufftree = rb_newtree_ptr();
+    agkCtx->objMap   = rb_newtree_ptr();
     agkCtx->doc      = doc;
     agkCtx->usage    = usage;
     agkCtx->scene    = glscene;

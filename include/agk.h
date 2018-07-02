@@ -30,6 +30,7 @@ extern "C" {
 typedef struct AgkContext {
   AkDoc     *doc;
   RBTree    *bufftree;
+  RBTree    *objMap;
   GkScene   *scene;
   GkContext *ctx;
   GLenum     usage;

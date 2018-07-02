@@ -9,7 +9,8 @@
 #include <ak/transform.h>
 
 void
-agk_loadTransforms(AkNode      * __restrict node,
+agk_loadTransforms(AgkContext  * __restrict ctx,
+                   AkNode      * __restrict node,
                    GkTransform * __restrict gltrans) {
   AkObject        *transform, *transformGroup;
   GkTransformItem *first, *last;
@@ -152,14 +153,16 @@ again:
 
         last = &glquat->base;
         if (last->prev)
-        last->prev->next = last;
+          last->prev->next = last;
         if (!first)
-        first = last;
+          first = last;
 
         glm_vec4_copy(quat->val, glquat->value);
         break;
       }
     }
+
+    rb_insert(ctx->objMap, transform, last);
 
     transform = transform->next;
   }
