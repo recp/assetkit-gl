@@ -16,8 +16,21 @@
 #include <stdint.h>
 #include <limits.h>
 
+GkType
+agk_targetType(size_t stride) {
+  switch (stride) {
+    case 1:
+      return GKT_FLOAT;
+    case 3:
+      return GKT_FLOAT3;
+    default: break;
+  }
+
+  return GKT_FLOAT;
+}
+
 void
-agk_loadAnimations(AgkContext  * __restrict ctx) {
+agk_loadAnimations(AgkContext * __restrict ctx) {
   AkDoc       *doc;
   AkAnimation *anim;
   AkLibItem   *animItem;
@@ -62,7 +75,8 @@ agk_loadAnimations(AgkContext  * __restrict ctx) {
 
           memcpy(glbuff->data, buff->data, buff->length);
 
-          glbuff->count = glbuff->len / sizeof(float); /* TODO: */
+          glbuff->count  = glbuff->len / sizeof(float); /* TODO: */
+          glbuff->stride = src->tcommon->bound;
 
           switch (inp->semantic) {
             case AK_INPUT_SEMANTIC_INTERPOLATION: glSampler->interp     = glbuff; break;
@@ -92,7 +106,7 @@ agk_loadAnimations(AgkContext  * __restrict ctx) {
           glchannel             = calloc(1, sizeof(*glchannel));
           glchannel->sampler    = rb_find(samplerMap, sampler);
           glchannel->target     = gltarget + attribOff;
-          glchannel->targetType = GKT_FLOAT;
+          glchannel->targetType = agk_targetType(glchannel->sampler->output->stride);
           glanim->channel       = glchannel;
 
           inp = glchannel->sampler->input;
