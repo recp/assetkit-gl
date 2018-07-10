@@ -62,15 +62,14 @@ agk_loadAnimations(AgkContext  * __restrict ctx) {
 
           memcpy(glbuff->data, buff->data, buff->length);
 
+          glbuff->count = glbuff->len / sizeof(float); /* TODO: */
+
           switch (inp->semantic) {
-            case AK_INPUT_SEMANTIC_INTERPOLATION: glSampler->interp = glbuff; break;
-            case AK_INPUT_SEMANTIC_INPUT:
-              glSampler->input      = glbuff;
-              glanim->base.duration = *(float *)((char *)glbuff->data + glbuff->len - sizeof(float));
-              break;
-            case AK_INPUT_SEMANTIC_OUTPUT:      glSampler->output     = glbuff; break;
-            case AK_INPUT_SEMANTIC_IN_TANGENT:  glSampler->inTangent  = glbuff; break;
-            case AK_INPUT_SEMANTIC_OUT_TANGENT: glSampler->outTangent = glbuff; break;
+            case AK_INPUT_SEMANTIC_INTERPOLATION: glSampler->interp     = glbuff; break;
+            case AK_INPUT_SEMANTIC_INPUT:         glSampler->input      = glbuff; break;
+            case AK_INPUT_SEMANTIC_OUTPUT:        glSampler->output     = glbuff; break;
+            case AK_INPUT_SEMANTIC_IN_TANGENT:    glSampler->inTangent  = glbuff; break;
+            case AK_INPUT_SEMANTIC_OUT_TANGENT:   glSampler->outTangent = glbuff; break;
             default: free(glbuff); break;
           }
           inp = inp->next;
@@ -82,6 +81,7 @@ agk_loadAnimations(AgkContext  * __restrict ctx) {
       if ((channel = anim->channel)) {
         GkChannel *glchannel;
         char      *target, *gltarget;
+        GkBuffer  *inp;
         uint32_t   attribOff;
 
         target = ak_sid_resolve(&actx, channel->target, &sidAttrib);
@@ -94,6 +94,14 @@ agk_loadAnimations(AgkContext  * __restrict ctx) {
           glchannel->target     = gltarget + attribOff;
           glchannel->targetType = GKT_FLOAT;
           glanim->channel       = glchannel;
+
+          inp = glchannel->sampler->input;
+
+          glchannel->endTime   = 0.1 + *(float *)((char *)inp->data + inp->len - sizeof(float));
+          glchannel->beginTime = 0.1 + *(float *)inp->data;
+          glchannel->duration  = glchannel->endTime - glchannel->beginTime;
+
+          glanim->channelCount++;
 
           if (ak_typeid(target) == AKT_OBJECT) {
             AkObject *obj;
