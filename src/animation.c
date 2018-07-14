@@ -23,6 +23,8 @@ agk_targetType(size_t stride) {
       return GKT_FLOAT;
     case 3:
       return GKT_FLOAT3;
+    case 4:
+      return GKT_FLOAT4;
     default: break;
   }
 
@@ -98,48 +100,79 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
         GkBuffer  *inp;
         uint32_t   attribOff;
 
-        target = ak_sid_resolve(&actx, channel->target, &sidAttrib);
-        if (target) {
-          gltarget              = rb_find(ctx->objMap, target);
-          attribOff             = ak_sid_attr_offset(sidAttrib);
+        if (channel->target) {
+          target = ak_sid_resolve(&actx, channel->target, &sidAttrib);
+          if (target) {
+            gltarget              = rb_find(ctx->objMap, target);
+            attribOff             = ak_sid_attr_offset(sidAttrib);
+            sampler               = ak_getObjectByUrl(&channel->source);
+            glchannel             = calloc(1, sizeof(*glchannel));
+            glchannel->sampler    = rb_find(samplerMap, sampler);
+            glchannel->target     = gltarget + attribOff;
+            glchannel->targetType = agk_targetType(glchannel->sampler->output->stride);
+            glanim->channel       = glchannel;
+
+            inp                  = glchannel->sampler->input;
+            glchannel->endTime   = *(float *)((char *)inp->data + inp->len - sizeof(float));
+            glchannel->beginTime = *(float *)inp->data;
+            glchannel->duration  = glchannel->endTime - glchannel->beginTime;
+
+            glanim->channelCount++;
+
+            if (ak_typeid(target) == AKT_OBJECT) {
+              AkObject *obj;
+
+              obj = (void *)target;
+              switch (obj->type) {
+                case AKT_TRANSLATE:
+                case AKT_ROTATE:
+                case AKT_MATRIX:
+                case AKT_SCALE:
+                case AKT_SKEW: {
+                  AkNode *node;
+
+                  node = ak_mem_parent(target); /* TODO Validate ? */
+                  glchannel->node             = rb_find(ctx->objMap, node);
+                  glchannel->isTransform      = true;
+                  glchannel->isLocalTransform = true;
+                  break;
+                }
+                default:
+                  break;
+              }
+            }
+          }
+        }
+
+        /* pre-resolved e.g. glTF */
+        else if (channel->resolvedTarget){
+          AkNode *node;
+
+          node = ak_mem_parent(channel->resolvedTarget);
+
+          gltarget              = rb_find(ctx->objMap, channel->resolvedTarget);
           sampler               = ak_getObjectByUrl(&channel->source);
           glchannel             = calloc(1, sizeof(*glchannel));
           glchannel->sampler    = rb_find(samplerMap, sampler);
-          glchannel->target     = gltarget + attribOff;
+          glchannel->target     = gltarget;
+          glchannel->property   = (GkTargetPropertyType)channel->targetType;
           glchannel->targetType = agk_targetType(glchannel->sampler->output->stride);
           glanim->channel       = glchannel;
 
-          inp = glchannel->sampler->input;
-
-          glchannel->endTime   = 0.1 + *(float *)((char *)inp->data + inp->len - sizeof(float));
-          glchannel->beginTime = 0.1 + *(float *)inp->data;
-          glchannel->duration  = glchannel->endTime - glchannel->beginTime;
+          inp                   = glchannel->sampler->input;
+          glchannel->endTime    = *(float *)((char *)inp->data + inp->len - sizeof(float));
+          glchannel->beginTime  = *(float *)inp->data;
+          glchannel->duration   = glchannel->endTime - glchannel->beginTime;
 
           glanim->channelCount++;
 
-          if (ak_typeid(target) == AKT_OBJECT) {
-            AkObject *obj;
+          glchannel->node             = rb_find(ctx->objMap, node);
+          glchannel->isTransform      = true;
+          glchannel->isLocalTransform = true;
 
-            obj = (void *)target;
-            switch (obj->type) {
-              case AKT_TRANSLATE:
-              case AKT_ROTATE:
-              case AKT_MATRIX:
-              case AKT_SCALE:
-              case AKT_SKEW: {
-                AkNode *node;
-
-                node = ak_mem_parent(target); /* TODO Validate ? */
-                glchannel->node             = rb_find(ctx->objMap, node);
-                glchannel->isTransform      = true;
-                glchannel->isLocalTransform = true;
-                glchannel->target          += sizeof(GkTransformItem);
-                break;
-              }
-              default:
-                break;
-            }
-          }
+          if (glchannel->sampler
+              && sampler->uniInterpolation != AK_INTERPOLATION_UNKNOWN)
+            glchannel->sampler->uniInterp = (GkInterpType)sampler->uniInterpolation;
         }
       }
 

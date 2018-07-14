@@ -14,11 +14,12 @@ agk_loadTransforms(AgkContext  * __restrict ctx,
                    GkTransform * __restrict gltrans) {
   AkObject        *transform, *transformGroup;
   GkTransformItem *first, *last;
+  void            *transdata;
 
   if (!node->transform)
     return;
 
-  first = last = NULL;
+  first = last = transdata = NULL;
   transformGroup = node->transform->base;
 
 again:
@@ -41,6 +42,7 @@ again:
         if (!first)
           first = last;
 
+        transdata = &glmatrix->value;
         glm_mat4_copy(matrix->val, glmatrix->value);
         break;
       }
@@ -60,6 +62,7 @@ again:
         if (!first)
           first = last;
 
+        transdata = &gllookat->value;
         memcpy(gllookat->value, lookAt->val, sizeof(vec3) * 3);
         break;
       }
@@ -79,6 +82,7 @@ again:
         if (!first)
           first = last;
 
+        transdata = &glrotate->value;
         glm_vec4_copy(rotate->val, glrotate->value);
         break;
       }
@@ -98,6 +102,7 @@ again:
         if (!first)
           first = last;
 
+        transdata = &glscale->value;
         glm_vec_copy(scale->val, glscale->value);
         break;
       }
@@ -117,6 +122,7 @@ again:
         if (!first)
           first = last;
 
+        transdata = &gltranslate->value;
         glm_vec_copy(translate->val, gltranslate->value);
         break;
       }
@@ -136,7 +142,8 @@ again:
         if (!first)
           first = last;
 
-        glskew->angle =  skew->angle;
+        glskew->angle = skew->angle;
+
         glm_vec_copy(skew->rotateAxis, glskew->rotateAxis);
         glm_vec_copy(skew->aroundAxis, glskew->aroundAxis);
         break;
@@ -157,12 +164,13 @@ again:
         if (!first)
           first = last;
 
+        transdata = &glquat->value;
         glm_vec4_copy(quat->val, glquat->value);
         break;
       }
     }
 
-    rb_insert(ctx->objMap, transform, last);
+    rb_insert(ctx->objMap, transform, transdata);
 
     transform = transform->next;
   }
