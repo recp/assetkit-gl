@@ -61,6 +61,7 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
         do {
           GkAnimSampler *glSampler;
           GkBuffer      *glbuff;
+          AkAccessor    *acc;
           AkInput       *inp;
           AkSource      *src;
 
@@ -71,12 +72,16 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
           inp = sampler->input;
           while (inp) {
             src          = ak_getObjectByUrl(&inp->source);
-            buff         = ak_getObjectByUrl(&src->tcommon->source);
+            acc          = src->tcommon;
+            buff         = ak_getObjectByUrl(&acc->source);
             glbuff       = malloc(sizeof(*glbuff));
-            glbuff->data = malloc(buff->length);
-            glbuff->len  = buff->length;
+            glbuff->data = malloc(acc->byteLength);
+            glbuff->len  = acc->byteLength;
 
-            memcpy(glbuff->data, buff->data, buff->length);
+            /* TODO: check stride */
+            memcpy(glbuff->data,
+                   buff->data + acc->byteOffset,
+                   acc->byteLength);
 
             glbuff->count  = glbuff->len / sizeof(float); /* TODO: */
             glbuff->stride = src->tcommon->bound;
