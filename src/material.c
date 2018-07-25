@@ -17,23 +17,22 @@
 
 AkResult
 agk_loadMaterial(AgkContext         * __restrict ctx,
-                 AkInstanceGeometry * __restrict geomInst,
+                 AkGeometry         * __restrict geom,
+                 AkBindMaterial     * __restrict bindMaterial,
                  GkModelInst        * __restrict modelInst) {
   AkMaterial         *material;
   AkInstanceMaterial *materialInst;
 
-  materialInst = geomInst->bindMaterial->tcommon;
+  materialInst = bindMaterial->tcommon;
 
   while (materialInst) {
     GkMaterial *glmaterial;
-    AkGeometry *geom;
     AkHeap     *heap;
     AkContext   actx = {0};
     AkResult    ret;
 
     ret        = AK_ERR;
     glmaterial = NULL;
-    geom       = ak_instanceObject(&geomInst->base);
 
     heap                  = ak_heap_getheap(materialInst);
     actx.doc              = ak_heap_data(heap);

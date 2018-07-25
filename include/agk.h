@@ -70,7 +70,8 @@ agk_loadTexture(AkContext   * __restrict actx,
 
 AkResult
 agk_loadMaterial(AgkContext         * __restrict ctx,
-                 AkInstanceGeometry * __restrict geomInst,
+                 AkGeometry         * __restrict geom,
+                 AkBindMaterial     * __restrict bindMaterial,
                  GkModelInst        * __restrict modelInst);
 
 void

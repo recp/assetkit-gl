@@ -49,7 +49,7 @@ agk_loadNode(AgkContext * __restrict ctx,
     while (geomInst) {
       geom = ak_instanceObject(&geomInst->base);
       if (geom) {
-        ret  = agk_loadGeometry(ctx, geom, &model);
+        ret = agk_loadGeometry(ctx, geom, &model);
         if (ret == AK_OK) {
           modelInst       = gkMakeInstance(model);
           modelInst->next = glnode->model;
@@ -57,7 +57,7 @@ agk_loadNode(AgkContext * __restrict ctx,
 
           /* bind material */
           if (geomInst->bindMaterial)
-            agk_loadMaterial(ctx, geomInst, modelInst);
+            agk_loadMaterial(ctx, geom, geomInst->bindMaterial, modelInst);
         }
       }
       geomInst = (AkInstanceGeometry *)geomInst->base.next;
@@ -79,10 +79,7 @@ agk_loadNode(AgkContext * __restrict ctx,
         continue;
       }
 
-      ret   = agk_loadLight(ctx->doc,
-                             glnode,
-                             light,
-                             &gllight);
+      ret = agk_loadLight(ctx->doc, glnode, light, &gllight);
       if (ret == AK_OK) {
         gllight->next = glnode->light;
         glnode->light = gllight;
