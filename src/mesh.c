@@ -21,8 +21,7 @@ void
 agk_loadSource(AgkContext   * __restrict ctx,
                AkAccessor   * __restrict acc,
                GkPrimitive  * __restrict glprim,
-               AkInput      * __restrict inp,
-               uint32_t     * __restrict inputIndex) {
+               AkInput      * __restrict inp) {
   AkBuffer      *akbuff;
   GkGPUBuffer   *buff;
   GkVertexInput *vi;
@@ -72,14 +71,14 @@ agk_loadSource(AgkContext   * __restrict ctx,
     glBindBuffer(buff->target, buff->vbo);
   }
 
-  glVertexAttribPointer(*inputIndex,
+  glVertexAttribPointer(glprim->lastInputIndex,
                         acc->bound,
                         type,
                         GL_FALSE,
                         (GLsizei)acc->byteStride,
                         BUFFER_OFFSET(acc->byteOffset));
-  glEnableVertexAttribArray(*inputIndex);
-  (*inputIndex)++;
+  glEnableVertexAttribArray(glprim->lastInputIndex);
+  glprim->lastInputIndex++;
 }
 
 AkResult
@@ -88,7 +87,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
              GkModel   ** __restrict dest) {
   AkMeshPrimitive *prim;
   GkModel         *glmodel;
-  uint32_t         inputIndex, primc;
+  uint32_t         primc;
 
   primc   = mesh->primitiveCount;
   glmodel = calloc(1, sizeof(*glmodel) + sizeof(GkPrimitive) * primc);
@@ -101,9 +100,8 @@ agk_loadMesh(AgkContext * __restrict ctx,
     AkInput      *input;
     AkSource     *source;
 
-    inputIndex = 0;
-
     glprim = &glmodel->prims[glmodel->primc];
+
     glGenVertexArrays(1, &glprim->vao);
     glBindVertexArray(glprim->vao);
 
@@ -115,8 +113,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
         agk_loadSource(ctx,
                        source->tcommon,
                        glprim,
-                       input,
-                       &inputIndex);
+                       input);
 
       input = input->next;
     }
