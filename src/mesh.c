@@ -23,7 +23,7 @@ agk_loadSource(AgkContext   * __restrict ctx,
                GkPrimitive  * __restrict glprim,
                AkInput      * __restrict inp) {
   AkBuffer      *akbuff;
-  GkGPUBuffer   *buff;
+  GkGpuBuffer   *buff;
   GkVertexInput *vi;
   GLenum         type;
   char           attribName[64];
@@ -45,28 +45,11 @@ agk_loadSource(AgkContext   * __restrict ctx,
 
   buff = rb_find(ctx->bufftree, akbuff);
   if (!buff) {
-    glprim->bufc++;
-
-    buff = calloc(1, sizeof(*buff));
-    buff->size   = (GLsizei)akbuff->length;
-    buff->usage  = ctx->usage;
-    buff->type   = type;
-    buff->target = GL_ARRAY_BUFFER;
-
-    glGenBuffers(1, &buff->vbo);
-
-    glBindBuffer(buff->target, buff->vbo);
-    glBufferData(buff->target,
-                 buff->size,
-                 akbuff->data,
-                 ctx->usage);
+    buff = gkGpuBufferNew(ctx->ctx, GK_ARRAY, akbuff->length);
+    gkGpuBufferFeed(buff, ctx->usage, akbuff->data);
+    gkPrimAddBuffer(glprim, buff);
 
     rb_insert(ctx->bufftree, akbuff, buff);
-
-    if (glprim->bufs)
-      glprim->bufs->prev = buff;
-    buff->next   = glprim->bufs;
-    glprim->bufs = buff;
   } else {
     glBindBuffer(buff->target, buff->vbo);
   }
@@ -120,32 +103,16 @@ agk_loadMesh(AgkContext * __restrict ctx,
 
     /* indexed draw */
     if (prim->indices) {
-      GkGPUBuffer *ibuff;
+      GkGpuBuffer *ibuff;
 
-      glprim->bufc++;
+      ibuff = gkGpuBufferNew(ctx->ctx,
+                             GK_INDEX,
+                             prim->indices->count * sizeof(AkUInt));
+      gkGpuBufferFeed(ibuff, ctx->usage, prim->indices->items);
+      gkPrimAddBuffer(glprim, ibuff);
 
-      ibuff = calloc(1, sizeof(*ibuff));
-      ibuff->size   = (GLsizei)(prim->indices->count * sizeof(AkUInt));
-      ibuff->usage  = ctx->usage;
-      ibuff->type   = GL_UNSIGNED_INT;
-      ibuff->target = GL_ELEMENT_ARRAY_BUFFER;
-
-      glGenBuffers(1, &ibuff->vbo);
-
-      /* only one GL_ELEMENT_ARRAY_BUFFER for VAO */
-      glBindBuffer(ibuff->target, ibuff->vbo);
-      glBufferData(ibuff->target,
-                   ibuff->size,
-                   prim->indices->items,
-                   ibuff->usage);
-
-      glprim->count = (GLsizei)prim->indices->count;
+      glprim->count  = (GLsizei)prim->indices->count;
       glprim->flags |= GK_DRAW_ELEMENTS;
-
-      if (glprim->bufs)
-        glprim->bufs->prev = ibuff;
-      ibuff->next  = glprim->bufs;
-      glprim->bufs = ibuff;
     }
 
     /* els direct draw */
