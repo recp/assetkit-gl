@@ -26,11 +26,14 @@ extern "C" {
 
 #include <ak/assetkit.h>
 #include <gk/gk.h>
+#include <gk/gpu_state.h>
 
 typedef struct AgkContext {
   AkDoc     *doc;
   RBTree    *bufftree;
   RBTree    *objMap;
+  RBTree    *instCtlr;
+  RBTree    *ctlr;
   GkScene   *scene;
   GkContext *ctx;
   GLenum     usage;
@@ -76,6 +79,9 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
 
 void
 agk_loadAnimations(AgkContext * __restrict ctx);
+
+AkResult
+load_controllers(AgkContext * __restrict ctx);
 
 #ifdef __cplusplus
 }

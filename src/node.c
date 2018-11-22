@@ -96,6 +96,10 @@ agk_loadNode(AgkContext * __restrict ctx,
     }
   }
 
+  if (node->controller) {
+    rb_insert(ctx->instCtlr, node, glnode);
+  }
+
   if (node->chld) {
     AkNode  *nodei;
     GkNode **glnodei;
