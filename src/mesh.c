@@ -38,15 +38,14 @@ agk_loadSource(AgkContext   * __restrict ctx,
   vi   = gkMakeVertexInput(attribName, type, 0);
 
   flist_sp_append(&glprim->inputs, vi);
-  
-  akbuff = ak_getObjectByUrl(&acc->source);
-  if (!akbuff)
+
+  if (!(akbuff = ak_getObjectByUrl(&acc->source)))
     return; /* TODO: assert or log */
 
   buff = rb_find(ctx->bufftree, akbuff);
   if (!buff) {
     buff = gkGpuBufferNew(ctx->ctx, GK_ARRAY, akbuff->length);
-    gkGpuBufferFeed(buff, ctx->usage, akbuff->data);
+    gkGpuBufferFeed(buff, GK_STATIC_DRAW, akbuff->data);
     gkPrimAddBuffer(glprim, buff);
 
     rb_insert(ctx->bufftree, akbuff, buff);
@@ -82,6 +81,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
     GkPrimitive  *glprim;
     AkInput      *input;
     AkSource     *source;
+    AkUIntArray  *indices;
 
     glprim = &glmodel->prims[glmodel->primc];
 
@@ -92,26 +92,24 @@ agk_loadMesh(AgkContext * __restrict ctx,
     input = prim->input;
     while (input) {
       source = ak_getObjectByUrl(&input->source);
+
       if (source && source->tcommon)
-        agk_loadSource(ctx,
-                       source->tcommon,
-                       glprim,
-                       input);
+        agk_loadSource(ctx, source->tcommon, glprim, input);
 
       input = input->next;
     }
 
     /* indexed draw */
-    if (prim->indices) {
+    if ((indices = prim->indices)) {
       GkGpuBuffer *ibuff;
 
       ibuff = gkGpuBufferNew(ctx->ctx,
                              GK_INDEX,
-                             prim->indices->count * sizeof(AkUInt));
-      gkGpuBufferFeed(ibuff, ctx->usage, prim->indices->items);
+                             indices->count * sizeof(AkUInt));
+      gkGpuBufferFeed(ibuff, GK_STATIC_DRAW, indices->items);
       gkPrimAddBuffer(glprim, ibuff);
 
-      glprim->count  = (GLsizei)prim->indices->count;
+      glprim->count  = (GLsizei)indices->count;
       glprim->flags |= GK_DRAW_ELEMENTS;
     }
 
