@@ -103,7 +103,7 @@ again:
           first = last;
 
         transdata = &glscale->value;
-        glm_vec_copy(scale->val, glscale->value);
+        glm_vec3_copy(scale->val, glscale->value);
         break;
       }
       case AKT_TRANSLATE: {
@@ -123,7 +123,7 @@ again:
           first = last;
 
         transdata = &gltranslate->value;
-        glm_vec_copy(translate->val, gltranslate->value);
+        glm_vec3_copy(translate->val, gltranslate->value);
         break;
       }
       case AKT_SKEW: {
@@ -144,8 +144,8 @@ again:
 
         glskew->angle = skew->angle;
 
-        glm_vec_copy(skew->rotateAxis, glskew->rotateAxis);
-        glm_vec_copy(skew->aroundAxis, glskew->aroundAxis);
+        glm_vec3_copy(skew->rotateAxis, glskew->rotateAxis);
+        glm_vec3_copy(skew->aroundAxis, glskew->aroundAxis);
         break;
       }
       case AKT_QUATERNION: {

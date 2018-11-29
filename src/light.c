@@ -93,7 +93,7 @@ agk_loadLight(AkDoc    * __restrict doc,
       return AK_ETCOMMON;
   }
 
-  glm_vec_copy(tcommon->direction, gllight->defdir);
+  glm_vec3_copy(tcommon->direction, gllight->defdir);
 
   gllight->index   = -1;
   gllight->isvalid = 0;
