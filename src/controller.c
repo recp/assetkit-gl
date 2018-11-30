@@ -25,7 +25,7 @@ load_basegeom(AgkContext           * __restrict ctx,
   GkModelInst *modelInst;
   AkResult     ret;
 
-  if ((geom = ak_getObjectByUrl(&skin->baseGeom))) {
+  if ((geom = ak_skinBaseGeometry(skin))) {
     ret = agk_loadGeometry(ctx, geom, &model);
     if (ret == AK_OK) {
       modelInst       = gkMakeInstance(model);
@@ -64,19 +64,19 @@ set_joints(AgkContext * __restrict ctx,
 
 GkSkin*
 load_skin(AgkContext * __restrict ctx, AkSkin * __restrict skin) {
-  GkSkin           *glskin;
-  size_t            count, i, k;
-  uint32_t          primCount, maxJointCount;
+  GkSkin  *glskin;
+  size_t   count, i;
+  uint32_t primCount, maxJointCount;
 
-  count     = skin->nJoints;
-  primCount = skin->nPrims;
+  count             = skin->nJoints;
+  primCount         = skin->nPrims;
 
-  glskin                  = calloc(1, sizeof(*glskin));
-  glskin->base.type       = GK_CONTROLLER_SKIN;
-  glskin->bindPoses       = malloc(sizeof(mat4) * count);
-  glskin->joints          = malloc(sizeof(*glskin->joints)  * count);
-  glskin->weights         = malloc(sizeof(*glskin->weights) * count);
-  glskin->gbuffs          = calloc(primCount, sizeof(void*));
+  glskin            = calloc(1, sizeof(*glskin));
+  glskin->base.type = GK_CONTROLLER_SKIN;
+  glskin->bindPoses = malloc(sizeof(mat4) * count);
+  glskin->joints    = malloc(sizeof(*glskin->joints)  * count);
+  glskin->weights   = malloc(sizeof(*glskin->weights) * count);
+  glskin->gbuffs    = calloc(primCount, sizeof(void*));
 
   glm_mat4_copy(skin->bindShapeMatrix, glskin->bindShapeMatrix);
   memcpy(glskin->bindPoses, skin->invBindMatrices, count * sizeof(mat4));
@@ -160,7 +160,6 @@ ctlr_walk(RBTree *tree, RBNode *rbnode) {
           }
 
           gkMakeInstanceSkin(ctx->scene, glnode, glCtlrInst);
-
           load_basegeom(ctx, glnode, ctlrInst, skin, &glskin->base);
           gkAttachSkin(glskin);
 
