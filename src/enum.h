@@ -11,6 +11,9 @@
 #include "../include/agk.h"
 
 GLenum
+agk_isinteger(AkTypeId typeId);
+
+GLenum
 agk_type(AkTypeId typeId);
 
 GLenum

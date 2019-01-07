@@ -53,12 +53,21 @@ agk_loadSource(AgkContext   * __restrict ctx,
     glBindBuffer(buff->target, buff->vbo);
   }
 
-  glVertexAttribPointer(glprim->lastInputIndex,
-                        acc->bound,
-                        type,
-                        GL_FALSE,
-                        (GLsizei)acc->byteStride,
-                        BUFFER_OFFSET(acc->byteOffset));
+  if (agk_isinteger(acc->itemTypeId)) {
+    glVertexAttribIPointer(glprim->lastInputIndex,
+                           acc->bound,
+                           type,
+                           (GLsizei)acc->byteStride,
+                           BUFFER_OFFSET(acc->byteOffset));
+  } else {
+    glVertexAttribPointer(glprim->lastInputIndex,
+                          acc->bound,
+                          type,
+                          GL_FALSE,
+                          (GLsizei)acc->byteStride,
+                          BUFFER_OFFSET(acc->byteOffset));
+  }
+
   glEnableVertexAttribArray(glprim->lastInputIndex);
   glprim->lastInputIndex++;
 }

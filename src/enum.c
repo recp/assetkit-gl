@@ -26,6 +26,20 @@ agk_type(AkTypeId typeId) {
 }
 
 GLenum
+agk_isinteger(AkTypeId typeId) {
+  switch (typeId) {
+    case AKT_INT:
+    case AKT_UINT:
+    case AKT_SHORT:
+    case AKT_USHORT:
+    case AKT_BYTE:
+    case AKT_UBYTE: return true;
+    default:
+      return false;
+  }
+}
+
+GLenum
 agk_wrapMode(AkWrapMode wrapMode) {
   switch (wrapMode) {
     case AK_WRAP_MODE_WRAP:        return GL_REPEAT;
