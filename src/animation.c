@@ -124,9 +124,9 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
               glchannel->targetType = agk_targetType(glchannel->sampler->output->stride);
 
               inp                  = glchannel->sampler->input;
-              glchannel->endTime   = *(float *)((char *)inp->data + inp->len - sizeof(float));
-              glchannel->beginTime = *(float *)inp->data;
-              glchannel->duration  = glchannel->endTime - glchannel->beginTime;
+              glchannel->endAt   = *(float *)((char *)inp->data + inp->len - sizeof(float));
+              glchannel->beginAt = *(float *)inp->data;
+              glchannel->duration  = glchannel->endAt - glchannel->beginAt;
 
               glanim->channelCount++;
 
@@ -166,24 +166,23 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
 
             node = ak_mem_parent(channel->resolvedTarget);
 
-            gltarget              = rb_find(ctx->objMap, channel->resolvedTarget);
-            sampler               = ak_getObjectByUrl(&channel->source);
-            glchannel             = calloc(1, sizeof(*glchannel));
-            glchannel->sampler    = rb_find(samplerMap, sampler);
-            glchannel->target     = gltarget;
-            glchannel->property   = (GkTargetPropertyType)channel->targetType;
-            glchannel->targetType = agk_targetType(glchannel->sampler->output->stride);
+            gltarget                    = rb_find(ctx->objMap, channel->resolvedTarget);
+            sampler                     = ak_getObjectByUrl(&channel->source);
+            glchannel                   = calloc(1, sizeof(*glchannel));
+            glchannel->sampler          = rb_find(samplerMap, sampler);
+            glchannel->target           = gltarget;
+            glchannel->property         = (GkTargetPropertyType)channel->targetType;
+            glchannel->targetType       = agk_targetType(glchannel->sampler->output->stride);
 
-            inp                   = glchannel->sampler->input;
-            glchannel->endTime    = *(float *)((char *)inp->data + inp->len - sizeof(float));
-            glchannel->beginTime  = *(float *)inp->data;
-            glchannel->duration   = glchannel->endTime - glchannel->beginTime;
-
-            glanim->channelCount++;
-
+            inp                         = glchannel->sampler->input;
+            glchannel->endAt          = *(float *)((char *)inp->data + inp->len - sizeof(float));
+            glchannel->beginAt        = *(float *)inp->data;
+            glchannel->duration         = glchannel->endAt - glchannel->beginAt;
             glchannel->node             = rb_find(ctx->objMap, node);
             glchannel->isTransform      = true;
             glchannel->isLocalTransform = true;
+
+            glanim->channelCount++;
 
             if (glchannel->sampler
                 && sampler->uniInterpolation != AK_INTERPOLATION_UNKNOWN)

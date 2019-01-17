@@ -20,25 +20,38 @@ load_basegeom(AgkContext           * __restrict ctx,
               AkInstanceController * __restrict ctlrInst,
               AkSkin               * __restrict skin,
               GkModelInst         ** __restrict dest) {
-  AkGeometry  *geom;
-  GkModel     *model;
-  GkModelInst *modelInst;
-  AkResult     ret;
+  AkGeometry         *geom;
+  GkModel            *model;
+  GkModelInst        *modelInst;
+  AkInstanceGeometry *instGeom;
+  AkBindMaterial     *bindMaterial;
+  AkResult            ret;
 
-  if ((geom = ak_skinBaseGeometry(skin))) {
-    ret = agk_loadGeometry(ctx, geom, &model);
-    if (ret == AK_OK) {
-      modelInst       = gkMakeInstance(model);
-      modelInst->next = glnode->model;
-      glnode->model   = modelInst;
+  bindMaterial = NULL;
+  geom         = NULL;
 
-      /* bind material */
-      if (ctlrInst->bindMaterial)
-        agk_loadMaterial(ctx, geom, ctlrInst->bindMaterial, modelInst);
+  if ((instGeom = ak_getObjectByUrl(&ctlrInst->geometry))) {
+    geom         = ak_instanceObject(&instGeom->base);
+    bindMaterial = instGeom->bindMaterial;
+  }
 
-      *dest = modelInst;
-      return modelInst;
-    }
+  if (!geom) {
+    geom         = ak_skinBaseGeometry(skin);
+    bindMaterial = ctlrInst->bindMaterial;
+  }
+
+  ret = agk_loadGeometry(ctx, geom, &model);
+  if (ret == AK_OK) {
+    modelInst       = gkMakeInstance(model);
+    modelInst->next = glnode->model;
+    glnode->model   = modelInst;
+
+    /* bind material */
+    if (bindMaterial)
+      agk_loadMaterial(ctx, geom, bindMaterial, modelInst);
+
+    *dest = modelInst;
+    return modelInst;
   }
 
   return NULL;
@@ -54,6 +67,7 @@ set_joints(AgkContext * __restrict ctx,
   for (i = 0; i < count; i++) {
     GkNode *node;
     node = rb_find(ctx->objMap, joints[i]);
+
 #ifdef DEBUG
     assert(node);
 #endif
@@ -68,20 +82,24 @@ load_skin(AgkContext * __restrict ctx, AkSkin * __restrict skin) {
   size_t   count, i;
   uint32_t primCount, maxJointCount;
 
-  count             = skin->nJoints;
-  primCount         = skin->nPrims;
+  count                = skin->nJoints;
+  primCount            = skin->nPrims;
 
-  glskin            = calloc(1, sizeof(*glskin));
-  glskin->base.type = GK_CONTROLLER_SKIN;
-  glskin->bindPoses = malloc(sizeof(mat4) * count);
-  glskin->joints    = malloc(sizeof(*glskin->joints)  * count);
-  glskin->weights   = malloc(sizeof(*glskin->weights) * count);
-  glskin->gbuffs    = calloc(primCount, sizeof(void*));
+  glskin               = calloc(1, sizeof(*glskin));
+  glskin->base.type    = GK_CONTROLLER_SKIN;
+  glskin->invBindPoses = malloc(sizeof(mat4) * count);
+  glskin->joints       = malloc(sizeof(*glskin->joints)  * count);
+  glskin->gbuffs       = calloc(primCount, sizeof(void*));
 
   glm_mat4_copy(skin->bindShapeMatrix, glskin->bindShapeMatrix);
-  memcpy(glskin->bindPoses, skin->invBindMatrices, count * sizeof(mat4));
-
+  memcpy(glskin->invBindPoses, skin->invBindPoses, count * sizeof(mat4));
   maxJointCount = 4;
+
+  /* default joints */
+  if (skin->joints)
+    set_joints(ctx, skin->joints, glskin->joints, count);
+
+  glskin->nJoints = skin->nJoints;
 
   for (i = 0; i < primCount; i++) {
     GkGpuBuffer   *gbuff;
@@ -97,13 +115,6 @@ load_skin(AgkContext * __restrict ctx, AkSkin * __restrict skin) {
 
     glweights->nWeights = w->nWeights;
     glweights->nVertex  = w->nVertex;
-    glskin->weights[i]  = glweights;
-
-    /* default joints */
-    if (skin->joints)
-      set_joints(ctx, skin->joints, glskin->joints, count);
-
-    glskin->nJoints = skin->nJoints;
 
     /* store weights in GPU as BONEx4 | WEIGHTx4 */
     glskin->gbuffs[i] = gbuff = gkGpuBufferNew(ctx->ctx, GK_ARRAY, size);
