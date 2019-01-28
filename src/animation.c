@@ -120,7 +120,9 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
               sampler               = ak_getObjectByUrl(&channel->source);
               glchannel             = calloc(1, sizeof(*glchannel));
               glchannel->sampler    = rb_find(samplerMap, sampler);
-              glchannel->target     = gltarget + attribOff;
+
+              /* TODO: currently only floats are supported */
+              glchannel->target     = gltarget + attribOff * sizeof(float);
               glchannel->targetType = agk_targetType(glchannel->sampler->output->stride);
 
               inp                  = glchannel->sampler->input;
