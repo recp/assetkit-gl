@@ -87,12 +87,26 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
             glbuff->stride = src->tcommon->bound;
 
             switch (inp->semantic) {
-              case AK_INPUT_SEMANTIC_INTERPOLATION: glSampler->interp     = glbuff; break;
-              case AK_INPUT_SEMANTIC_INPUT:         glSampler->input      = glbuff; break;
-              case AK_INPUT_SEMANTIC_OUTPUT:        glSampler->output     = glbuff; break;
-              case AK_INPUT_SEMANTIC_IN_TANGENT:    glSampler->inTangent  = glbuff; break;
-              case AK_INPUT_SEMANTIC_OUT_TANGENT:   glSampler->outTangent = glbuff; break;
-              default: free(glbuff); break;
+              case AK_INPUT_SEMANTIC_INTERPOLATION:
+                glSampler->interp = glbuff;
+                break;
+              case AK_INPUT_SEMANTIC_INPUT:
+                glSampler->input  = glbuff;
+                break;
+              case AK_INPUT_SEMANTIC_OUTPUT:
+                glSampler->output = glbuff;
+                break;
+              case AK_INPUT_SEMANTIC_IN_TANGENT:
+                glSampler->inTangent       = glbuff;
+                glSampler->inTangentStride = acc->bound;
+                break;
+              case AK_INPUT_SEMANTIC_OUT_TANGENT:
+                glSampler->outTangent       = glbuff;
+                glSampler->outTangentStride = acc->bound;
+                break;
+              default:
+                free(glbuff);
+                break;
             }
             inp = inp->next;
           }
