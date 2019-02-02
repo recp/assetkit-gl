@@ -45,10 +45,10 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
       AkEffect *effect;
 
       actx.techniqueHint = material->effect->techniqueHint;
-      effect = ak_instanceObject(&material->effect->base);
 
-      /* TODO: other profiles */
-      ret = agk_profileCommon(ctx, &actx, effect, &glmaterial);
+      if ((effect = ak_instanceObject(&material->effect->base)))
+        /* TODO: other profiles */
+        ret = agk_profileCommon(ctx, &actx, effect, &glmaterial);
     }
 
     /* there is symbol, bind only to specified primitive */
