@@ -40,6 +40,9 @@ load_basegeom(AgkContext           * __restrict ctx,
     bindMaterial = ctlrInst->bindMaterial;
   }
 
+  if (!geom)
+    return NULL;
+
   ret = agk_loadGeometry(ctx, geom, &model);
   if (ret == AK_OK) {
     modelInst       = gkMakeInstance(model);
@@ -158,26 +161,26 @@ ctlr_walk(RBTree *tree, RBNode *rbnode) {
           baseGeom   = NULL;
 
           load_basegeom(ctx, glnode, ctlrInst, skin, &baseGeom);
+          if (baseGeom) {
+            if (!(glskin = rb_find(ctx->ctlr, skin)))
+              glskin = load_skin(ctx, skin);
 
-          if (!(glskin = rb_find(ctx->ctlr, skin)))
-            glskin = load_skin(ctx, skin);
+            glCtlrInst->ctlr = &glskin->base;
 
-          glCtlrInst->ctlr = &glskin->base;
+            /* per instance skin joints */
+            if (ctlrInst->joints) {
+              glCtlrInst->joints = calloc(skin->nJoints,
+                                          sizeof(*glCtlrInst->joints));
+              set_joints(ctx,
+                         ctlrInst->joints,
+                         glCtlrInst->joints,
+                         skin->nJoints);
+            }
 
-          /* per instance skin joints */
-          if (ctlrInst->joints) {
-            glCtlrInst->joints = calloc(skin->nJoints,
-                                        sizeof(*glCtlrInst->joints));
-            set_joints(ctx,
-                       ctlrInst->joints,
-                       glCtlrInst->joints,
-                       skin->nJoints);
+            glskin->base.source = baseGeom;
+            gkMakeInstanceSkin(ctx->scene, glnode, glCtlrInst);
+            gkAttachSkin(glskin);
           }
-
-          glskin->base.source = baseGeom;
-          gkMakeInstanceSkin(ctx->scene, glnode, glCtlrInst);
-          gkAttachSkin(glskin);
-
           break;
         }
         case AK_CONTROLLER_MORPH:
