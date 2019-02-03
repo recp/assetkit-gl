@@ -64,12 +64,15 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
           AkAccessor    *acc;
           AkInput       *inp;
           AkSource      *src;
+          size_t         its, ots, outputStride;
 
           glSampler               = calloc(1, sizeof(*glSampler));
           glSampler->preBehavior  = (GkSamplerBehavior)sampler->pre;
           glSampler->postBehavior = (GkSamplerBehavior)sampler->post;
 
+          its = ots = outputStride = 0;
           inp = sampler->input;
+
           while (inp) {
             src          = ak_getObjectByUrl(&inp->source);
             acc          = src->tcommon;
@@ -88,21 +91,22 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
 
             switch (inp->semantic) {
               case AK_INPUT_SEMANTIC_INTERPOLATION:
-                glSampler->interp = glbuff;
+                glSampler->interp     = glbuff;
                 break;
               case AK_INPUT_SEMANTIC_INPUT:
-                glSampler->input  = glbuff;
+                glSampler->input      = glbuff;
                 break;
               case AK_INPUT_SEMANTIC_OUTPUT:
-                glSampler->output = glbuff;
+                glSampler->output     = glbuff;
+                outputStride          = acc->stride;
                 break;
               case AK_INPUT_SEMANTIC_IN_TANGENT:
-                glSampler->inTangent       = glbuff;
-                glSampler->inTangentStride = acc->bound;
+                glSampler->inTangent  = glbuff;
+                its                   = acc->stride;
                 break;
               case AK_INPUT_SEMANTIC_OUT_TANGENT:
-                glSampler->outTangent       = glbuff;
-                glSampler->outTangentStride = acc->bound;
+                glSampler->outTangent = glbuff;
+                ots                   = acc->stride;
                 break;
               default:
                 free(glbuff);
@@ -110,6 +114,9 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
             }
             inp = inp->next;
           }
+
+          glSampler->inTangentStride  = (float)its;
+          glSampler->outTangentStride = (float)ots;
 
           rb_insert(samplerMap, sampler, glSampler);
         } while ((sampler = sampler->next));
