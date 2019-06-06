@@ -18,7 +18,7 @@ GkModelInst*
 load_basegeom(AgkContext           * __restrict ctx,
               GkNode               * __restrict glnode,
               AkInstanceController * __restrict ctlrInst,
-              AkSkin               * __restrict skin,
+              AkController         * __restrict ctlr,
               GkModelInst         ** __restrict dest) {
   AkGeometry         *geom;
   GkModel            *model;
@@ -36,7 +36,7 @@ load_basegeom(AgkContext           * __restrict ctx,
   }
 
   if (!geom) {
-    geom         = ak_skinBaseGeometry(skin);
+    geom         = ak_baseGeometry(ctlr);
     bindMaterial = ctlrInst->bindMaterial;
   }
 
@@ -160,7 +160,7 @@ ctlr_walk(RBTree *tree, RBNode *rbnode) {
           glCtlrInst = calloc(1, sizeof(*glCtlrInst));
           baseGeom   = NULL;
 
-          load_basegeom(ctx, glnode, ctlrInst, skin, &baseGeom);
+          load_basegeom(ctx, glnode, ctlrInst, ctlr, &baseGeom);
           if (baseGeom) {
             if (!(glskin = rb_find(ctx->ctlr, skin)))
               glskin = load_skin(ctx, skin);
