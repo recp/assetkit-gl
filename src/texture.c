@@ -72,8 +72,7 @@ agk_loadTexture(AkContext   * __restrict actx,
   if (akSampler->borderColor) {
     GkColor *borderColor;
     borderColor = malloc(sizeof(*borderColor));
-    glm_vec4_copy(akSampler->borderColor->vec,
-                  borderColor->vec);
+    glm_vec4_copy(akSampler->borderColor->vec,  borderColor->vec);
 
     sampler->borderColor = borderColor;
   }
@@ -99,10 +98,9 @@ agk_loadTexture(AkContext   * __restrict actx,
   /* TODO: check existing mips */
   glGenerateMipmap(target);
   
-  glTexParameteri(tex->target, GL_TEXTURE_WRAP_S, sampler->wrapS);
-  glTexParameteri(tex->target, GL_TEXTURE_WRAP_T, sampler->wrapT);
-  glTexParameteri(tex->target, GL_TEXTURE_WRAP_R, sampler->wrapP);
-
+  glTexParameteri(tex->target, GL_TEXTURE_WRAP_S,     sampler->wrapS);
+  glTexParameteri(tex->target, GL_TEXTURE_WRAP_T,     sampler->wrapT);
+  glTexParameteri(tex->target, GL_TEXTURE_WRAP_R,     sampler->wrapP);
   glTexParameteri(tex->target, GL_TEXTURE_MIN_FILTER, sampler->minfilter);
   glTexParameteri(tex->target, GL_TEXTURE_MAG_FILTER, sampler->magfilter);
   

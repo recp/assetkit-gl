@@ -15,7 +15,7 @@
 #include <assert.h>
 #include <string.h>
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+#define BUFFER_OFFSET(i) ((void *)(i))
 
 void
 agk_loadSource(AgkContext   * __restrict ctx,
@@ -23,6 +23,7 @@ agk_loadSource(AgkContext   * __restrict ctx,
                GkPrimitive  * __restrict glprim,
                AkInput      * __restrict inp) {
   AkBuffer      *akbuff;
+  AkBufferView  *akbuffview;
   GkGpuBuffer   *buff;
   GkVertexInput *vi;
   GLenum         type;
@@ -34,12 +35,13 @@ agk_loadSource(AgkContext   * __restrict ctx,
   
   ak_inputNameIndexed(inp, attribName);
 
-  type = agk_type(acc->itemTypeId);
+  type = agk_type(acc->componentType);
   vi   = gkMakeVertexInput(attribName, type, 0);
 
   flist_sp_append(&glprim->inputs, vi);
 
-  if (!(akbuff = ak_getObjectByUrl(&acc->source)))
+  if (!(akbuffview = acc->bufferView)
+      || !(akbuff = akbuffview->buffer))
     return; /* TODO: assert or log */
 
   buff = rb_find(ctx->bufftree, akbuff);
@@ -53,19 +55,19 @@ agk_loadSource(AgkContext   * __restrict ctx,
     glBindBuffer(buff->target, buff->vbo);
   }
 
-  if (agk_isinteger(acc->itemTypeId)) {
+  if (agk_isinteger(acc->componentType)) {
     glVertexAttribIPointer(glprim->lastInputIndex,
-                           acc->bound,
+                           (int)acc->componentSize, // acc->bound,
                            type,
-                           (GLsizei)acc->byteStride,
-                           BUFFER_OFFSET(acc->byteOffset));
+                           (GLsizei)akbuffview->byteStride, //acc->byteStride,
+                           BUFFER_OFFSET(acc->byteOffset + akbuffview->byteOffset));
   } else {
     glVertexAttribPointer(glprim->lastInputIndex,
-                          acc->bound,
+                          (int)acc->componentSize,
                           type,
                           GL_FALSE,
-                          (GLsizei)acc->byteStride,
-                          BUFFER_OFFSET(acc->byteOffset));
+                          (GLsizei)akbuffview->byteStride, //acc->byteStride,
+                          BUFFER_OFFSET(acc->byteOffset + akbuffview->byteOffset));
   }
 
   glEnableVertexAttribArray(glprim->lastInputIndex);
