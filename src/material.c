@@ -16,10 +16,10 @@
 #include "profiles/common/profile_common.h"
 
 AkResult
-agk_loadMaterial(AgkContext         * __restrict ctx,
-                 AkGeometry         * __restrict geom,
-                 AkBindMaterial     * __restrict bindMaterial,
-                 GkModelInst        * __restrict modelInst) {
+agkLoadBindMaterial(AgkContext     * __restrict ctx,
+                    AkGeometry     * __restrict geom,
+                    AkBindMaterial * __restrict bindMaterial,
+                    GkModelInst    * __restrict modelInst) {
   AkMaterial         *material;
   AkInstanceMaterial *materialInst;
 
@@ -116,5 +116,30 @@ agk_loadMaterial(AgkContext         * __restrict ctx,
     materialInst = (AkInstanceMaterial *)materialInst->base.next;
   }
   
+  return AK_ERR;
+}
+
+AkResult
+agkLoadPrimMaterial(AgkContext      * __restrict ctx,
+                    AkMeshPrimitive * __restrict prim,
+                    GkPrimitive     * __restrict glprim) {
+  AkMaterial *material;
+  AkEffect   *effect;
+  GkMaterial *glmaterial;
+  AkContext   actx = {0};
+  AkResult    ret;
+  
+  if (!(material = prim->material) || !material->effect)
+    return AK_ERR;
+  
+  glmaterial         = NULL;
+  actx.techniqueHint = material->effect->techniqueHint;
+  
+  if ((effect = ak_instanceObject(&material->effect->base)))
+  /* TODO: other profiles */
+    ret = agk_profileCommon(ctx, &actx, effect, &glmaterial);
+  
+  glprim->material = glmaterial;
+
   return AK_ERR;
 }

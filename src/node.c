@@ -57,7 +57,7 @@ agk_loadNode(AgkContext * __restrict ctx,
 
           /* bind material */
           if (geomInst->bindMaterial)
-            agk_loadMaterial(ctx, geom, geomInst->bindMaterial, modelInst);
+            agkLoadBindMaterial(ctx, geom, geomInst->bindMaterial, modelInst);
         }
       }
       geomInst = (AkInstanceGeometry *)geomInst->base.next;

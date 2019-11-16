@@ -27,7 +27,7 @@ agk_loadGeometry(AgkContext * __restrict ctx,
   prim = geom->gdata;
   switch ((AkGeometryType)prim->type) {
     case AK_GEOMETRY_TYPE_MESH:
-      ret = agk_loadMesh(ctx, ak_objGet(prim), dest);
+      ret = agkLoadMesh(ctx, ak_objGet(prim), dest);
       break;
     default:
       ret = AK_ERR;

@@ -18,10 +18,10 @@
 #define BUFFER_OFFSET(i) ((void *)(i))
 
 void
-agk_loadSource(AgkContext   * __restrict ctx,
-               AkAccessor   * __restrict acc,
-               GkPrimitive  * __restrict glprim,
-               AkInput      * __restrict inp) {
+agkLoadSource(AgkContext   * __restrict ctx,
+              AkAccessor   * __restrict acc,
+              GkPrimitive  * __restrict glprim,
+              AkInput      * __restrict inp) {
   AkBuffer      *akbuff;
   AkBufferView  *akbuffview;
   GkGpuBuffer   *buff;
@@ -71,13 +71,25 @@ agk_loadSource(AgkContext   * __restrict ctx,
   }
 
   glEnableVertexAttribArray(glprim->lastInputIndex);
+
+//  gkVertexInput(glprim,
+//                buff,
+//                attribName,
+//                type,
+//                acc->bound,
+//                acc->byteStride,
+//                acc->byteOffset);
+//
+//  acc = gkAccessorNew(buff, type, acc->bound, acc->byteStride, acc->byteOffset);
+//  gkVertexInput(glprim, acc, attribName);
+
   glprim->lastInputIndex++;
 }
 
 AkResult
-agk_loadMesh(AgkContext * __restrict ctx,
-             AkMesh     * __restrict mesh,
-             GkModel   ** __restrict dest) {
+agkLoadMesh(AgkContext * __restrict ctx,
+            AkMesh     * __restrict mesh,
+            GkModel   ** __restrict dest) {
   AkMeshPrimitive *prim;
   GkModel         *glmodel;
   uint32_t         primc;
@@ -89,10 +101,10 @@ agk_loadMesh(AgkContext * __restrict ctx,
 
   prim = mesh->primitive;
   while (prim) {
-    GkPrimitive  *glprim;
-    AkInput      *input;
-    AkSource     *source;
-    AkUIntArray  *indices;
+    GkPrimitive *glprim;
+    AkInput     *input;
+    AkSource    *source;
+    AkUIntArray *indices;
 
     glprim = &glmodel->prims[glmodel->primc];
 
@@ -105,7 +117,7 @@ agk_loadMesh(AgkContext * __restrict ctx,
       source = ak_getObjectByUrl(&input->source);
 
       if (source && source->tcommon)
-        agk_loadSource(ctx, source->tcommon, glprim, input);
+        agkLoadSource(ctx, source->tcommon, glprim, input);
 
       input = input->next;
     }
@@ -141,6 +153,9 @@ agk_loadMesh(AgkContext * __restrict ctx,
       glm_vec3_copy(prim->bbox->max, glprim->bbox[1]);
     }
 
+    if (prim->material) {
+      agkLoadPrimMaterial(ctx, prim, glprim);
+    }
     prim = prim->next;
   }
 

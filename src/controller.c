@@ -51,7 +51,7 @@ load_basegeom(AgkContext           * __restrict ctx,
 
     /* bind material */
     if (bindMaterial)
-      agk_loadMaterial(ctx, geom, bindMaterial, modelInst);
+      agkLoadBindMaterial(ctx, geom, bindMaterial, modelInst);
 
     *dest = modelInst;
     return modelInst;

@@ -57,7 +57,7 @@ agk_loadGeometry(AgkContext * __restrict ctx,
                  GkModel    ** __restrict dest);
 
 AkResult
-agk_loadMesh(AgkContext * __restrict ctx,
+agkLoadMesh(AgkContext * __restrict ctx,
              AkMesh     * __restrict mesh,
              GkModel   ** __restrict dest);
 
@@ -72,10 +72,16 @@ agk_loadTexture(AkContext   * __restrict actx,
                 AkTextureRef * __restrict texture);
 
 AkResult
-agk_loadMaterial(AgkContext         * __restrict ctx,
-                 AkGeometry         * __restrict geom,
-                 AkBindMaterial     * __restrict bindMaterial,
-                 GkModelInst        * __restrict modelInst);
+agkLoadBindMaterial(AgkContext     * __restrict ctx,
+                    AkGeometry     * __restrict geom,
+                    AkBindMaterial * __restrict bindMaterial,
+                    GkModelInst    * __restrict modelInst);
+
+
+AkResult
+agkLoadPrimMaterial(AgkContext      * __restrict ctx,
+                    AkMeshPrimitive * __restrict prim,
+                    GkPrimitive     * __restrict glprim);
 
 void
 agk_loadAnimations(AgkContext * __restrict ctx);
