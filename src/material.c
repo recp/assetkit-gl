@@ -133,6 +133,7 @@ agkLoadPrimMaterial(AgkContext      * __restrict ctx,
     return AK_ERR;
   
   glmaterial         = NULL;
+  actx.doc           = ctx->doc;
   actx.techniqueHint = material->effect->techniqueHint;
   
   if ((effect = ak_instanceObject(&material->effect->base)))
