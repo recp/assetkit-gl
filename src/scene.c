@@ -42,15 +42,16 @@ agk_loadScene(GkContext *ctx,
   glnodei = &glscene->rootNode->chld;
 
   if (node) {
-    agkCtx           = calloc(1, sizeof(*agkCtx));
-    agkCtx->bufftree = rb_newtree_ptr();
-    agkCtx->objMap   = rb_newtree_ptr();
-    agkCtx->instCtlr = rb_newtree_ptr();
-    agkCtx->ctlr     = rb_newtree_ptr();
-    agkCtx->doc      = doc;
-    agkCtx->usage    = usage;
-    agkCtx->scene    = glscene;
-    agkCtx->ctx      = ctx;
+    agkCtx            = calloc(1, sizeof(*agkCtx));
+    agkCtx->bufftree  = rb_newtree_ptr();
+    agkCtx->objMap    = rb_newtree_ptr();
+    agkCtx->instCtlr  = rb_newtree_ptr();
+    agkCtx->ctlr      = rb_newtree_ptr();
+    agkCtx->materials = rb_newtree_ptr();
+    agkCtx->doc       = doc;
+    agkCtx->usage     = usage;
+    agkCtx->scene     = glscene;
+    agkCtx->ctx       = ctx;
 
     do {
       ret = agk_loadNode(agkCtx, node, glnodei);

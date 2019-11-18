@@ -124,8 +124,8 @@
 //}
 
 GkTexture*
-agk_loadTexture(AkContext    * __restrict actx,
-                AkTextureRef * __restrict texref) {
+agkLoadTexture(AkContext    * __restrict actx,
+               AkTextureRef * __restrict texref) {
   AkSampler   *akSampler;
   GkSampler   *sampler;
   AkTexture   *akTexture;
@@ -135,12 +135,10 @@ agk_loadTexture(AkContext    * __restrict actx,
   AkImageData *imgdata;
   GLenum       target;
 
-  akTexture = texref->texture;
-  akSampler = akTexture->sampler;
-
-  if (!akTexture
+  if (!texref
+      || !(akTexture = texref->texture)
       || !(image = akTexture->image)
-      || !akSampler
+      || !(akSampler = akTexture->sampler)
       || (target = agk_textureTarget(akTexture->type)) == -1)
     goto err;
 

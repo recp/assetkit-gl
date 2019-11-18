@@ -34,6 +34,7 @@ typedef struct AgkContext {
   RBTree    *objMap;
   RBTree    *instCtlr;
   RBTree    *ctlr;
+  RBTree    *materials;
   GkScene   *scene;
   GkContext *ctx;
   GLenum     usage;
@@ -68,8 +69,8 @@ agk_loadLight(AkDoc    * __restrict doc,
               GkLight ** __restrict dest);
 
 GkTexture*
-agk_loadTexture(AkContext   * __restrict actx,
-                AkTextureRef * __restrict texture);
+agkLoadTexture(AkContext   * __restrict actx,
+               AkTextureRef * __restrict texture);
 
 AkResult
 agkLoadBindMaterial(AgkContext     * __restrict ctx,

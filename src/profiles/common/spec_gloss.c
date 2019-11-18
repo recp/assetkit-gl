@@ -21,8 +21,8 @@ agk_specGloss(AkContext            * __restrict actx,
   glm_vec4_copy(akmat->specular.vec, specGloss->specular.vec);
 
   specGloss->gloss        = akmat->glossiness;
-  specGloss->diffuseMap   = agk_loadTexture(actx, akmat->diffuseTex);
-  specGloss->specGlossMap = agk_loadTexture(actx, akmat->specGlossTex);
+  specGloss->diffuseMap   = agkLoadTexture(actx, akmat->diffuseTex);
+  specGloss->specGlossMap = agkLoadTexture(actx, akmat->specGlossTex);
 
   /* Other Properties */
 
@@ -33,7 +33,7 @@ agk_specGloss(AkContext            * __restrict actx,
     GkOcclusion *occlusion;
 
     occlusion           = calloc(1, sizeof(*occlusion));
-    occlusion->tex      = agk_loadTexture(actx, akmat->base.occlusion->tex);
+    occlusion->tex      = agkLoadTexture(actx, akmat->base.occlusion->tex);
     occlusion->strength = akmat->base.occlusion->strength;
 
     specGloss->base.occlusion = occlusion;
@@ -43,7 +43,7 @@ agk_specGloss(AkContext            * __restrict actx,
     GkNormalMap *normal;
 
     normal        = calloc(1, sizeof(*normal));
-    normal->tex   = agk_loadTexture(actx, akmat->base.normal->tex);
+    normal->tex   = agkLoadTexture(actx, akmat->base.normal->tex);
     normal->scale = akmat->base.normal->scale;
 
     specGloss->base.normal = normal;

@@ -21,8 +21,8 @@ agk_metalRough(AkContext           * __restrict actx,
 
   metalRough->metallic      = akmat->metallic;
   metalRough->roughness     = akmat->roughness;
-  metalRough->albedoMap     = agk_loadTexture(actx, akmat->albedoTex);
-  metalRough->metalRoughMap = agk_loadTexture(actx, akmat->metalRoughTex);
+  metalRough->albedoMap     = agkLoadTexture(actx, akmat->albedoTex);
+  metalRough->metalRoughMap = agkLoadTexture(actx, akmat->metalRoughTex);
 
   /* Other Properties */
 
@@ -33,7 +33,7 @@ agk_metalRough(AkContext           * __restrict actx,
     GkOcclusion *occlusion;
 
     occlusion           = calloc(1, sizeof(*occlusion));
-    occlusion->tex      = agk_loadTexture(actx, akmat->base.occlusion->tex);
+    occlusion->tex      = agkLoadTexture(actx, akmat->base.occlusion->tex);
     occlusion->strength = akmat->base.occlusion->strength;
 
     metalRough->base.occlusion = occlusion;
@@ -43,7 +43,7 @@ agk_metalRough(AkContext           * __restrict actx,
     GkNormalMap *normal;
 
     normal        = calloc(1, sizeof(*normal));
-    normal->tex   = agk_loadTexture(actx, akmat->base.normal->tex);
+    normal->tex   = agkLoadTexture(actx, akmat->base.normal->tex);
     normal->scale = akmat->base.normal->scale;
 
     metalRough->base.normal = normal;
