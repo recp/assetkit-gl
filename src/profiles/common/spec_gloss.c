@@ -9,8 +9,9 @@
 #include "color_or_tex.h"
 
 GkMaterial*
-agk_specGloss(AkContext            * __restrict actx,
-              AkSpecularGlossiness * __restrict akmat) {
+agkSpecGloss(AgkContext           * __restrict ctx,
+             AkContext            * __restrict actx,
+             AkSpecularGlossiness * __restrict akmat) {
   GkMaterial   *material;
   GkSpecGloss  *specGloss;
 
@@ -21,19 +22,19 @@ agk_specGloss(AkContext            * __restrict actx,
   glm_vec4_copy(akmat->specular.vec, specGloss->specular.vec);
 
   specGloss->gloss        = akmat->glossiness;
-  specGloss->diffuseMap   = agkLoadTexture(actx, akmat->diffuseTex);
-  specGloss->specGlossMap = agkLoadTexture(actx, akmat->specGlossTex);
+  specGloss->diffuseMap   = agkLoadTexture(ctx, actx, akmat->diffuseTex);
+  specGloss->specGlossMap = agkLoadTexture(ctx, actx, akmat->specGlossTex);
 
   /* Other Properties */
 
   if (akmat->base.emission)
-    specGloss->base.emission = agk_colorOrTex(actx, akmat->base.emission);
+    specGloss->base.emission = agkColorOrTex(ctx, actx, akmat->base.emission);
 
   if (akmat->base.occlusion) {
     GkOcclusion *occlusion;
 
     occlusion           = calloc(1, sizeof(*occlusion));
-    occlusion->tex      = agkLoadTexture(actx, akmat->base.occlusion->tex);
+    occlusion->tex      = agkLoadTexture(ctx, actx, akmat->base.occlusion->tex);
     occlusion->strength = akmat->base.occlusion->strength;
 
     specGloss->base.occlusion = occlusion;
@@ -43,7 +44,7 @@ agk_specGloss(AkContext            * __restrict actx,
     GkNormalMap *normal;
 
     normal        = calloc(1, sizeof(*normal));
-    normal->tex   = agkLoadTexture(actx, akmat->base.normal->tex);
+    normal->tex   = agkLoadTexture(ctx, actx, akmat->base.normal->tex);
     normal->scale = akmat->base.normal->scale;
 
     specGloss->base.normal = normal;

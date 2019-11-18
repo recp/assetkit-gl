@@ -48,6 +48,7 @@ agk_loadScene(GkContext *ctx,
     agkCtx->instCtlr  = rb_newtree_ptr();
     agkCtx->ctlr      = rb_newtree_ptr();
     agkCtx->materials = rb_newtree_ptr();
+    agkCtx->textures  = rb_newtree_ptr();
     agkCtx->doc       = doc;
     agkCtx->usage     = usage;
     agkCtx->scene     = glscene;

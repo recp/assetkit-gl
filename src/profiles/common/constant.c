@@ -11,8 +11,9 @@
 #include <string.h>
 
 GkMaterial*
-agk_constant(AkContext           * __restrict actx,
-             AkTechniqueFxCommon * __restrict constant) {
+agkConstant(AgkContext          * __restrict ctx,
+            AkContext           * __restrict actx,
+            AkTechniqueFxCommon * __restrict constant) {
   GkMaterial  *material;
   GkTechnique *glconstant;
 
@@ -20,7 +21,7 @@ agk_constant(AkContext           * __restrict actx,
   glconstant = gkMaterialNewConstant();
 
   if (constant->emission)
-    glconstant->emission = agk_colorOrTex(actx, constant->emission);
+    glconstant->emission = agkColorOrTex(ctx, actx, constant->emission);
 
   /* TODO: read param later */
 

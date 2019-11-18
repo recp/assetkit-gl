@@ -11,8 +11,9 @@
 #include <string.h>
 
 GkMaterial*
-agk_blinn(AkContext           * __restrict actx,
-          AkTechniqueFxCommon * __restrict blinn) {
+agkBlinn(AgkContext          * __restrict ctx,
+         AkContext           * __restrict actx,
+         AkTechniqueFxCommon * __restrict blinn) {
   GkMaterial *material;
   GkTechnique *glblinn;
 
@@ -20,16 +21,16 @@ agk_blinn(AkContext           * __restrict actx,
   glblinn  = gkMaterialNewBlinn();
 
   if (blinn->ambient)
-    glblinn->ambient = agk_colorOrTex(actx, blinn->ambient);
+    glblinn->ambient = agkColorOrTex(ctx, actx, blinn->ambient);
 
   if (blinn->diffuse)
-    glblinn->diffuse = agk_colorOrTex(actx, blinn->diffuse);
+    glblinn->diffuse = agkColorOrTex(ctx, actx, blinn->diffuse);
 
   if (blinn->specular)
-    glblinn->specular = agk_colorOrTex(actx, blinn->specular);
+    glblinn->specular = agkColorOrTex(ctx, actx, blinn->specular);
 
   if (blinn->emission)
-    glblinn->emission = agk_colorOrTex(actx, blinn->emission);
+    glblinn->emission = agkColorOrTex(ctx, actx, blinn->emission);
 
   if (blinn->shininess)
     glblinn->shininess = *blinn->shininess->val;

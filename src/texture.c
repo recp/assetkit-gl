@@ -124,7 +124,8 @@
 //}
 
 GkTexture*
-agkLoadTexture(AkContext    * __restrict actx,
+agkLoadTexture(AgkContext   * __restrict ctx,
+               AkContext    * __restrict actx,
                AkTextureRef * __restrict texref) {
   AkSampler   *akSampler;
   GkSampler   *sampler;
@@ -134,6 +135,12 @@ agkLoadTexture(AkContext    * __restrict actx,
   GkImage     *glimage;
   AkImageData *imgdata;
   GLenum       target;
+
+  if (!texref)
+    return NULL;
+  
+  if ((tex = rb_find(ctx->textures, texref->texture)))
+    return tex;
 
   if (!texref
       || !(akTexture = texref->texture)
@@ -213,8 +220,10 @@ agkLoadTexture(AkContext    * __restrict actx,
    */
 
   tex->sampler->coordInputName = strdup(texref->coordInputName);
-
 ret:
+  
+  rb_insert(ctx->textures, texref->texture, tex);
+
   return tex;
 
 err:

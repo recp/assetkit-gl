@@ -17,27 +17,33 @@ agk_profileCommon(AgkContext  * __restrict ctx,
                   GkMaterial ** __restrict dest);
 
 GkMaterial*
-agk_phong(AkContext           * __restrict actx,
+agkPhong(AgkContext           * __restrict ctx,
+         AkContext            * __restrict actx,
           AkTechniqueFxCommon * __restrict phong);
 
 GkMaterial*
-agk_blinn(AkContext           * __restrict actx,
+agkBlinn(AgkContext           * __restrict ctx,
+         AkContext            * __restrict actx,
           AkTechniqueFxCommon * __restrict blinn);
 
 GkMaterial*
-agk_lambert(AkContext           * __restrict actx,
-            AkTechniqueFxCommon * __restrict lambert);
+agkLambert(AgkContext          * __restrict ctx,
+           AkContext           * __restrict actx,
+           AkTechniqueFxCommon * __restrict lambert);
 
 GkMaterial*
-agk_constant(AkContext           * __restrict actx,
-             AkTechniqueFxCommon * __restrict constant);
+agkConstant(AgkContext          * __restrict ctx,
+            AkContext           * __restrict actx,
+            AkTechniqueFxCommon * __restrict constant);
 
 GkMaterial*
-agk_metalRough(AkContext           * __restrict actx,
-               AkMetallicRoughness * __restrict akmat);
+agkMetalRough(AgkContext          * __restrict ctx,
+              AkContext           * __restrict actx,
+              AkMetallicRoughness * __restrict akmat);
 
 GkMaterial*
-agk_specGloss(AkContext            * __restrict actx,
-              AkSpecularGlossiness * __restrict akmat);
+agkSpecGloss(AgkContext           * __restrict ctx,
+             AkContext            * __restrict actx,
+             AkSpecularGlossiness * __restrict akmat);
 
 #endif /* agk_profile_common_h */

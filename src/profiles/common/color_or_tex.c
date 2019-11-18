@@ -10,8 +10,9 @@
 #include <cglm/cglm.h>
 
 GkColorDesc*
-agk_colorOrTex(AkContext      * __restrict actx,
-               AkColorDesc * __restrict src) {
+agkColorOrTex(AgkContext  * __restrict ctx,
+              AkContext   * __restrict actx,
+              AkColorDesc * __restrict src) {
   GkColorDesc *crtx;
 
   crtx = calloc(1, sizeof(*crtx));
@@ -23,7 +24,7 @@ agk_colorOrTex(AkContext      * __restrict actx,
     crtx->val    = color;
     crtx->method = GK_COLOR_COLOR;
   } else if (src->texture) {
-    crtx->val    = agkLoadTexture(actx, src->texture);
+    crtx->val    = agkLoadTexture(ctx, actx, src->texture);
     crtx->method = GK_COLOR_TEX;
   }
   

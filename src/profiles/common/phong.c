@@ -11,8 +11,9 @@
 #include <string.h>
 
 GkMaterial*
-agk_phong(AkContext           * __restrict actx,
-          AkTechniqueFxCommon * __restrict phong) {
+agkPhong(AgkContext          * __restrict ctx,
+         AkContext           * __restrict actx,
+         AkTechniqueFxCommon * __restrict phong) {
   GkMaterial  *material;
   GkTechnique *glphong;
 
@@ -20,16 +21,16 @@ agk_phong(AkContext           * __restrict actx,
   glphong  = gkMaterialNewPhong();
 
   if (phong->ambient)
-    glphong->ambient = agk_colorOrTex(actx, phong->ambient);
+    glphong->ambient = agkColorOrTex(ctx, actx, phong->ambient);
 
   if (phong->diffuse)
-    glphong->diffuse = agk_colorOrTex(actx, phong->diffuse);
+    glphong->diffuse = agkColorOrTex(ctx, actx, phong->diffuse);
 
   if (phong->specular)
-    glphong->specular = agk_colorOrTex(actx, phong->specular);
+    glphong->specular = agkColorOrTex(ctx, actx, phong->specular);
 
   if (phong->emission)
-    glphong->emission = agk_colorOrTex(actx, phong->emission);
+    glphong->emission = agkColorOrTex(ctx, actx, phong->emission);
 
   if (phong->shininess)
     glphong->shininess = *phong->shininess->val;

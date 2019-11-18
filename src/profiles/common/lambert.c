@@ -11,8 +11,9 @@
 #include <string.h>
 
 GkMaterial*
-agk_lambert(AkContext           * __restrict actx,
-            AkTechniqueFxCommon * __restrict lambert) {
+agkLambert(AgkContext          * __restrict ctx,
+           AkContext           * __restrict actx,
+           AkTechniqueFxCommon * __restrict lambert) {
   GkMaterial  *material;
   GkTechnique *gllambert;
 
@@ -20,13 +21,13 @@ agk_lambert(AkContext           * __restrict actx,
   gllambert = gkMaterialNewLambert();
 
   if (lambert->ambient)
-    gllambert->ambient = agk_colorOrTex(actx, lambert->ambient);
+    gllambert->ambient = agkColorOrTex(ctx, actx, lambert->ambient);
 
   if (lambert->diffuse)
-    gllambert->diffuse = agk_colorOrTex(actx, lambert->diffuse);
+    gllambert->diffuse = agkColorOrTex(ctx, actx, lambert->diffuse);
 
   if (lambert->emission)
-    gllambert->emission = agk_colorOrTex(actx, lambert->emission);
+    gllambert->emission = agkColorOrTex(ctx, actx, lambert->emission);
 
   /* TODO: read param later */
 

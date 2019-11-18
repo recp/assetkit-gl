@@ -44,22 +44,22 @@ agk_profileCommon(AgkContext  * __restrict ctx,
 
   switch (tfx->common->type) {
     case AK_MATERIAL_SPECULAR_GLOSSINES:
-      material = agk_specGloss(actx, (AkSpecularGlossiness *)techn);
+      material = agkSpecGloss(ctx, actx, (AkSpecularGlossiness *)techn);
       break;
     case AK_MATERIAL_METALLIC_ROUGHNESS:
-      material = agk_metalRough(actx, (AkMetallicRoughness *)techn);
+      material = agkMetalRough(ctx, actx, (AkMetallicRoughness *)techn);
       break;
     case AK_MATERIAL_PHONG:
-      material = agk_phong(actx, techn);
+      material = agkPhong(ctx, actx, techn);
       break;
     case AK_MATERIAL_BLINN:
-      material = agk_blinn(actx, techn);
+      material = agkBlinn(ctx, actx, techn);
       break;
     case AK_MATERIAL_LAMBERT:
-      material = agk_lambert(actx, techn);
+      material = agkLambert(ctx, actx, techn);
       break;
     case AK_MATERIAL_CONSTANT:
-      material = agk_constant(actx, techn);
+      material = agkConstant(ctx, actx, techn);
       break;
     default:
       goto ret;
@@ -84,7 +84,7 @@ agk_profileCommon(AgkContext  * __restrict ctx,
       transp->amount = 1.0f;
 
     if (aktransp->color)
-      transp->color = agk_colorOrTex(actx, aktransp->color);
+      transp->color = agkColorOrTex(ctx, actx, aktransp->color);
 
     transp->cutoff = aktransp->cutoff;
     transp->mode   = GK_ALPHA_BLEND;
@@ -104,7 +104,7 @@ agk_profileCommon(AgkContext  * __restrict ctx,
       refl->amount = *akrefl->amount->val;
     
     if (akrefl->color)
-      refl->color = agk_colorOrTex(actx, akrefl->color);
+      refl->color = agkColorOrTex(ctx, actx, akrefl->color);
     
     gltechn->reflective = refl;
   }

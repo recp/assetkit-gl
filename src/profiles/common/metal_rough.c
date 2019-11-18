@@ -9,8 +9,9 @@
 #include "color_or_tex.h"
 
 GkMaterial*
-agk_metalRough(AkContext           * __restrict actx,
-               AkMetallicRoughness * __restrict akmat) {
+agkMetalRough(AgkContext          * __restrict ctx,
+              AkContext           * __restrict actx,
+              AkMetallicRoughness * __restrict akmat) {
   GkMaterial   *material;
   GkMetalRough *metalRough;
 
@@ -21,19 +22,19 @@ agk_metalRough(AkContext           * __restrict actx,
 
   metalRough->metallic      = akmat->metallic;
   metalRough->roughness     = akmat->roughness;
-  metalRough->albedoMap     = agkLoadTexture(actx, akmat->albedoTex);
-  metalRough->metalRoughMap = agkLoadTexture(actx, akmat->metalRoughTex);
+  metalRough->albedoMap     = agkLoadTexture(ctx, actx, akmat->albedoTex);
+  metalRough->metalRoughMap = agkLoadTexture(ctx, actx, akmat->metalRoughTex);
 
   /* Other Properties */
 
   if (akmat->base.emission)
-    metalRough->base.emission = agk_colorOrTex(actx, akmat->base.emission);
+    metalRough->base.emission = agkColorOrTex(ctx, actx, akmat->base.emission);
 
   if (akmat->base.occlusion) {
     GkOcclusion *occlusion;
 
     occlusion           = calloc(1, sizeof(*occlusion));
-    occlusion->tex      = agkLoadTexture(actx, akmat->base.occlusion->tex);
+    occlusion->tex      = agkLoadTexture(ctx, actx, akmat->base.occlusion->tex);
     occlusion->strength = akmat->base.occlusion->strength;
 
     metalRough->base.occlusion = occlusion;
@@ -43,7 +44,7 @@ agk_metalRough(AkContext           * __restrict actx,
     GkNormalMap *normal;
 
     normal        = calloc(1, sizeof(*normal));
-    normal->tex   = agkLoadTexture(actx, akmat->base.normal->tex);
+    normal->tex   = agkLoadTexture(ctx, actx, akmat->base.normal->tex);
     normal->scale = akmat->base.normal->scale;
 
     metalRough->base.normal = normal;
