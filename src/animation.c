@@ -63,7 +63,6 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
           GkBuffer      *glbuff;
           AkAccessor    *acc;
           AkInput       *inp;
-          AkSource      *src;
           size_t         its, ots, outputStride;
 
           glSampler               = calloc(1, sizeof(*glSampler));
@@ -74,8 +73,7 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
           inp = sampler->input;
 
           while (inp) {
-            src          = ak_getObjectByUrl(&inp->source);
-            acc          = src->tcommon;
+            acc          = inp->accessor;
             buff         = ak_getObjectByUrl(&acc->source);
             glbuff       = malloc(sizeof(*glbuff));
             glbuff->data = malloc(acc->byteLength);
@@ -87,7 +85,7 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
                    acc->byteLength);
 
             glbuff->count  = glbuff->len / sizeof(float); /* TODO: */
-            glbuff->stride = src->tcommon->bound;
+            glbuff->stride = acc->bound;
 
             switch (inp->semantic) {
               case AK_INPUT_SEMANTIC_INTERPOLATION:

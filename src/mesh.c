@@ -103,7 +103,6 @@ agkLoadMesh(AgkContext * __restrict ctx,
   while (prim) {
     GkPrimitive *glprim;
     AkInput     *input;
-    AkSource    *source;
     AkUIntArray *indices;
 
     glprim = &glmodel->prims[glmodel->primc];
@@ -114,10 +113,7 @@ agkLoadMesh(AgkContext * __restrict ctx,
     /* per-primitive inputs */
     input = prim->input;
     while (input) {
-      source = ak_getObjectByUrl(&input->source);
-
-      if (source && source->tcommon)
-        agkLoadSource(ctx, source->tcommon, glprim, input);
+      agkLoadSource(ctx, input->accessor, glprim, input);
 
       input = input->next;
     }
