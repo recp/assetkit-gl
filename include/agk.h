@@ -87,7 +87,7 @@ agkLoadPrimMaterial(AgkContext      * __restrict ctx,
                     GkPrimitive     * __restrict glprim);
 
 void
-agk_loadAnimations(AgkContext * __restrict ctx);
+agkLoadAnimations(AgkContext * __restrict ctx);
 
 AkResult
 load_controllers(AgkContext * __restrict ctx);

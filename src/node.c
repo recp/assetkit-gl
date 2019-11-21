@@ -32,7 +32,7 @@ agk_loadNode(AgkContext * __restrict ctx,
   } else if (node->transform) {
     gkMakeNodeTransform(ctx->scene, glnode);
     glnode->trans->flags &= ~GK_TRANSF_LOCAL_ISVALID;
-    agk_loadTransforms(ctx, node, glnode->trans);
+    agkLoadTransforms(ctx, node, glnode->trans);
     /* ak_transformCombine(node, glnode->trans->local[0]);
        glnode->trans->flags |= GK_TRANSF_LOCAL_ISVALID;
      */

@@ -16,8 +16,9 @@
 #include <stdint.h>
 #include <limits.h>
 
+GK_INLINE
 GkType
-agk_targetType(size_t stride) {
+agkTargetType(size_t stride) {
   switch (stride) {
     case 1:
       return GKT_FLOAT;
@@ -32,7 +33,7 @@ agk_targetType(size_t stride) {
 }
 
 void
-agk_loadAnimations(AgkContext * __restrict ctx) {
+agkLoadAnimations(AgkContext * __restrict ctx) {
   AkDoc       *doc;
   AkAnimation *anim;
   AkLibItem   *animItem;
@@ -48,112 +49,112 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
 
     while (anim) {
       AkAnimSampler       *sampler;
-      AkChannel           *channel;
+      AkChannel           *ch;
       AkBuffer            *buff;
       AkBufferView        *buffView;
-      GkKeyFrameAnimation *glanim;
+      GkKeyFrameAnimation *ganim;
       RBTree              *samplerMap;
 
       samplerMap = rb_newtree(NULL, ds_cmp_ptr, NULL);
-      glanim     = gkKeyFrameAnimation();
-      glanim->base.nRepeat = UINT_MAX;
+      ganim     = gkKeyFrameAnimation();
+      ganim->base.nRepeat = UINT_MAX;
 
       if ((sampler = anim->sampler)) {
         do {
-          GkAnimSampler *glSampler;
-          GkBuffer      *glbuff;
+          GkAnimSampler *gsampler;
+          GkBuffer      *gbuff;
           AkAccessor    *acc;
           AkInput       *inp;
           size_t         its, ots, outputStride, byteLength;
 
-          glSampler               = calloc(1, sizeof(*glSampler));
-          glSampler->preBehavior  = (GkSamplerBehavior)sampler->pre;
-          glSampler->postBehavior = (GkSamplerBehavior)sampler->post;
+          gsampler               = calloc(1, sizeof(*gsampler));
+          gsampler->preBehavior  = (GkSamplerBehavior)sampler->pre;
+          gsampler->postBehavior = (GkSamplerBehavior)sampler->post;
 
           its = ots = outputStride = 0;
           inp = sampler->input;
 
           while (inp) {
-            acc          = inp->accessor;
-            buffView     = acc->bufferView;
-            buff         = buffView->buffer;
-            glbuff       = malloc(sizeof(*glbuff));
+            acc         = inp->accessor;
+            buffView    = acc->bufferView;
+            buff        = buffView->buffer;
+            gbuff       = malloc(sizeof(*gbuff));
             
-            byteLength   = buffView->byteLength;
-            glbuff->data = malloc(byteLength);
-            glbuff->len  = byteLength;
+            byteLength  = buffView->byteLength;
+            gbuff->data = malloc(byteLength);
+            gbuff->len  = byteLength;
 
             /* TODO: check stride */
-            memcpy(glbuff->data,
+            memcpy(gbuff->data,
                    buff->data + buffView->byteOffset + acc->byteOffset,
                    byteLength);
 
-            glbuff->count  = glbuff->len / sizeof(float); /* TODO: */
-            glbuff->stride = acc->bound;
+            gbuff->count  = gbuff->len / sizeof(float); /* TODO: */
+            gbuff->stride = acc->bound;
 
             switch (inp->semantic) {
               case AK_INPUT_SEMANTIC_INTERPOLATION:
-                glSampler->interp     = glbuff;
+                gsampler->interp     = gbuff;
                 break;
               case AK_INPUT_SEMANTIC_INPUT:
-                glSampler->input      = glbuff;
+                gsampler->input      = gbuff;
                 break;
               case AK_INPUT_SEMANTIC_OUTPUT:
-                glSampler->output     = glbuff;
-                outputStride          = acc->stride;
+                gsampler->output     = gbuff;
+                outputStride         = acc->stride;
                 break;
               case AK_INPUT_SEMANTIC_IN_TANGENT:
-                glSampler->inTangent  = glbuff;
-                its                   = acc->stride;
+                gsampler->inTangent  = gbuff;
+                its                  = acc->stride;
                 break;
               case AK_INPUT_SEMANTIC_OUT_TANGENT:
-                glSampler->outTangent = glbuff;
-                ots                   = acc->stride;
+                gsampler->outTangent = gbuff;
+                ots                  = acc->stride;
                 break;
               default:
-                free(glbuff);
+                free(gbuff);
                 break;
             }
             inp = inp->next;
           }
 
-          glSampler->inTangentStride  = (float)its;
-          glSampler->outTangentStride = (float)ots;
+          gsampler->inTangentStride  = (float)its;
+          gsampler->outTangentStride = (float)ots;
 
-          rb_insert(samplerMap, sampler, glSampler);
+          rb_insert(samplerMap, sampler, gsampler);
         } while ((sampler = sampler->next));
       }
 
-      if ((channel = anim->channel)) {
-        GkChannel *last_glchannel;
+      if ((ch = anim->channel)) {
+        GkChannel *last_gch;
 
-        last_glchannel = NULL;
+        last_gch = NULL;
 
         do {
-          GkChannel *glchannel;
-          char      *target, *gltarget;
+          GkChannel *gch;
+          char      *target, *gtarget;
           GkBuffer  *inp;
           uint32_t   attribOff;
 
-          if (channel->target) {
-            target = ak_sid_resolve(&actx, channel->target, &sidAttrib);
+          if (ch->target) {
+            target = ak_sid_resolve(&actx, ch->target, &sidAttrib);
             if (target) {
-              gltarget              = rb_find(ctx->objMap, target);
-              attribOff             = ak_sid_attr_offset(sidAttrib);
-              sampler               = ak_getObjectByUrl(&channel->source);
-              glchannel             = calloc(1, sizeof(*glchannel));
-              glchannel->sampler    = rb_find(samplerMap, sampler);
+              gtarget         = rb_find(ctx->objMap, target);
+              attribOff       = ak_sid_attr_offset(sidAttrib);
+              sampler         = ak_getObjectByUrl(&ch->source);
+              gch             = calloc(1, sizeof(*gch));
+              gch->sampler    = rb_find(samplerMap, sampler);
 
               /* TODO: currently only floats are supported */
-              glchannel->target     = gltarget + attribOff * sizeof(float);
-              glchannel->targetType = agk_targetType(glchannel->sampler->output->stride);
+              gch->target     = gtarget + attribOff * sizeof(float);
+              gch->targetType = agkTargetType(gch->sampler->output->stride);
 
-              inp                  = glchannel->sampler->input;
-              glchannel->endAt   = *(float *)((char *)inp->data + inp->len - sizeof(float));
-              glchannel->beginAt = *(float *)inp->data;
-              glchannel->duration  = glchannel->endAt - glchannel->beginAt;
-
-              glanim->channelCount++;
+              inp             = gch->sampler->input;
+              gch->endAt      = *(float *)((char *)inp->data + inp->len - sizeof(float));
+              gch->beginAt    = *(float *)inp->data;
+              gch->duration   = gch->endAt - gch->beginAt;
+ 
+              ganim->channelCount++;
 
               if (ak_typeid(target) == AKT_OBJECT) {
                 AkObject *obj;
@@ -168,65 +169,65 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
                     AkNode *node;
 
                     node = ak_mem_parent(target); /* TODO Validate ? */
-                    glchannel->node             = rb_find(ctx->objMap, node);
-                    glchannel->isTransform      = true;
-                    glchannel->isLocalTransform = true;
+                    gch->node             = rb_find(ctx->objMap, node);
+                    gch->isTransform      = true;
+                    gch->isLocalTransform = true;
                     break;
                   }
                   default:  break;
                 }
               }
 
-              if (last_glchannel)
-                last_glchannel->next = glchannel;
+              if (last_gch)
+                last_gch->next = gch;
               else
-                glanim->channel = glchannel;
-              last_glchannel = glchannel;
+                ganim->channel = gch;
+              last_gch = gch;
             }
           }
 
           /* pre-resolved e.g. glTF */
-          else if (channel->resolvedTarget){
+          else if (ch->resolvedTarget){
             AkNode *node;
 
-            node = ak_mem_parent(channel->resolvedTarget);
+            node = ak_mem_parent(ch->resolvedTarget);
 
-            gltarget                    = rb_find(ctx->objMap, channel->resolvedTarget);
-            sampler                     = ak_getObjectByUrl(&channel->source);
-            glchannel                   = calloc(1, sizeof(*glchannel));
-            glchannel->sampler          = rb_find(samplerMap, sampler);
-            glchannel->target           = gltarget;
-            glchannel->property         = (GkTargetPropertyType)channel->targetType;
-            glchannel->targetType       = agk_targetType(glchannel->sampler->output->stride);
+            gtarget               = rb_find(ctx->objMap, ch->resolvedTarget);
+            sampler               = ak_getObjectByUrl(&ch->source);
+            gch                   = calloc(1, sizeof(*gch));
+            gch->sampler          = rb_find(samplerMap, sampler);
+            gch->target           = gtarget;
+            gch->property         = (GkTargetPropertyType)ch->targetType;
+            gch->targetType       = agkTargetType(gch->sampler->output->stride);
 
-            inp                         = glchannel->sampler->input;
-            glchannel->endAt            = *(float *)((char *)inp->data + inp->len - sizeof(float));
-            glchannel->beginAt          = *(float *)inp->data;
-            glchannel->duration         = glchannel->endAt - glchannel->beginAt;
-            glchannel->node             = rb_find(ctx->objMap, node);
-            glchannel->isTransform      = true;
-            glchannel->isLocalTransform = true;
+            inp                   = gch->sampler->input;
+            gch->endAt            = *(float *)((char *)inp->data + inp->len - sizeof(float));
+            gch->beginAt          = *(float *)inp->data;
+            gch->duration         = gch->endAt - gch->beginAt;
+            gch->node             = rb_find(ctx->objMap, node);
+            gch->isTransform      = true;
+            gch->isLocalTransform = true;
 
-            glanim->channelCount++;
+            ganim->channelCount++;
 
-            if (glchannel->sampler
+            if (gch->sampler
                 && sampler->uniInterpolation != AK_INTERPOLATION_UNKNOWN)
-              glchannel->sampler->uniInterp = (GkInterpType)sampler->uniInterpolation;
+              gch->sampler->uniInterp = (GkInterpType)sampler->uniInterpolation;
 
-            if (last_glchannel)
-              last_glchannel->next = glchannel;
+            if (last_gch)
+              last_gch->next = gch;
             else
-              glanim->channel = glchannel;
-            last_glchannel = glchannel;
+              ganim->channel = gch;
+            last_gch = gch;
           }
 
-        } while ((channel = channel->next));
+        } while ((ch = ch->next));
       }
 
       rb_destroy(samplerMap);
 
       /* TODO: */
-      gkAddAnimation(ctx->scene, NULL, &glanim->base);
+      gkAddAnimation(ctx->scene, NULL, &ganim->base);
 
       anim = anim->next;
     }

@@ -9,177 +9,177 @@
 #include <ak/transform.h>
 
 void
-agk_loadTransforms(AgkContext  * __restrict ctx,
-                   AkNode      * __restrict node,
-                   GkTransform * __restrict gltrans) {
-  AkObject        *transform, *transformGroup;
+agkLoadTransforms(AgkContext  * __restrict ctx,
+                  AkNode      * __restrict node,
+                  GkTransform * __restrict gtrans) {
+  AkObject        *trans, *transGroup;
   GkTransformItem *first, *last;
   void            *transdata;
 
   if (!node->transform)
     return;
 
-  first = last = transdata = NULL;
-  transformGroup = node->transform->base;
+  first      = last = transdata = NULL;
+  transGroup = node->transform->base;
 
 again:
-  transform = transformGroup;
-  while (transform) {
-    switch (transform->type) {
+  trans = transGroup;
+  while (trans) {
+    switch (trans->type) {
       case AKT_MATRIX: {
         AkMatrix *matrix;
-        GkMatrix *glmatrix;
-        matrix = ak_objGet(transform);
+        GkMatrix *gmatrix;
+        matrix = ak_objGet(trans);
 
-        glmatrix = malloc(sizeof(*glmatrix));
-        glmatrix->base.next = NULL;
-        glmatrix->base.prev = last;
-        glmatrix->base.type = GK_TRANS_MATRIX;
+        gmatrix = malloc(sizeof(*gmatrix));
+        gmatrix->base.next = NULL;
+        gmatrix->base.prev = last;
+        gmatrix->base.type = GK_TRANS_MATRIX;
 
-        last = &glmatrix->base;
+        last = &gmatrix->base;
         if (last->prev)
           last->prev->next = last;
         if (!first)
           first = last;
 
-        transdata = &glmatrix->value;
-        glm_mat4_copy(matrix->val, glmatrix->value);
+        transdata = &gmatrix->value;
+        glm_mat4_copy(matrix->val, gmatrix->value);
         break;
       }
       case AKT_LOOKAT: {
         AkLookAt *lookAt;
-        GkLookAt *gllookat;
-        lookAt = ak_objGet(transform);
+        GkLookAt *glookat;
+        lookAt = ak_objGet(trans);
 
-        gllookat = malloc(sizeof(*gllookat));
-        gllookat->base.next = NULL;
-        gllookat->base.prev = last;
-        gllookat->base.type = GK_TRANS_LOOK_AT;
+        glookat = malloc(sizeof(*glookat));
+        glookat->base.next = NULL;
+        glookat->base.prev = last;
+        glookat->base.type = GK_TRANS_LOOK_AT;
 
-        last = &gllookat->base;
+        last = &glookat->base;
         if (last->prev)
           last->prev->next = last;
         if (!first)
           first = last;
 
-        transdata = &gllookat->value;
-        memcpy(gllookat->value, lookAt->val, sizeof(vec3) * 3);
+        transdata = &glookat->value;
+        memcpy(glookat->value, lookAt->val, sizeof(vec3) * 3);
         break;
       }
       case AKT_ROTATE: {
         AkRotate *rotate;
-        GkRotate *glrotate;
-        rotate = ak_objGet(transform);
+        GkRotate *grotate;
+        rotate = ak_objGet(trans);
 
-        glrotate = malloc(sizeof(*glrotate));
-        glrotate->base.next = NULL;
-        glrotate->base.prev = last;
-        glrotate->base.type = GK_TRANS_ROTATE;
+        grotate = malloc(sizeof(*grotate));
+        grotate->base.next = NULL;
+        grotate->base.prev = last;
+        grotate->base.type = GK_TRANS_ROTATE;
 
-        last = &glrotate->base;
+        last = &grotate->base;
         if (last->prev)
           last->prev->next = last;
         if (!first)
           first = last;
 
-        transdata = &glrotate->value;
-        glm_vec4_copy(rotate->val, glrotate->value);
+        transdata = &grotate->value;
+        glm_vec4_copy(rotate->val, grotate->value);
         break;
       }
       case AKT_SCALE: {
         AkScale *scale;
-        GkScale *glscale;
-        scale = ak_objGet(transform);
+        GkScale *gscale;
+        scale = ak_objGet(trans);
 
-        glscale = malloc(sizeof(*glscale));
-        glscale->base.next = NULL;
-        glscale->base.prev = last;
-        glscale->base.type = GK_TRANS_SCALE;
+        gscale = malloc(sizeof(*gscale));
+        gscale->base.next = NULL;
+        gscale->base.prev = last;
+        gscale->base.type = GK_TRANS_SCALE;
 
-        last = &glscale->base;
+        last = &gscale->base;
         if (last->prev)
           last->prev->next = last;
         if (!first)
           first = last;
 
-        transdata = &glscale->value;
-        glm_vec3_copy(scale->val, glscale->value);
+        transdata = &gscale->value;
+        glm_vec3_copy(scale->val, gscale->value);
         break;
       }
       case AKT_TRANSLATE: {
         AkTranslate *translate;
-        GkTranslate *gltranslate;
-        translate = ak_objGet(transform);
+        GkTranslate *gtranslate;
+        translate = ak_objGet(trans);
 
-        gltranslate = malloc(sizeof(*gltranslate));
-        gltranslate->base.next = NULL;
-        gltranslate->base.prev = last;
-        gltranslate->base.type = GK_TRANS_TRANSLATE;
+        gtranslate = malloc(sizeof(*gtranslate));
+        gtranslate->base.next = NULL;
+        gtranslate->base.prev = last;
+        gtranslate->base.type = GK_TRANS_TRANSLATE;
 
-        last = &gltranslate->base;
+        last = &gtranslate->base;
         if (last->prev)
           last->prev->next = last;
         if (!first)
           first = last;
 
-        transdata = &gltranslate->value;
-        glm_vec3_copy(translate->val, gltranslate->value);
+        transdata = &gtranslate->value;
+        glm_vec3_copy(translate->val, gtranslate->value);
         break;
       }
       case AKT_SKEW: {
         AkSkew *skew;
-        GkSkew *glskew;
-        skew = ak_objGet(transform);
+        GkSkew *gskew;
+        skew = ak_objGet(trans);
 
-        glskew = malloc(sizeof(*glskew));
-        glskew->base.next = NULL;
-        glskew->base.prev = last;
-        glskew->base.type = GK_TRANS_SKEW;
+        gskew = malloc(sizeof(*gskew));
+        gskew->base.next = NULL;
+        gskew->base.prev = last;
+        gskew->base.type = GK_TRANS_SKEW;
 
-        last = &glskew->base;
+        last = &gskew->base;
         if (last->prev)
           last->prev->next = last;
         if (!first)
           first = last;
 
-        glskew->angle = skew->angle;
+        gskew->angle = skew->angle;
 
-        glm_vec3_copy(skew->rotateAxis, glskew->rotateAxis);
-        glm_vec3_copy(skew->aroundAxis, glskew->aroundAxis);
+        glm_vec3_copy(skew->rotateAxis, gskew->rotateAxis);
+        glm_vec3_copy(skew->aroundAxis, gskew->aroundAxis);
         break;
       }
       case AKT_QUATERNION: {
         AkQuaternion *quat;
-        GkQuaternion *glquat;
-        quat = ak_objGet(transform);
+        GkQuaternion *gquat;
+        quat = ak_objGet(trans);
 
-        glquat = malloc(sizeof(*glquat));
-        glquat->base.next = NULL;
-        glquat->base.prev = last;
-        glquat->base.type = GK_TRANS_QUAT;
+        gquat = malloc(sizeof(*gquat));
+        gquat->base.next = NULL;
+        gquat->base.prev = last;
+        gquat->base.type = GK_TRANS_QUAT;
 
-        last = &glquat->base;
+        last = &gquat->base;
         if (last->prev)
           last->prev->next = last;
         if (!first)
           first = last;
 
-        transdata = &glquat->value;
-        glm_vec4_copy(quat->val, glquat->value);
+        transdata = &gquat->value;
+        glm_vec4_copy(quat->val, gquat->value);
         break;
       }
     }
 
-    rb_insert(ctx->objMap, transform, transdata);
+    rb_insert(ctx->objMap, trans, transdata);
 
-    transform = transform->next;
+    trans = trans->next;
   }
 
-  if (transformGroup != node->transform->item) {
-    transformGroup = node->transform->item;
+  if (transGroup != node->transform->item) {
+    transGroup = node->transform->item;
     goto again;
   }
 
-  gltrans->item = first;
+  gtrans->item = first;
 }
 
