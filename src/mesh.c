@@ -18,10 +18,10 @@
 #define BUFFER_OFFSET(i) ((void *)(i))
 
 void
-agkLoadSource(AgkContext   * __restrict ctx,
-              AkAccessor   * __restrict acc,
-              GkPrimitive  * __restrict glprim,
-              AkInput      * __restrict inp) {
+agkLoadSource(AgkContext  * __restrict ctx,
+              AkAccessor  * __restrict acc,
+              GkPrimitive * __restrict gprim,
+              AkInput     * __restrict inp) {
   AkBuffer      *akbuff;
   AkBufferView  *akbuffview;
   GkGpuBuffer   *buff;
@@ -38,7 +38,7 @@ agkLoadSource(AgkContext   * __restrict ctx,
   type = agk_type(acc->componentType);
   vi   = gkMakeVertexInput(attribName, type, 0);
 
-  flist_sp_append(&glprim->inputs, vi);
+  flist_sp_append(&gprim->inputs, vi);
 
   if (!(akbuffview = acc->bufferView)
       || !(akbuff = akbuffview->buffer))
@@ -48,7 +48,7 @@ agkLoadSource(AgkContext   * __restrict ctx,
   if (!buff) {
     buff = gkGpuBufferNew(ctx->ctx, GK_ARRAY, akbuff->length);
     gkGpuBufferFeed(buff, GK_STATIC_DRAW, akbuff->data);
-    gkPrimAddBuffer(glprim, buff);
+    gkPrimAddBuffer(gprim, buff);
 
     rb_insert(ctx->bufftree, akbuff, buff);
   } else {
@@ -56,13 +56,13 @@ agkLoadSource(AgkContext   * __restrict ctx,
   }
 
   if (agk_isinteger(acc->componentType)) {
-    glVertexAttribIPointer(glprim->lastInputIndex,
+    glVertexAttribIPointer(gprim->lastInputIndex,
                            (int)acc->componentSize, // acc->bound,
                            type,
                            (GLsizei)akbuffview->byteStride, //acc->byteStride,
                            BUFFER_OFFSET(acc->byteOffset + akbuffview->byteOffset));
   } else {
-    glVertexAttribPointer(glprim->lastInputIndex,
+    glVertexAttribPointer(gprim->lastInputIndex,
                           (int)acc->componentSize,
                           type,
                           GL_FALSE,
@@ -70,7 +70,7 @@ agkLoadSource(AgkContext   * __restrict ctx,
                           BUFFER_OFFSET(acc->byteOffset + akbuffview->byteOffset));
   }
 
-  glEnableVertexAttribArray(glprim->lastInputIndex);
+  glEnableVertexAttribArray(gprim->lastInputIndex);
 
 //  gkVertexInput(glprim,
 //                buff,
@@ -83,7 +83,7 @@ agkLoadSource(AgkContext   * __restrict ctx,
 //  acc = gkAccessorNew(buff, type, acc->bound, acc->byteStride, acc->byteOffset);
 //  gkVertexInput(glprim, acc, attribName);
 
-  glprim->lastInputIndex++;
+  gprim->lastInputIndex++;
 }
 
 AkResult
@@ -91,29 +91,29 @@ agkLoadMesh(AgkContext * __restrict ctx,
             AkMesh     * __restrict mesh,
             GkModel   ** __restrict dest) {
   AkMeshPrimitive *prim;
-  GkModel         *glmodel;
+  GkModel         *gmodel;
   uint32_t         primc;
 
-  primc   = mesh->primitiveCount;
-  glmodel = calloc(1, sizeof(*glmodel) + sizeof(GkPrimitive) * primc);
+  primc  = mesh->primitiveCount;
+  gmodel = calloc(1, sizeof(*gmodel) + sizeof(GkPrimitive) * primc);
 
   ak_meshReIndexInputs(mesh);
 
   prim = mesh->primitive;
   while (prim) {
-    GkPrimitive *glprim;
+    GkPrimitive *gprim;
     AkInput     *input;
     AkUIntArray *indices;
 
-    glprim = &glmodel->prims[glmodel->primc];
+    gprim = &gmodel->prims[gmodel->primc];
 
-    glGenVertexArrays(1, &glprim->vao);
-    glBindVertexArray(glprim->vao);
+    glGenVertexArrays(1, &gprim->vao);
+    glBindVertexArray(gprim->vao);
 
     /* per-primitive inputs */
     input = prim->input;
     while (input) {
-      agkLoadSource(ctx, input->accessor, glprim, input);
+      agkLoadSource(ctx, input->accessor, gprim, input);
 
       input = input->next;
     }
@@ -126,50 +126,50 @@ agkLoadMesh(AgkContext * __restrict ctx,
                              GK_INDEX,
                              indices->count * sizeof(AkUInt));
       gkGpuBufferFeed(ibuff, GK_STATIC_DRAW, indices->items);
-      gkPrimAddBuffer(glprim, ibuff);
+      gkPrimAddBuffer(gprim, ibuff);
 
-      glprim->count  = (GLsizei)indices->count;
-      glprim->flags |= GK_DRAW_ELEMENTS;
+      gprim->count  = (GLsizei)indices->count;
+      gprim->flags |= GK_DRAW_ELEMENTS;
     }
 
     /* els direct draw */
     else {
-      glprim->flags |= GK_DRAW_ARRAYS;
+      gprim->flags |= GK_DRAW_ARRAYS;
     }
 
-    glprim->mode = agk_drawMode(prim);
+    gprim->mode = agk_drawMode(prim);
 
     glBindVertexArray(0);
 
-    prim->udata = (void *)(uintptr_t)glmodel->primc;
-    glmodel->primc++;
+    prim->udata = (void *)(uintptr_t)gmodel->primc;
+    gmodel->primc++;
 
     if (prim->bbox) {
-      glm_vec3_copy(prim->bbox->min, glprim->bbox[0]);
-      glm_vec3_copy(prim->bbox->max, glprim->bbox[1]);
+      glm_vec3_copy(prim->bbox->min, gprim->bbox[0]);
+      glm_vec3_copy(prim->bbox->max, gprim->bbox[1]);
     }
 
     if (prim->material) {
-      agkLoadPrimMaterial(ctx, prim, glprim);
+      agkLoadPrimMaterial(ctx, prim, gprim);
     }
     prim = prim->next;
   }
 
   /* nothing to render */
-  if (glmodel->primc < 1)
+  if (gmodel->primc < 1)
     goto err;
 
   if (mesh->bbox) {
-    glm_vec3_copy(mesh->bbox->min, glmodel->bbox[0]);
-    glm_vec3_copy(mesh->bbox->max, glmodel->bbox[1]);
+    glm_vec3_copy(mesh->bbox->min, gmodel->bbox[0]);
+    glm_vec3_copy(mesh->bbox->max, gmodel->bbox[1]);
   }
 
-  glm_vec3_copy(mesh->center, glmodel->center);
+  glm_vec3_copy(mesh->center, gmodel->center);
 
-  *dest = glmodel;
+  *dest = gmodel;
 
   return AK_OK;
 err:
-  free(glmodel);
+  free(gmodel);
   return AK_ERR;
 }
