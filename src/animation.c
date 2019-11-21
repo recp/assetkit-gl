@@ -50,6 +50,7 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
       AkAnimSampler       *sampler;
       AkChannel           *channel;
       AkBuffer            *buff;
+      AkBufferView        *buffView;
       GkKeyFrameAnimation *glanim;
       RBTree              *samplerMap;
 
@@ -63,7 +64,7 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
           GkBuffer      *glbuff;
           AkAccessor    *acc;
           AkInput       *inp;
-          size_t         its, ots, outputStride;
+          size_t         its, ots, outputStride, byteLength;
 
           glSampler               = calloc(1, sizeof(*glSampler));
           glSampler->preBehavior  = (GkSamplerBehavior)sampler->pre;
@@ -74,15 +75,18 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
 
           while (inp) {
             acc          = inp->accessor;
-            buff         = ak_getObjectByUrl(&acc->source);
+            buffView     = acc->bufferView;
+            buff         = buffView->buffer;
             glbuff       = malloc(sizeof(*glbuff));
-            glbuff->data = malloc(acc->byteLength);
-            glbuff->len  = acc->byteLength;
+            
+            byteLength   = buffView->byteLength;
+            glbuff->data = malloc(byteLength);
+            glbuff->len  = byteLength;
 
             /* TODO: check stride */
             memcpy(glbuff->data,
-                   buff->data + acc->byteOffset,
-                   acc->byteLength);
+                   buff->data + buffView->byteOffset + acc->byteOffset,
+                   byteLength);
 
             glbuff->count  = glbuff->len / sizeof(float); /* TODO: */
             glbuff->stride = acc->bound;
@@ -196,8 +200,8 @@ agk_loadAnimations(AgkContext * __restrict ctx) {
             glchannel->targetType       = agk_targetType(glchannel->sampler->output->stride);
 
             inp                         = glchannel->sampler->input;
-            glchannel->endAt          = *(float *)((char *)inp->data + inp->len - sizeof(float));
-            glchannel->beginAt        = *(float *)inp->data;
+            glchannel->endAt            = *(float *)((char *)inp->data + inp->len - sizeof(float));
+            glchannel->beginAt          = *(float *)inp->data;
             glchannel->duration         = glchannel->endAt - glchannel->beginAt;
             glchannel->node             = rb_find(ctx->objMap, node);
             glchannel->isTransform      = true;
