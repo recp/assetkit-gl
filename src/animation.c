@@ -51,7 +51,6 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
       AkAnimSampler       *sampler;
       AkChannel           *ch;
       AkBuffer            *buff;
-      AkBufferView        *buffView;
       GkKeyFrameAnimation *ganim;
       RBTree              *samplerMap;
 
@@ -76,17 +75,16 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
 
           while (inp) {
             acc         = inp->accessor;
-            buffView    = acc->bufferView;
-            buff        = buffView->buffer;
+            buff        = acc->buffer;
             gbuff       = malloc(sizeof(*gbuff));
             
-            byteLength  = buffView->byteLength;
+            byteLength  = buff->length;
             gbuff->data = malloc(byteLength);
             gbuff->len  = byteLength;
 
             /* TODO: check stride */
             memcpy(gbuff->data,
-                   buff->data + buffView->byteOffset + acc->byteOffset,
+                   buff->data + acc->byteOffset,
                    byteLength);
 
             gbuff->count  = byteLength / sizeof(float); /* TODO: */

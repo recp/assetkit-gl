@@ -23,7 +23,6 @@ agkLoadSource(AgkContext  * __restrict ctx,
               GkPrimitive * __restrict gprim,
               AkInput     * __restrict inp) {
   AkBuffer      *akbuff;
-  AkBufferView  *akbuffview;
   GkGpuBuffer   *buff;
   GkVertexInput *vi;
   GLenum         type;
@@ -40,8 +39,7 @@ agkLoadSource(AgkContext  * __restrict ctx,
 
   flist_sp_append(&gprim->inputs, vi);
 
-  if (!(akbuffview = acc->bufferView)
-      || !(akbuff = akbuffview->buffer))
+  if (!(akbuff = acc->buffer))
     return; /* TODO: assert or log */
 
   buff = rb_find(ctx->bufftree, akbuff);
@@ -57,17 +55,17 @@ agkLoadSource(AgkContext  * __restrict ctx,
 
   if (agk_isinteger(acc->componentType)) {
     glVertexAttribIPointer(gprim->lastInputIndex,
-                           (int)acc->componentSize, // acc->bound,
+                           acc->bound,
                            type,
-                           (GLsizei)akbuffview->byteStride, //acc->byteStride,
-                           BUFFER_OFFSET(acc->byteOffset + akbuffview->byteOffset));
+                           (GLsizei)acc->byteStride,
+                           BUFFER_OFFSET(acc->byteOffset));
   } else {
     glVertexAttribPointer(gprim->lastInputIndex,
-                          (int)acc->componentSize,
+                          acc->bound,
                           type,
                           GL_FALSE,
-                          (GLsizei)akbuffview->byteStride, //acc->byteStride,
-                          BUFFER_OFFSET(acc->byteOffset + akbuffview->byteOffset));
+                          (GLsizei)acc->byteStride,
+                          BUFFER_OFFSET(acc->byteOffset));
   }
 
   glEnableVertexAttribArray(gprim->lastInputIndex);
