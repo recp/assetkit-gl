@@ -90,7 +90,7 @@ void
 agkLoadAnimations(AgkContext * __restrict ctx);
 
 AkResult
-load_controllers(AgkContext * __restrict ctx);
+akgLoadControllers(AgkContext * __restrict ctx);
 
 #ifdef __cplusplus
 }

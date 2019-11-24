@@ -64,13 +64,13 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
           GkBuffer      *gbuff;
           AkAccessor    *acc;
           AkInput       *inp;
-          size_t         its, ots, outputStride, byteLength;
+          size_t         its, ots, byteLength;
 
           gsampler               = calloc(1, sizeof(*gsampler));
           gsampler->preBehavior  = (GkSamplerBehavior)sampler->pre;
           gsampler->postBehavior = (GkSamplerBehavior)sampler->post;
 
-          its = ots = outputStride = 0;
+          its = ots = 0;
           inp = sampler->input;
 
           while (inp) {
@@ -78,7 +78,7 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
             buff        = acc->buffer;
             gbuff       = malloc(sizeof(*gbuff));
             
-            byteLength  = buff->length;
+            byteLength  = acc->byteLength;
             gbuff->data = malloc(byteLength);
             gbuff->len  = byteLength;
 
@@ -87,7 +87,7 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
                    buff->data + acc->byteOffset,
                    byteLength);
 
-            gbuff->count  = byteLength / sizeof(float); /* TODO: */
+            gbuff->count  = acc->count;// byteLength / acc->componentBytes; /* TODO: */
             gbuff->stride = acc->bound;
 
             switch (inp->semantic) {
@@ -99,7 +99,6 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
                 break;
               case AK_INPUT_SEMANTIC_OUTPUT:
                 gsampler->output     = gbuff;
-                outputStride         = acc->stride;
                 break;
               case AK_INPUT_SEMANTIC_IN_TANGENT:
                 gsampler->inTangent  = gbuff;

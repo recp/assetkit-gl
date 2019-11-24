@@ -70,17 +70,6 @@ agkLoadSource(AgkContext  * __restrict ctx,
 
   glEnableVertexAttribArray(gprim->lastInputIndex);
 
-//  gkVertexInput(glprim,
-//                buff,
-//                attribName,
-//                type,
-//                acc->bound,
-//                acc->byteStride,
-//                acc->byteOffset);
-//
-//  acc = gkAccessorNew(buff, type, acc->bound, acc->byteStride, acc->byteOffset);
-//  gkVertexInput(glprim, acc, attribName);
-
   gprim->lastInputIndex++;
 }
 

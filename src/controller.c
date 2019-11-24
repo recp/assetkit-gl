@@ -12,14 +12,13 @@
 #include <gk/gk.h>
 #include <math.h>
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
-
+static
 GkModelInst*
-load_basegeom(AgkContext           * __restrict ctx,
-              GkNode               * __restrict glnode,
-              AkInstanceController * __restrict ctlrInst,
-              AkController         * __restrict ctlr,
-              GkModelInst         ** __restrict dest) {
+agkLoadBaseGeom(AgkContext           * __restrict ctx,
+                GkNode               * __restrict glnode,
+                AkInstanceController * __restrict ctlrInst,
+                AkController         * __restrict ctlr,
+                GkModelInst         ** __restrict dest) {
   AkGeometry         *geom;
   GkModel            *model;
   GkModelInst        *modelInst;
@@ -60,11 +59,13 @@ load_basegeom(AgkContext           * __restrict ctx,
   return NULL;
 }
 
+static
+inline
 void
-set_joints(AgkContext * __restrict ctx,
-           AkNode    ** __restrict joints,
-           GkNode    ** __restrict gljoints,
-           size_t                  count) {
+akgSetJoints(AgkContext * __restrict ctx,
+             AkNode    ** __restrict joints,
+             GkNode    ** __restrict gljoints,
+             size_t                  count) {
   size_t i;
 
   for (i = 0; i < count; i++) {
@@ -79,8 +80,9 @@ set_joints(AgkContext * __restrict ctx,
   }
 }
 
+static
 GkSkin*
-load_skin(AgkContext * __restrict ctx, AkSkin * __restrict skin) {
+akgLoadSkin(AgkContext * __restrict ctx, AkSkin * __restrict skin) {
   GkSkin  *glskin;
   size_t   count, i;
   uint32_t primCount, maxJointCount;
@@ -100,7 +102,7 @@ load_skin(AgkContext * __restrict ctx, AkSkin * __restrict skin) {
 
   /* default joints */
   if (skin->joints)
-    set_joints(ctx, skin->joints, glskin->joints, count);
+    akgSetJoints(ctx, skin->joints, glskin->joints, count);
 
   glskin->nJoints = skin->nJoints;
 
@@ -132,7 +134,7 @@ load_skin(AgkContext * __restrict ctx, AkSkin * __restrict skin) {
 }
 
 void
-ctlr_walk(RBTree *tree, RBNode *rbnode) {
+akgWalkController(RBTree *tree, RBNode *rbnode) {
   AgkContext           *ctx;
   AkNode               *node;
   GkNode               *glnode;
@@ -160,10 +162,10 @@ ctlr_walk(RBTree *tree, RBNode *rbnode) {
           glCtlrInst = calloc(1, sizeof(*glCtlrInst));
           baseGeom   = NULL;
 
-          load_basegeom(ctx, glnode, ctlrInst, ctlr, &baseGeom);
+          agkLoadBaseGeom(ctx, glnode, ctlrInst, ctlr, &baseGeom);
           if (baseGeom) {
             if (!(glskin = rb_find(ctx->ctlr, skin)))
-              glskin = load_skin(ctx, skin);
+              glskin = akgLoadSkin(ctx, skin);
 
             glCtlrInst->ctlr = &glskin->base;
 
@@ -171,10 +173,10 @@ ctlr_walk(RBTree *tree, RBNode *rbnode) {
             if (ctlrInst->joints) {
               glCtlrInst->joints = calloc(skin->nJoints,
                                           sizeof(*glCtlrInst->joints));
-              set_joints(ctx,
-                         ctlrInst->joints,
-                         glCtlrInst->joints,
-                         skin->nJoints);
+              akgSetJoints(ctx,
+                           ctlrInst->joints,
+                           glCtlrInst->joints,
+                           skin->nJoints);
             }
 
             glskin->base.source = baseGeom;
@@ -194,8 +196,8 @@ ctlr_walk(RBTree *tree, RBNode *rbnode) {
 }
 
 AkResult
-load_controllers(AgkContext * __restrict ctx) {
+akgLoadControllers(AgkContext * __restrict ctx) {
   ctx->instCtlr->userData = ctx;
-  rb_walk(ctx->instCtlr, ctlr_walk);
+  rb_walk(ctx->instCtlr, akgWalkController);
   return AK_OK;
 }

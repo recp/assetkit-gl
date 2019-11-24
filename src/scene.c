@@ -67,7 +67,7 @@ agk_loadScene(GkContext *ctx,
     } while (node);
 
     agkLoadAnimations(agkCtx);
-    load_controllers(agkCtx);
+    akgLoadControllers(agkCtx);
 
     free(agkCtx);
   }

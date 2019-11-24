@@ -127,7 +127,6 @@ agkLoadPrimMaterial(AgkContext      * __restrict ctx,
   AkEffect   *effect;
   GkMaterial *glmaterial;
   AkContext   actx = {0};
-  AkResult    ret;
   
   if (!(material = prim->material) || !material->effect)
     return AK_ERR;
@@ -139,7 +138,7 @@ agkLoadPrimMaterial(AgkContext      * __restrict ctx,
   if ((effect = ak_instanceObject(&material->effect->base))) {
     if (!(glmaterial = rb_find(ctx->materials, effect))) {
       /* TODO: other profiles */
-      ret = agk_profileCommon(ctx, &actx, effect, &glmaterial);
+      agk_profileCommon(ctx, &actx, effect, &glmaterial);
       rb_insert(ctx->materials, effect, glmaterial);
     }
   }
