@@ -144,9 +144,9 @@ agkLoadTexture(AgkContext   * __restrict ctx,
 
   if (!texref
       || !(akTexture = texref->texture)
-      || !(image = akTexture->image)
+      || !(image     = akTexture->image)
       || !(akSampler = akTexture->sampler)
-      || (target = agk_textureTarget(akTexture->type)) == -1)
+      || (target     = agk_textureTarget(akTexture->type)) == -1)
     goto err;
 
   ak_imageLoad(image);

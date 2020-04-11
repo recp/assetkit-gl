@@ -36,7 +36,7 @@ void
 agkLoadAnimations(AgkContext * __restrict ctx) {
   AkDoc       *doc;
   AkAnimation *anim;
-  AkLibItem   *animItem;
+  AkLibrary   *animItem;
   const char  *sidAttrib;
   AkContext    actx = {0};
 
@@ -45,7 +45,7 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
   animItem = doc->lib.animations;
 
   while (animItem) {
-    anim = animItem->chld;
+    anim = (void *)animItem->chld;
 
     while (anim) {
       AkAnimSampler       *sampler;
@@ -119,7 +119,7 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
           gsampler->outTangentStride = (float)ots;
 
           rb_insert(samplerMap, sampler, gsampler);
-        } while ((sampler = sampler->next));
+        } while ((sampler = (void *)sampler->base.next));
       }
 
       if ((ch = anim->channel)) {

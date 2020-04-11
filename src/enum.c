@@ -84,37 +84,37 @@ agk_drawMode(AkMeshPrimitive *primitive) {
   GLenum mode;
   
   switch (primitive->type) {
-    case AK_MESH_PRIMITIVE_TYPE_POLYGONS:
+    case AK_PRIMITIVE_POLYGONS:
       mode = GL_TRIANGLES;
       break;
-    case AK_MESH_PRIMITIVE_TYPE_TRIANGLES: {
+    case AK_PRIMITIVE_TRIANGLES: {
       AkTriangles *triangles;
       triangles = (AkTriangles *)primitive;
       switch (triangles->mode) {
-        case AK_TRIANGLE_MODE_TRIANGLES:
+        case AK_TRIANGLES:
           mode = GL_TRIANGLES;
           break;
-        case AK_TRIANGLE_MODE_TRIANGLE_STRIP:
+        case AK_TRIANGLE_STRIP:
           mode = GL_TRIANGLE_STRIP;
           break;
-        case AK_TRIANGLE_MODE_TRIANGLE_FAN:
+        case AK_TRIANGLE_FAN:
           mode = GL_TRIANGLE_FAN;
           break;
       }
       break;
     }
-    case AK_MESH_PRIMITIVE_TYPE_LINES: {
+    case AK_PRIMITIVE_LINES: {
       AkLines *lines;
       
       lines = (AkLines *)primitive;
       switch (lines->mode) {
-        case AK_LINE_MODE_LINES:
+        case AK_LINES:
           mode = GL_LINES;
           break;
-        case AK_LINE_MODE_LINE_STRIP:
+        case AK_LINE_STRIP:
           mode = GL_LINE_STRIP;
           break;
-        case AK_LINE_MODE_LINE_LOOP:
+        case AK_LINE_LOOP:
           mode = GL_LINE_LOOP;
           break;
       }
