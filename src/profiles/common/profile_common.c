@@ -32,17 +32,16 @@ agk_profileCommon(AgkContext  * __restrict ctx,
     profilei = profilei->next;
   }
 
-  if (!profilei) {
+  if (!(profile = (AkProfileCommon *)profilei)
+      || !(tfx = profile->technique)
+      || !(techn = tfx->common)) {
     *dest = NULL;
     return AK_EFOUND;
   }
 
   material = NULL;
-  profile  = (AkProfileCommon *)profilei;
-  tfx      = profile->technique;
-  techn    = tfx->common;
 
-  switch (tfx->common->type) {
+  switch (techn->type) {
     case AK_MATERIAL_SPECULAR_GLOSSINES:
       material = agkSpecGloss(ctx, actx, (AkSpecularGlossiness *)techn);
       break;
