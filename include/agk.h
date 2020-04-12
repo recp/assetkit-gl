@@ -36,6 +36,7 @@ typedef struct AgkContext {
   RBTree    *ctlr;
   RBTree    *materials;
   RBTree    *textures;
+  RBTree    *texmap;
   GkScene   *scene;
   GkContext *ctx;
   GLenum     usage;

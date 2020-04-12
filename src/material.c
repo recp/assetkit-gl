@@ -37,7 +37,7 @@ agkLoadBindMaterial(AgkContext     * __restrict ctx,
     heap                  = ak_heap_getheap(materialInst);
     actx.doc              = ak_heap_data(heap);
     actx.instanceMaterial = materialInst;
-    actx.bindVertexInput  = ak_map_new(ak_cmp_str);
+//    actx.bindVertexInput  = ak_map_new(ak_cmp_str);
 
     /* load material */
     material = ak_instanceObject(&materialInst->base);
@@ -71,29 +71,41 @@ agkLoadBindMaterial(AgkContext     * __restrict ctx,
             /* bind vertex input */
             bvi = materialInst->bindVertexInput;
             while (bvi) {
-              AkInput *input;
+              AkInput   *input;
+              GkTexture *textobind;
 
               if (!bvi->semantic)
                 goto cont;
 
-              input = ak_meshInputGet(prim,
-                                      bvi->inputSemantic,
-                                      bvi->inputSet);
-              if (input) {
-                AkMapItem *boundVertexItem;
-                boundVertexItem = ak_map_find(actx.bindVertexInput,
-                                              (void *)bvi->semantic);
-                while (boundVertexItem) {
-                  char **boundInputName;
-                  char   attribName[64];
+              input     = ak_meshInputGet(prim, bvi->inputSemantic, bvi->inputSet);
+              textobind = rb_find(ctx->texmap, (void *)bvi->semantic);
+              if (input && textobind) {
+                char           attribName[64];
+                GkBindTexture *bindtex;
+                
+                ak_inputNameBySet(input, attribName);
+                
+                bindtex                 = calloc(1, sizeof(*bindtex));
+                bindtex->texture        = textobind;
+                bindtex->coordInputName = strdup(attribName);
+                
+                bindtex->next           = glprimInst->bindTexture;
+                glprimInst->bindTexture = bindtex;
 
-                  ak_inputNameIndexed(input, attribName);
-
-                  boundInputName  = boundVertexItem->data;
-                  *boundInputName = strdup(attribName);
-
-                  boundVertexItem = boundVertexItem->next;
-                }
+//                AkMapItem *boundVertexItem;
+//                boundVertexItem = ak_map_find(actx.bindVertexInput,
+//                                              (void *)bvi->semantic);
+//                while (boundVertexItem) {
+//                  char **boundInputName;
+//                  char   attribName[64];
+//
+//                  ak_inputNameBySet(input, attribName);
+//
+//                  boundInputName  = boundVertexItem->data;
+//                  *boundInputName = strdup(attribName);
+//
+//                  boundVertexItem = boundVertexItem->next;
+//                }
               }
             cont:
               bvi = bvi->next;
@@ -112,7 +124,7 @@ agkLoadBindMaterial(AgkContext     * __restrict ctx,
       /* TODO: bind vertex inputs? */
     }
 
-    ak_map_destroy(actx.bindVertexInput);
+//    ak_map_destroy(actx.bindVertexInput);
     materialInst = (AkInstanceMaterial *)materialInst->base.next;
   }
   

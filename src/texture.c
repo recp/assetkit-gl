@@ -219,10 +219,19 @@ agkLoadTexture(AgkContext   * __restrict ctx,
      image->data = NULL;
    */
 
-  tex->sampler->coordInputName = strdup(texref->coordInputName);
+//  if (texref->texcoord)
+//    ak_multimap_add(actx->bindVertexInput,
+//                    &tex->sampler->coordInputName,
+//                    (void *)texref->texcoord);
+  
+  
+//  tex->sampler->coordInputName = strdup(texref->coordInputName);
 ret:
   
   rb_insert(ctx->textures, texref->texture, tex);
+  
+  if (texref->texcoord)
+    rb_insert(ctx->texmap, (void *)texref->texcoord, tex);
 
   return tex;
 
