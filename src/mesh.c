@@ -29,9 +29,9 @@ agkLoadSource(AgkContext  * __restrict ctx,
   char           attribName[64];
 
   /* optimization: check if this input is bound or not */
-  if (!inp->semanticRaw)
+  if (!acc || !inp->semanticRaw)
     return;
-  
+
   ak_inputNameIndexed(inp, attribName);
 
   type = agk_type(acc->componentType);
