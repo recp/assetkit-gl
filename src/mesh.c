@@ -32,7 +32,7 @@ agkLoadSource(AgkContext  * __restrict ctx,
   if (!acc || !inp->semanticRaw)
     return;
 
-  ak_inputNameIndexed(inp, attribName);
+  ak_inputNameBySet(inp, attribName);
 
   type = agk_type(acc->componentType);
   vi   = gkMakeVertexInput(attribName, type, 0);
