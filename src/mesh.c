@@ -83,10 +83,8 @@ agkLoadMesh(AgkContext * __restrict ctx,
 
   primc  = mesh->primitiveCount;
   gmodel = calloc(1, sizeof(*gmodel) + sizeof(GkPrimitive) * primc);
+  prim   = mesh->primitive;
 
-  ak_meshReIndexInputs(mesh);
-
-  prim = mesh->primitive;
   while (prim) {
     GkPrimitive *gprim;
     AkInput     *input;
