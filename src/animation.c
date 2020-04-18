@@ -88,7 +88,7 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
                    byteLength);
 
             gbuff->count  = acc->count;// byteLength / acc->componentBytes; /* TODO: */
-            gbuff->stride = acc->bound;
+            gbuff->stride = acc->componentCount;
 
             switch (inp->semantic) {
               case AK_INPUT_SEMANTIC_INTERPOLATION:
@@ -102,11 +102,11 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
                 break;
               case AK_INPUT_SEMANTIC_IN_TANGENT:
                 gsampler->inTangent  = gbuff;
-                its                  = acc->stride;
+                its                  = acc->componentCount;
                 break;
               case AK_INPUT_SEMANTIC_OUT_TANGENT:
                 gsampler->outTangent = gbuff;
-                ots                  = acc->stride;
+                ots                  = acc->componentCount;
                 break;
               default:
                 free(gbuff);

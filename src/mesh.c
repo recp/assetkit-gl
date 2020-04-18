@@ -55,13 +55,13 @@ agkLoadSource(AgkContext  * __restrict ctx,
 
   if (agk_isinteger(acc->componentType)) {
     glVertexAttribIPointer(gprim->lastInputIndex,
-                           acc->bound,
+                           acc->componentCount,
                            type,
                            (GLsizei)acc->byteStride,
                            BUFFER_OFFSET(acc->byteOffset));
   } else {
     glVertexAttribPointer(gprim->lastInputIndex,
-                          acc->bound,
+                          acc->componentCount,
                           type,
                           GL_FALSE,
                           (GLsizei)acc->byteStride,
