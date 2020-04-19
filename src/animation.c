@@ -55,7 +55,7 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
       RBTree              *samplerMap;
 
       samplerMap = rb_newtree(NULL, ds_cmp_ptr, NULL);
-      ganim     = gkKeyFrameAnimation();
+      ganim      = gkKeyFrameAnimation();
       ganim->base.nRepeat = UINT_MAX;
 
       if ((sampler = anim->sampler)) {
@@ -226,7 +226,7 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
       /* TODO: */
       gkAddAnimation(ctx->scene, NULL, &ganim->base);
 
-      anim = anim->next;
+      anim = (AkAnimation *)anim->base.next;
     }
 
     animItem = animItem->next;
