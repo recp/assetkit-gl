@@ -109,17 +109,17 @@ akgLoadSkin(AgkContext * __restrict ctx, AkSkin * __restrict skin) {
   for (i = 0; i < primCount; i++) {
     GkGpuBuffer   *gbuff;
     void          *tmp;
-    GkBoneWeights *glweights;
+    // GkBoneWeights *glweights;
     AkBoneWeights *w;
     size_t         size;
 
     tmp       = NULL;
     w         = skin->weights[i];
-    glweights = malloc(sizeof(*glweights));
+    // glweights = malloc(sizeof(*glweights));
     size      = ak_skinFill(w, maxJointCount, maxJointCount, &tmp);
 
-    glweights->nWeights = w->nWeights;
-    glweights->nVertex  = w->nVertex;
+    // glweights->nWeights = w->nWeights;
+    // glweights->nVertex  = w->nVertex;
 
     /* store weights in GPU as BONEx4 | WEIGHTx4 */
     glskin->gbuffs[i] = gbuff = gkGpuBufferNew(ctx->ctx, GK_ARRAY, size);
