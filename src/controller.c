@@ -10,7 +10,9 @@
 #include <string.h>
 #include <assert.h>
 #include <gk/gk.h>
+#include <gk/vertex.h>
 #include <math.h>
+#include "enum.h"
 
 static
 GkModelInst*
@@ -42,7 +44,7 @@ agkLoadBaseGeom(AgkContext           * __restrict ctx,
   if (!geom)
     return NULL;
 
-  ret = agk_loadGeometry(ctx, geom, &model);
+  ret = agk_loadGeometry(ctx, geom, NULL, &model);
   if (ret == AK_OK) {
     modelInst       = gkMakeInstance(model);
     modelInst->next = glnode->model;
@@ -133,6 +135,124 @@ akgLoadSkin(AgkContext * __restrict ctx, AkSkin * __restrict skin) {
   return glskin;
 }
 
+GkMorph*
+akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
+  GkMorph       *glmorph;
+  GkMorphTarget *gltarget, *last_gltarget;
+  AkMorphTarget *target;
+  GkVertexInput *vi, *last_vi;
+  AkAccessor    *acc;
+  AkInput       *inp;
+  GkGpuBuffer   *gbuff;
+  void          *buff;
+  GLenum         type;
+  char           attribName[64], *pAttribName;
+  size_t         buffSize;
+  uint32_t       i, targetIndex, foundInpCount;
+  bool           found;
+
+  if ((glmorph = rb_find(ctx->objMap, morph)))
+    return glmorph;
+  
+  static AkInputSemantic desiredInp[] = {
+    AK_INPUT_SEMANTIC_POSITION,
+    AK_INPUT_SEMANTIC_NORMAL,
+    AK_INPUT_SEMANTIC_TANGENT
+  };
+  
+  static uint32_t nDesiredInp  = AK_ARRAY_LEN(desiredInp);
+
+  if (!(target = morph->target))
+    return NULL;
+  
+  glmorph           = calloc(1, sizeof(*glmorph));
+  glmorph->method   = (GkMorphMethod)morph->method;
+  /* glmorph->nTargets = morph->targetCount; */
+  targetIndex       = 0;
+  foundInpCount     = 0;
+  last_gltarget     = NULL;
+
+  do {
+    if (!(inp = target->input))
+      continue;
+
+    gltarget          = calloc(1, sizeof(*gltarget));
+    gltarget->weight  = target->weight;
+    gltarget->nInputs = target->inputCount;
+    last_vi           = NULL;
+    
+    do {
+      found = false;
+
+      for (i = 0; i < nDesiredInp; i++) {
+        if (desiredInp[i] == inp->semantic) {
+          found = true;
+
+          if (++foundInpCount >= nDesiredInp)
+            goto nxt;
+          
+          break;
+        }
+      }
+      
+      if (!found)
+        continue;
+
+      pAttribName = attribName + sprintf(attribName, "TARGET%d_", targetIndex);
+      ak_inputNameBySet(inp, pAttribName);
+
+      acc  = inp->accessor;
+      type = agk_type(acc->componentType);
+      vi   = gkMakeVertexInput(attribName, type, 0);
+      
+      if (last_vi)
+        last_vi->next = vi;
+      else
+        gltarget->inputs = vi;
+      last_vi = vi;
+    } while ((inp = inp->next));
+
+  nxt:
+    targetIndex++;
+    
+    if (last_gltarget)
+      last_gltarget->next = gltarget;
+    else
+      glmorph->targets = gltarget;
+    last_gltarget = gltarget;
+  } while ((target = target->next));
+
+  glmorph->nTargets = targetIndex;
+
+  ak_morphInterleaveInspect(&buffSize, NULL, morph, desiredInp, nDesiredInp);
+  
+  buff = malloc(buffSize);
+  ak_morphInterleave(buff, morph, desiredInp, nDesiredInp);
+  
+  gbuff = gkGpuBufferNew(ctx->ctx, GK_ARRAY, buffSize);
+  gkGpuBufferFeed(gbuff, GK_STATIC_DRAW, buff);
+  
+  glmorph->buff = gbuff;
+
+  rb_insert(ctx->objMap, morph, glmorph);
+
+  return glmorph;
+}
+
+GK_EXPORT
+void
+gkTargetAddBuffer(GkPrimitive * __restrict prim,
+                GkGpuBuffer * __restrict buff) {
+  prim->bufc++;
+
+  if (prim->bufs)
+    prim->bufs->prev = buff;
+
+  buff->next   = prim->bufs;
+  prim->bufs = buff;
+}
+
+static
 void
 akgWalkController(RBTree *tree, RBNode *rbnode) {
   AgkContext           *ctx;
@@ -185,8 +305,28 @@ akgWalkController(RBTree *tree, RBNode *rbnode) {
           }
           break;
         }
-        case AK_CONTROLLER_MORPH:
-          break;
+        case AK_CONTROLLER_MORPH: {
+//          GkControllerInst *glCtlrInst;
+//          AkMorph          *morph;
+//          GkMorph          *glmorph;
+//          GkModelInst      *baseGeom;
+//
+//          morph      = ak_objGet(ctlr->data);
+//          glCtlrInst = calloc(1, sizeof(*glCtlrInst));
+//          baseGeom   = NULL;
+//
+//          agkLoadBaseGeom(ctx, glnode, ctlrInst, ctlr, &baseGeom);
+//          if (baseGeom) {
+//            if (!(glmorph = rb_find(ctx->ctlr, morph)))
+//              glmorph = load_morph(ctx, morph);
+//
+////            glCtlrInst->ctlr = &glmorph->base;
+//
+//            gkMakeInstanceMorph(ctx->scene, glnode, glCtlrInst);
+//            gkAttachMorph(glmorph);
+//          }
+//          break;
+        }
         default:
           break;
       }

@@ -93,6 +93,9 @@ agkLoadAnimations(AgkContext * __restrict ctx);
 AkResult
 akgLoadControllers(AgkContext * __restrict ctx);
 
+GkMorph*
+akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) ;
+
 #ifdef __cplusplus
 }
 #endif
