@@ -278,12 +278,13 @@ akgWalkController(RBTree *tree, RBNode *rbnode) {
           GkSkin           *glskin;
           GkModelInst      *baseGeom;
 
-          skin       = ak_objGet(ctlr->data);
-          glCtlrInst = calloc(1, sizeof(*glCtlrInst));
-          baseGeom   = NULL;
+          skin     = ak_objGet(ctlr->data);
+          baseGeom = NULL;
 
           agkLoadBaseGeom(ctx, glnode, ctlrInst, ctlr, &baseGeom);
           if (baseGeom) {
+            glCtlrInst = calloc(1, sizeof(*glCtlrInst));
+
             if (!(glskin = rb_find(ctx->ctlr, skin)))
               glskin = akgLoadSkin(ctx, skin);
 
