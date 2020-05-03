@@ -44,7 +44,7 @@ agkLoadBaseGeom(AgkContext           * __restrict ctx,
   if (!geom)
     return NULL;
 
-  ret = agk_loadGeometry(ctx, geom, NULL, &model);
+  ret = agk_loadGeometry(ctx, geom, &model);
   if (ret == AK_OK) {
     modelInst       = gkMakeInstance(model);
     modelInst->next = glnode->model;

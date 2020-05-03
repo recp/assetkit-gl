@@ -25,6 +25,7 @@ agkLoadSource(AgkContext  * __restrict ctx,
   AkBuffer      *akbuff;
   GkGpuBuffer   *buff;
   GkVertexInput *vi;
+  GkGPUAccessor *gacc;
   GLenum         type;
   char           attribName[64];
 
@@ -34,10 +35,6 @@ agkLoadSource(AgkContext  * __restrict ctx,
 
   ak_inputNameBySet(inp, attribName);
 
-  type = agk_type(acc->componentType);
-  vi   = gkMakeVertexInput(attribName, type, 0);
-
-  flist_sp_append(&gprim->inputs, vi);
 
   if (!(akbuff = acc->buffer))
     return; /* TODO: assert or log */
@@ -52,25 +49,24 @@ agkLoadSource(AgkContext  * __restrict ctx,
   } else {
     glBindBuffer(buff->target, buff->vbo);
   }
+  
+  type             = agk_type(acc->componentType);
+  vi               = gkMakeVertexInput(attribName, type, 0);
+  gacc             = calloc(1, sizeof(*gacc));
+  
+  gacc->buffer     = buff;
+  gacc->itemType   = type;
+  gacc->byteOffset = acc->byteOffset;
+  gacc->byteStride = acc->byteStride;
+  gacc->itemCount  = acc->componentCount;
+  gacc->count      = acc->count;
+  gacc->gpuTarget  = buff->target;
+  gacc->itemSize   = acc->componentBytes;
+  gacc->normalized = false;
 
-  if (agk_isinteger(acc->componentType)) {
-    glVertexAttribIPointer(gprim->lastInputIndex,
-                           acc->componentCount,
-                           type,
-                           (GLsizei)acc->byteStride,
-                           BUFFER_OFFSET(acc->byteOffset));
-  } else {
-    glVertexAttribPointer(gprim->lastInputIndex,
-                          acc->componentCount,
-                          type,
-                          GL_FALSE,
-                          (GLsizei)acc->byteStride,
-                          BUFFER_OFFSET(acc->byteOffset));
-  }
+  vi->accessor     = gacc;
 
-  glEnableVertexAttribArray(gprim->lastInputIndex);
-
-  gprim->lastInputIndex++;
+  gk_bindInputTo(gprim, vi);
 }
 
 AkResult

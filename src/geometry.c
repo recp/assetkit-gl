@@ -11,7 +11,7 @@
 #include <gk/gk.h>
 
 AkResult
-agk_loadGeometry(AgkContext * __restrict ctx,
+agk_loadGeometry(AgkContext  * __restrict ctx,
                  AkGeometry  * __restrict geom,
                  GkModel    ** __restrict dest) {
   AkObject    *prim;
