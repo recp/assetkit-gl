@@ -15,8 +15,6 @@
 #include <assert.h>
 #include <string.h>
 
-#define BUFFER_OFFSET(i) ((void *)(i))
-
 void
 agkLoadSource(AgkContext  * __restrict ctx,
               AkAccessor  * __restrict acc,
@@ -34,7 +32,6 @@ agkLoadSource(AgkContext  * __restrict ctx,
     return;
 
   ak_inputNameBySet(inp, attribName);
-
 
   if (!(akbuff = acc->buffer))
     return; /* TODO: assert or log */
@@ -75,6 +72,10 @@ agkLoadMesh(AgkContext * __restrict ctx,
             GkModel   ** __restrict dest) {
   AkMeshPrimitive *prim;
   GkModel         *gmodel;
+  GkPrimitive     *gprim;
+  AkInput         *input;
+  AkUIntArray     *indices;
+  GkGpuBuffer     *ibuff;
   uint32_t         primc;
 
   primc  = mesh->primitiveCount;
@@ -82,14 +83,10 @@ agkLoadMesh(AgkContext * __restrict ctx,
   prim   = mesh->primitive;
 
   while (prim) {
-    GkPrimitive *gprim;
-    AkInput     *input;
-    AkUIntArray *indices;
-
     gprim = &gmodel->prims[gmodel->primc];
 
     glGenVertexArrays(1, &gprim->vao);
-    glBindVertexArray(gprim->vao);
+    gkBindPrimitive(gprim);
 
     /* per-primitive inputs */
     input = prim->input;
@@ -101,8 +98,6 @@ agkLoadMesh(AgkContext * __restrict ctx,
 
     /* indexed draw */
     if ((indices = prim->indices)) {
-      GkGpuBuffer *ibuff;
-
       ibuff = gkGpuBufferNew(ctx->ctx,
                              GK_INDEX,
                              indices->count * sizeof(AkUInt));
@@ -120,8 +115,6 @@ agkLoadMesh(AgkContext * __restrict ctx,
 
     gprim->mode = agk_drawMode(prim);
 
-    glBindVertexArray(0);
-
     prim->udata = (void *)(uintptr_t)gmodel->primc;
     gmodel->primc++;
 
@@ -130,9 +123,9 @@ agkLoadMesh(AgkContext * __restrict ctx,
       glm_vec3_copy(prim->bbox->max, gprim->bbox[1]);
     }
 
-    if (prim->material) {
+    if (prim->material)
       agkLoadPrimMaterial(ctx, prim, gprim);
-    }
+
     prim = prim->next;
   }
 
