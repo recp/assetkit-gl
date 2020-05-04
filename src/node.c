@@ -49,6 +49,8 @@ agk_loadNode(AgkContext * __restrict ctx,
     while (geomInst) {
       geom = ak_instanceObject(&geomInst->base);
       if (geom) {
+        AkInstanceMorph *morphInst;
+
         ret = agk_loadGeometry(ctx, geom, &model);
         if (ret == AK_OK) {
           modelInst       = gkMakeInstance(model);
@@ -58,6 +60,25 @@ agk_loadNode(AgkContext * __restrict ctx,
           /* bind material */
           if (geomInst->bindMaterial)
             agkLoadBindMaterial(ctx, geom, geomInst->bindMaterial, modelInst);
+        }
+        
+        if ((morphInst = node->morpher)) {
+          GkInstanceMorph *gmorphInst;
+          GkMorph         *glmorph;
+          
+          glmorph = akgLoadMorph(ctx, morphInst->morph);
+          
+          gmorphInst = calloc(1, sizeof(*gmorphInst));
+          gmorphInst->baseGeometry = model;
+          gmorphInst->overrideWeights = calloc(sizeof(float),
+                                               morphInst->overrideWeights->count);
+          
+//          gmorphInst->baseGeometry = rb_find(ctx->geoms, morphInst->baseGeometry);
+          
+          gmorphInst->baseGeometry = model;
+          glnode->morpher = gmorphInst;
+          
+          rb_insert(ctx->objMap, morphInst->overrideWeights, gmorphInst->overrideWeights);
         }
       }
       geomInst = (AkInstanceGeometry *)geomInst->base.next;

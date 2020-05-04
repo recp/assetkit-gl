@@ -185,27 +185,28 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
 
           /* pre-resolved e.g. glTF */
           else if (ch->resolvedTarget){
-            AkNode *node;
+            gtarget         = rb_find(ctx->objMap, ch->resolvedTarget);
+            sampler         = ak_getObjectByUrl(&ch->source);
+            gch             = calloc(1, sizeof(*gch));
+            gch->sampler    = rb_find(samplerMap, sampler);
+            gch->target     = gtarget;
+            gch->property   = (GkTargetPropertyType)ch->targetType;
+            gch->targetType = agkTargetType(gch->sampler->output->stride);
 
-            node = ak_mem_parent(ch->resolvedTarget);
-
-            gtarget               = rb_find(ctx->objMap, ch->resolvedTarget);
-            sampler               = ak_getObjectByUrl(&ch->source);
-            gch                   = calloc(1, sizeof(*gch));
-            gch->sampler          = rb_find(samplerMap, sampler);
-            gch->target           = gtarget;
-            gch->property         = (GkTargetPropertyType)ch->targetType;
-            gch->targetType       = agkTargetType(gch->sampler->output->stride);
-
-            inp                   = gch->sampler->input;
-            gch->endAt            = *(float *)((char *)inp->data + inp->len - sizeof(float));
-            gch->beginAt          = *(float *)inp->data;
-            gch->duration         = gch->endAt - gch->beginAt;
-            gch->node             = rb_find(ctx->objMap, node);
-            gch->isTransform      = true;
-            gch->isLocalTransform = true;
+            inp             = gch->sampler->input;
+            gch->endAt      = *(float *)((char *)inp->data + inp->len - sizeof(float));
+            gch->beginAt    = *(float *)inp->data;
+            gch->duration   = gch->endAt - gch->beginAt;
 
             ganim->channelCount++;
+
+            if (ch->targetType != AK_TARGET_WEIGHTS) {
+              AkNode *node;
+              node                  = ak_mem_parent(ch->resolvedTarget);
+              gch->node             = rb_find(ctx->objMap, node);
+              gch->isTransform      = true;
+              gch->isLocalTransform = true;
+            }
 
             if (gch->sampler
                 && sampler->uniInterpolation != AK_INTERPOLATION_UNKNOWN)
