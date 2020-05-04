@@ -66,17 +66,18 @@ agk_loadNode(AgkContext * __restrict ctx,
           GkInstanceMorph *gmorphInst;
           GkMorph         *glmorph;
           
-          glmorph = akgLoadMorph(ctx, morphInst->morph);
-          
+          glmorph    = akgLoadMorph(ctx, morphInst->morph);
           gmorphInst = calloc(1, sizeof(*gmorphInst));
-          gmorphInst->baseGeometry = model;
+
           gmorphInst->overrideWeights = calloc(sizeof(float),
                                                morphInst->overrideWeights->count);
           
+          /* TODO: */
 //          gmorphInst->baseGeometry = rb_find(ctx->geoms, morphInst->baseGeometry);
           
           gmorphInst->baseGeometry = model;
-          glnode->morpher = gmorphInst;
+          gmorphInst->morph        = glmorph;
+          glnode->morpher          = gmorphInst;
           
           rb_insert(ctx->objMap, morphInst->overrideWeights, gmorphInst->overrideWeights);
         }
