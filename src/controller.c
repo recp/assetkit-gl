@@ -201,10 +201,11 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
       pAttribName = attribName + sprintf(attribName, "TARGET%d_", targetIndex);
       ak_inputNameBySet(inp, pAttribName);
 
-      acc  = inp->accessor;
-      type = agk_type(acc->componentType);
-      vi   = gkMakeVertexInput(attribName, type, 0);
-      
+      acc      = inp->accessor;
+      type     = agk_type(acc->componentType);
+      vi       = calloc(1, sizeof(*vi));
+      vi->name = strdup(attribName);
+
       if (last_vi)
         last_vi->next = vi;
       else
