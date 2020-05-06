@@ -142,6 +142,7 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
   AkMorphTarget *target;
   GkVertexInput *vi, *last_vi;
   AkAccessor    *acc;
+  GkGPUAccessor *gacc;
   AkInput       *inp;
   GkGpuBuffer   *gbuff;
   void          *buff;
@@ -171,6 +172,9 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
   targetIndex       = 0;
   foundInpCount     = 0;
   last_gltarget     = NULL;
+
+  ak_morphInterleaveInspect(&buffSize, NULL, morph, desiredInp, nDesiredInp);
+  gbuff = gkGpuBufferNew(ctx->ctx, GK_ARRAY, buffSize);
 
   do {
     if (!(inp = target->input))
@@ -205,6 +209,19 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
       type     = agk_type(acc->componentType);
       vi       = calloc(1, sizeof(*vi));
       vi->name = strdup(attribName);
+      
+      gacc             = calloc(1, sizeof(*gacc));
+      
+      gacc->buffer     = gbuff;
+      gacc->itemType   = type;
+      gacc->byteOffset = acc->byteOffset;
+      gacc->byteStride = acc->byteStride;
+      gacc->itemCount  = acc->componentCount;
+      gacc->count      = acc->count;
+      gacc->itemSize   = acc->componentBytes;
+      gacc->normalized = false;
+
+      vi->accessor     = gacc;
 
       if (last_vi)
         last_vi->next = vi;
@@ -225,13 +242,10 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
 
   glmorph->nTargets = targetIndex;
 
-  ak_morphInterleaveInspect(&buffSize, NULL, morph, desiredInp, nDesiredInp);
-  
   buff = malloc(buffSize);
   ak_morphInterleave(buff, morph, desiredInp, nDesiredInp);
-  
-  gbuff = gkGpuBufferNew(ctx->ctx, GK_ARRAY, buffSize);
   gkGpuBufferFeed(gbuff, GK_STATIC_DRAW, buff);
+  free(buff);
   
   glmorph->buff = gbuff;
 
