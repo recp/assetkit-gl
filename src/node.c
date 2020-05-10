@@ -69,8 +69,8 @@ agk_loadNode(AgkContext * __restrict ctx,
           glmorph    = akgLoadMorph(ctx, morphInst->morph);
           gmorphInst = calloc(1, sizeof(*gmorphInst));
 
-          gmorphInst->overrideWeights = calloc(sizeof(float),
-                                               morphInst->overrideWeights->count);
+          gmorphInst->overrideWeights = calloc(1,
+                                               sizeof(*gmorphInst->overrideWeights) * morphInst->overrideWeights->count);
           
           /* TODO: */
 //          gmorphInst->baseGeometry = rb_find(ctx->geoms, morphInst->baseGeometry);

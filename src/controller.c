@@ -148,7 +148,7 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
   void          *buff;
   GLenum         type;
   char           attribName[64], *pAttribName;
-  size_t         buffSize;
+  size_t         buffSize, byteOffset, byteStride;
   uint32_t       i, targetIndex, foundInpCount;
   bool           found;
 
@@ -171,9 +171,10 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
   /* glmorph->nTargets = morph->targetCount; */
   targetIndex       = 0;
   foundInpCount     = 0;
+  byteOffset        = 0;
   last_gltarget     = NULL;
 
-  ak_morphInterleaveInspect(&buffSize, NULL, morph, desiredInp, nDesiredInp);
+  ak_morphInterleaveInspect(&buffSize, &byteStride, morph, desiredInp, nDesiredInp);
   gbuff = gkGpuBufferNew(ctx->ctx, GK_ARRAY, buffSize);
 
   do {
@@ -214,14 +215,17 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
       
       gacc->buffer     = gbuff;
       gacc->itemType   = type;
-      gacc->byteOffset = acc->byteOffset;
-      gacc->byteStride = acc->byteStride;
+      gacc->byteOffset = byteOffset;
+      gacc->byteStride = byteStride;
       gacc->itemCount  = acc->componentCount;
       gacc->count      = acc->count;
       gacc->itemSize   = acc->componentBytes;
       gacc->normalized = false;
+      gacc->filledSize = acc->fillByteSize;
 
       vi->accessor     = gacc;
+
+      byteOffset += gacc->filledSize;
 
       if (last_vi)
         last_vi->next = vi;
