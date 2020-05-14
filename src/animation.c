@@ -92,21 +92,23 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
 
             switch (inp->semantic) {
               case AK_INPUT_SEMANTIC_INTERPOLATION:
-                gsampler->interp     = gbuff;
+                gsampler->interp       = gbuff;
                 break;
               case AK_INPUT_SEMANTIC_INPUT:
-                gsampler->input      = gbuff;
+                gsampler->input        = gbuff;
+                gsampler->inputStride  = acc->componentCount;
                 break;
               case AK_INPUT_SEMANTIC_OUTPUT:
-                gsampler->output     = gbuff;
+                gsampler->output       = gbuff;
+                gsampler->outputStride = acc->componentCount;
                 break;
               case AK_INPUT_SEMANTIC_IN_TANGENT:
-                gsampler->inTangent  = gbuff;
-                its                  = acc->componentCount;
+                gsampler->inTangent    = gbuff;
+                its                    = acc->componentCount;
                 break;
               case AK_INPUT_SEMANTIC_OUT_TANGENT:
-                gsampler->outTangent = gbuff;
-                ots                  = acc->componentCount;
+                gsampler->outTangent   = gbuff;
+                ots                    = acc->componentCount;
                 break;
               default:
                 free(gbuff);
@@ -184,7 +186,7 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
           }
 
           /* pre-resolved e.g. glTF */
-          else if (ch->resolvedTarget){
+          else if (ch->resolvedTarget) {
             gtarget         = rb_find(ctx->objMap, ch->resolvedTarget);
             sampler         = ak_getObjectByUrl(&ch->source);
             gch             = calloc(1, sizeof(*gch));
@@ -192,6 +194,7 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
             gch->target     = gtarget;
             gch->property   = (GkTargetPropertyType)ch->targetType;
             gch->targetType = agkTargetType(gch->sampler->output->stride);
+            gch->stride     = gch->sampler->outputStride;
 
             inp             = gch->sampler->input;
             gch->endAt      = *(float *)((char *)inp->data + inp->len - sizeof(float));
@@ -206,6 +209,9 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
               gch->node             = rb_find(ctx->objMap, node);
               gch->isTransform      = true;
               gch->isLocalTransform = true;
+            } else {
+              gch->targetType       = GKT_WEIGHTS;
+              gch->stride           = (uint32_t)(gch->sampler->output->count / gch->sampler->input->count);
             }
 
             if (gch->sampler
@@ -218,7 +224,6 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
               ganim->channel = gch;
             last_gch = gch;
           }
-
         } while ((ch = ch->next));
       }
 
