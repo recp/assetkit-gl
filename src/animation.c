@@ -147,6 +147,7 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
               /* TODO: currently only floats are supported */
               gch->target     = gtarget + attribOff * sizeof(float);
               gch->targetType = agkTargetType(gch->sampler->output->stride);
+              gch->stride     = gch->sampler->outputStride;
 
               inp             = gch->sampler->input;
               gch->endAt      = *(float *)((char *)inp->data + inp->len - sizeof(float));

@@ -325,28 +325,6 @@ akgWalkController(RBTree *tree, RBNode *rbnode) {
           }
           break;
         }
-        case AK_CONTROLLER_MORPH: {
-//          GkControllerInst *glCtlrInst;
-//          AkMorph          *morph;
-//          GkMorph          *glmorph;
-//          GkModelInst      *baseGeom;
-//
-//          morph      = ak_objGet(ctlr->data);
-//          glCtlrInst = calloc(1, sizeof(*glCtlrInst));
-//          baseGeom   = NULL;
-//
-//          agkLoadBaseGeom(ctx, glnode, ctlrInst, ctlr, &baseGeom);
-//          if (baseGeom) {
-//            if (!(glmorph = rb_find(ctx->ctlr, morph)))
-//              glmorph = load_morph(ctx, morph);
-//
-////            glCtlrInst->ctlr = &glmorph->base;
-//
-//            gkMakeInstanceMorph(ctx->scene, glnode, glCtlrInst);
-//            gkAttachMorph(glmorph);
-//          }
-//          break;
-        }
         default:
           break;
       }
