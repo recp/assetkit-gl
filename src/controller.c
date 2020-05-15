@@ -5,14 +5,17 @@
  * Full license can be found in the LICENSE file
  */
 
+#include "enum.h"
+#include "common.h"
+
 #include "../include/agk.h"
+
+#include <gk/gk.h>
+#include <gk/vertex.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include <gk/gk.h>
-#include <gk/vertex.h>
 #include <math.h>
-#include "enum.h"
 
 static
 GkModelInst*
@@ -141,12 +144,10 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
   GkMorphTarget *gltarget, *last_gltarget;
   AkMorphTarget *target;
   GkVertexInput *vi, *last_vi;
-  AkAccessor    *acc;
   GkGPUAccessor *gacc;
   AkInput       *inp;
   GkGpuBuffer   *gbuff;
   void          *buff;
-  GLenum         type;
   char           attribName[64], *pAttribName;
   size_t         buffSize, byteOffset, byteStride;
   uint32_t       i, targetIndex, foundInpCount;
@@ -206,42 +207,23 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
       pAttribName = attribName + sprintf(attribName, "TARGET%d_", targetIndex);
       ak_inputNameBySet(inp, pAttribName);
 
-      acc      = inp->accessor;
-      type     = agk_type(acc->componentType);
-      vi       = calloc(1, sizeof(*vi));
-      vi->name = strdup(attribName);
-      
-      gacc             = calloc(1, sizeof(*gacc));
-      
-      gacc->buffer     = gbuff;
-      gacc->itemType   = type;
+      gacc             = agkAccessor(inp->accessor, gbuff);
       gacc->byteOffset = byteOffset;
       gacc->byteStride = byteStride;
-      gacc->itemCount  = acc->componentCount;
-      gacc->count      = acc->count;
-      gacc->itemSize   = acc->componentBytes;
-      gacc->normalized = false;
-      gacc->filledSize = acc->fillByteSize;
-
+      
+      vi               = calloc(1, sizeof(*vi));
+      vi->name         = strdup(attribName);
       vi->accessor     = gacc;
 
-      byteOffset += gacc->filledSize;
+      byteOffset      += gacc->filledSize;
 
-      if (last_vi)
-        last_vi->next = vi;
-      else
-        gltarget->inputs = vi;
-      last_vi = vi;
+      AK_APPEND_FLINK(gltarget->inputs, last_vi, vi);
     } while ((inp = inp->next));
 
   nxt:
     targetIndex++;
     
-    if (last_gltarget)
-      last_gltarget->next = gltarget;
-    else
-      glmorph->targets = gltarget;
-    last_gltarget = gltarget;
+    AK_APPEND_FLINK(glmorph->targets, last_gltarget, gltarget);
   } while ((target = target->next));
 
   glmorph->nTargets = targetIndex;

@@ -7,6 +7,7 @@
 
 #include "../include/agk.h"
 #include "enum.h"
+#include "common.h"
 
 #include <gk/gk.h>
 #include <gk/vertex.h>
@@ -24,7 +25,6 @@ agkLoadSource(AgkContext  * __restrict ctx,
   GkGpuBuffer   *buff;
   GkVertexInput *vi;
   GkGPUAccessor *gacc;
-  GLenum         type;
   char           attribName[64];
 
   /* optimization: check if this input is bound or not */
@@ -46,22 +46,10 @@ agkLoadSource(AgkContext  * __restrict ctx,
   } else {
     glBindBuffer(buff->target, buff->vbo);
   }
-  
-  type             = agk_type(acc->componentType);
-  vi               = gkMakeVertexInput(attribName, type, 0);
-  gacc             = calloc(1, sizeof(*gacc));
-  
-  gacc->buffer     = buff;
-  gacc->itemType   = type;
-  gacc->byteOffset = acc->byteOffset;
-  gacc->byteStride = acc->byteStride;
-  gacc->itemCount  = acc->componentCount;
-  gacc->count      = acc->count;
-  gacc->gpuTarget  = buff->target;
-  gacc->itemSize   = acc->componentBytes;
-  gacc->normalized = false;
 
-  vi->accessor     = gacc;
+  gacc         = agkAccessor(acc, buff);
+  vi           = gkMakeVertexInput(attribName, gacc->itemType, 0);
+  vi->accessor = gacc;
 
   gk_bindInputTo(gprim, vi);
 }
