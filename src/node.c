@@ -62,7 +62,7 @@ agk_loadNode(AgkContext * __restrict ctx,
           if (geomInst->bindMaterial)
             agkLoadBindMaterial(ctx, geom, geomInst->bindMaterial, modelInst);
 
-          if ((morphInst = node->morpher)) {
+          if ((morphInst = geomInst->morpher)) {
             GkInstanceMorph *gmorphInst;
             GkMorph         *glmorph;
             
