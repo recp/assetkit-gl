@@ -240,19 +240,6 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
   return glmorph;
 }
 
-GK_EXPORT
-void
-gkTargetAddBuffer(GkPrimitive * __restrict prim,
-                GkGpuBuffer * __restrict buff) {
-  prim->bufc++;
-
-  if (prim->bufs)
-    prim->bufs->prev = buff;
-
-  buff->next   = prim->bufs;
-  prim->bufs = buff;
-}
-
 static
 void
 akgWalkController(RBTree *tree, RBNode *rbnode) {
