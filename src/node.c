@@ -50,36 +50,62 @@ agk_loadNode(AgkContext * __restrict ctx,
       geom = ak_instanceObject(&geomInst->base);
       if (geom) {
         AkInstanceMorph *morphInst;
+        AkInstanceSkin  *skinner;
 
         ret = agk_loadGeometry(ctx, geom, &model);
         if (ret == AK_OK) {
           modelInst       = gkMakeInstance(model);
           modelInst->next = glnode->model;
           glnode->model   = modelInst;
-
+          
           /* bind material */
           if (geomInst->bindMaterial)
             agkLoadBindMaterial(ctx, geom, geomInst->bindMaterial, modelInst);
-        }
-        
-        if ((morphInst = node->morpher)) {
-          GkInstanceMorph *gmorphInst;
-          GkMorph         *glmorph;
-          
-          glmorph    = akgLoadMorph(ctx, morphInst->morph);
-          gmorphInst = calloc(1, sizeof(*gmorphInst));
 
-          gmorphInst->overrideWeights      = calloc(1, sizeof(*gmorphInst->overrideWeights) * morphInst->overrideWeights->count);
-          gmorphInst->overrideWeightsCount = (uint32_t)morphInst->overrideWeights->count;
+          if ((morphInst = node->morpher)) {
+            GkInstanceMorph *gmorphInst;
+            GkMorph         *glmorph;
+            
+            glmorph    = akgLoadMorph(ctx, morphInst->morph);
+            gmorphInst = calloc(1, sizeof(*gmorphInst));
+            
+            gmorphInst->overrideWeights      = calloc(1, sizeof(*gmorphInst->overrideWeights) * morphInst->overrideWeights->count);
+            gmorphInst->overrideWeightsCount = (uint32_t)morphInst->overrideWeights->count;
+            
+            gmorphInst->baseGeometry = model;
+            gmorphInst->morph        = glmorph;
+            glnode->morpher          = gmorphInst;
+            
+            rb_insert(ctx->objMap, morphInst->overrideWeights, gmorphInst->overrideWeights);
+          }
           
-          /* TODO: */
-//          gmorphInst->baseGeometry = rb_find(ctx->geoms, morphInst->baseGeometry);
-          
-          gmorphInst->baseGeometry = model;
-          gmorphInst->morph        = glmorph;
-          glnode->morpher          = gmorphInst;
-          
-          rb_insert(ctx->objMap, morphInst->overrideWeights, gmorphInst->overrideWeights);
+          if ((skinner = geomInst->skinner)) {
+            GkControllerInst *glCtlrInst;
+            AkSkin           *skin;
+            GkSkin           *glskin;
+            
+            skin       = skinner->skin;
+            glCtlrInst = calloc(1, sizeof(*glCtlrInst));
+            
+            if (!(glskin = rb_find(ctx->ctlr, skin)))
+              glskin = akgLoadSkin(ctx, skin);
+            
+            glCtlrInst->ctlr = &glskin->base;
+            
+            /* per instance skin joints */
+            if (skinner->overrideJoints) {
+              glCtlrInst->joints = calloc(skin->nJoints,
+                                          sizeof(*glCtlrInst->joints));
+              akgSetJoints(ctx,
+                           skinner->overrideJoints,
+                           glCtlrInst->joints,
+                           skin->nJoints);
+            }
+            
+            glskin->base.source = modelInst;
+            gkMakeInstanceSkin(ctx->scene, glnode, glCtlrInst);
+            gkAttachSkin(glskin);
+          }
         }
       }
       geomInst = (AkInstanceGeometry *)geomInst->base.next;
@@ -116,10 +142,6 @@ agk_loadNode(AgkContext * __restrict ctx,
       ctx->scene->lightCount++;
       lightInst = lightInst->next;
     }
-  }
-
-  if (node->controller) {
-    rb_insert(ctx->instCtlr, node, glnode);
   }
 
   if (node->chld) {

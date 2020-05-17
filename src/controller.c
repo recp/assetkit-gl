@@ -17,54 +17,6 @@
 #include <assert.h>
 #include <math.h>
 
-static
-GkModelInst*
-agkLoadBaseGeom(AgkContext           * __restrict ctx,
-                GkNode               * __restrict glnode,
-                AkInstanceController * __restrict ctlrInst,
-                AkController         * __restrict ctlr,
-                GkModelInst         ** __restrict dest) {
-  AkGeometry         *geom;
-  GkModel            *model;
-  GkModelInst        *modelInst;
-  AkInstanceGeometry *instGeom;
-  AkBindMaterial     *bindMaterial;
-  AkResult            ret;
-
-  bindMaterial = NULL;
-  geom         = NULL;
-
-  if ((instGeom = ak_getObjectByUrl(&ctlrInst->geometry))) {
-    geom         = ak_instanceObject(&instGeom->base);
-    bindMaterial = instGeom->bindMaterial;
-  }
-
-  if (!geom) {
-    geom         = ak_baseGeometry(ctlr);
-    bindMaterial = ctlrInst->bindMaterial;
-  }
-
-  if (!geom)
-    return NULL;
-
-  ret = agk_loadGeometry(ctx, geom, &model);
-  if (ret == AK_OK) {
-    modelInst       = gkMakeInstance(model);
-    modelInst->next = glnode->model;
-    glnode->model   = modelInst;
-
-    /* bind material */
-    if (bindMaterial)
-      agkLoadBindMaterial(ctx, geom, bindMaterial, modelInst);
-
-    *dest = modelInst;
-    return modelInst;
-  }
-
-  return NULL;
-}
-
-static
 inline
 void
 akgSetJoints(AgkContext * __restrict ctx,
@@ -85,7 +37,6 @@ akgSetJoints(AgkContext * __restrict ctx,
   }
 }
 
-static
 GkSkin*
 akgLoadSkin(AgkContext * __restrict ctx, AkSkin * __restrict skin) {
   GkSkin  *glskin;
@@ -238,73 +189,4 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
   rb_insert(ctx->objMap, morph, glmorph);
 
   return glmorph;
-}
-
-static
-void
-akgWalkController(RBTree *tree, RBNode *rbnode) {
-  AgkContext           *ctx;
-  AkNode               *node;
-  GkNode               *glnode;
-  AkInstanceController *ctlrInst;
-  AkController         *ctlr;
-
-  node   = rbnode->key;
-  glnode = rbnode->val;
-
-  if (!(ctlrInst = node->controller))
-    return;
-
-  ctx = tree->userData;
-  while (ctlrInst) {
-    ctlr = ak_instanceObject(&ctlrInst->base);
-    if (ctlr && ctlr->data) {
-      switch (ctlr->data->type) {
-        case AK_CONTROLLER_SKIN: {
-          GkControllerInst *glCtlrInst;
-          AkSkin           *skin;
-          GkSkin           *glskin;
-          GkModelInst      *baseGeom;
-
-          skin     = ak_objGet(ctlr->data);
-          baseGeom = NULL;
-
-          agkLoadBaseGeom(ctx, glnode, ctlrInst, ctlr, &baseGeom);
-          if (baseGeom) {
-            glCtlrInst = calloc(1, sizeof(*glCtlrInst));
-
-            if (!(glskin = rb_find(ctx->ctlr, skin)))
-              glskin = akgLoadSkin(ctx, skin);
-
-            glCtlrInst->ctlr = &glskin->base;
-
-            /* per instance skin joints */
-            if (ctlrInst->joints) {
-              glCtlrInst->joints = calloc(skin->nJoints,
-                                          sizeof(*glCtlrInst->joints));
-              akgSetJoints(ctx,
-                           ctlrInst->joints,
-                           glCtlrInst->joints,
-                           skin->nJoints);
-            }
-
-            glskin->base.source = baseGeom;
-            gkMakeInstanceSkin(ctx->scene, glnode, glCtlrInst);
-            gkAttachSkin(glskin);
-          }
-          break;
-        }
-        default:
-          break;
-      }
-    }
-    ctlrInst = (AkInstanceController *)ctlrInst->base.next;
-  }
-}
-
-AkResult
-akgLoadControllers(AgkContext * __restrict ctx) {
-  ctx->instCtlr->userData = ctx;
-  rb_walk(ctx->instCtlr, akgWalkController);
-  return AK_OK;
 }

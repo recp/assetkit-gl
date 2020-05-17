@@ -45,7 +45,6 @@ agk_loadScene(GkContext *ctx,
     agkCtx            = calloc(1, sizeof(*agkCtx));
     agkCtx->bufftree  = rb_newtree_ptr();
     agkCtx->objMap    = rb_newtree_ptr();
-    agkCtx->instCtlr  = rb_newtree_ptr();
     agkCtx->ctlr      = rb_newtree_ptr();
     agkCtx->materials = rb_newtree_ptr();
     agkCtx->textures  = rb_newtree_ptr();
@@ -68,7 +67,6 @@ agk_loadScene(GkContext *ctx,
     } while (node);
 
     agkLoadAnimations(agkCtx);
-    akgLoadControllers(agkCtx);
 
     free(agkCtx);
   }

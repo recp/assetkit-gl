@@ -32,7 +32,6 @@ typedef struct AgkContext {
   AkDoc     *doc;
   RBTree    *bufftree;
   RBTree    *objMap;
-  RBTree    *instCtlr;
   RBTree    *ctlr;
   RBTree    *materials;
   RBTree    *textures;
@@ -90,11 +89,17 @@ agkLoadPrimMaterial(AgkContext      * __restrict ctx,
 void
 agkLoadAnimations(AgkContext * __restrict ctx);
 
-AkResult
-akgLoadControllers(AgkContext * __restrict ctx);
-
 GkMorph*
 akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) ;
+
+GkSkin*
+akgLoadSkin(AgkContext * __restrict ctx, AkSkin * __restrict skin);
+
+void
+akgSetJoints(AgkContext * __restrict ctx,
+             AkNode    ** __restrict joints,
+             GkNode    ** __restrict gljoints,
+             size_t                  count);
 
 #ifdef __cplusplus
 }
