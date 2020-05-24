@@ -10,13 +10,6 @@
 
 #include "../include/agk.h"
 
-#include <gk/gk.h>
-#include <gk/vertex.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include <math.h>
-
 inline
 void
 akgSetJoints(AgkContext * __restrict ctx,

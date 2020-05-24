@@ -6,10 +6,8 @@
  */
 
 #include "../include/agk.h"
+#include "common.h"
 #include "transform.h"
-#include <stdlib.h>
-#include <assert.h>
-#include <gk/gk.h>
 
 AkResult
 agk_loadNode(AgkContext * __restrict ctx,

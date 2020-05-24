@@ -27,3 +27,25 @@ agkAccessor(AkAccessor  * __restrict acc,
   
   return gacc;
 }
+
+GkColorDesc*
+agkColorOrTex(AgkContext  * __restrict ctx,
+              AkContext   * __restrict actx,
+              AkColorDesc * __restrict src) {
+  GkColorDesc *crtx;
+
+  crtx = calloc(1, sizeof(*crtx));
+  if (src->color) {
+    GkColor *color;
+    color = malloc(sizeof(*color));
+    glm_vec4_copy(src->color->vec, color->vec);
+
+    crtx->val    = color;
+    crtx->method = GK_COLOR_COLOR;
+  } else if (src->texture) {
+    crtx->val    = agkLoadTexture(ctx, actx, src->texture);
+    crtx->method = GK_COLOR_TEX;
+  }
+  
+  return crtx;
+}

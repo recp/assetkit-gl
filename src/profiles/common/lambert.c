@@ -6,9 +6,7 @@
  */
 
 #include "../../../include/agk.h"
-#include "color_or_tex.h"
-
-#include <string.h>
+#include "../../common.h"
 
 GkMaterial*
 agkLambert(AgkContext          * __restrict ctx,

@@ -6,11 +6,8 @@
  */
 
 #include "profile_common.h"
-#include "color_or_tex.h"
+#include "../../common.h"
 #include "../../enum.h"
-
-#include <string.h>
-#include <stdlib.h>
 
 AkResult
 agk_profileCommon(AgkContext  * __restrict ctx,

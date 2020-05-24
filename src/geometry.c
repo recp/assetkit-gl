@@ -6,9 +6,7 @@
  */
 
 #include "../include/agk.h"
-#include <stdlib.h>
-#include <assert.h>
-#include <gk/gk.h>
+#include "common.h"
 
 AkResult
 agk_loadGeometry(AgkContext  * __restrict ctx,

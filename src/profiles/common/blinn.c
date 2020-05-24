@@ -6,15 +6,13 @@
  */
 
 #include "../../../include/agk.h"
-#include "color_or_tex.h"
-
-#include <string.h>
+#include "../../common.h"
 
 GkMaterial*
 agkBlinn(AgkContext          * __restrict ctx,
          AkContext           * __restrict actx,
          AkTechniqueFxCommon * __restrict blinn) {
-  GkMaterial *material;
+  GkMaterial  *material;
   GkTechnique *glblinn;
 
   material = calloc(1, sizeof(*material));

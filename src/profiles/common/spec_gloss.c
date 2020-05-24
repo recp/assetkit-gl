@@ -6,7 +6,7 @@
  */
 
 #include "../../../include/agk.h"
-#include "color_or_tex.h"
+#include "../../common.h"
 
 GkMaterial*
 agkSpecGloss(AgkContext           * __restrict ctx,

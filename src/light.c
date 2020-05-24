@@ -6,11 +6,7 @@
  */
 
 #include "../include/agk.h"
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include <gk/gk.h>
-#include <math.h>
+#include "common.h"
 
 AkResult
 agk_loadLight(AkDoc    * __restrict doc,

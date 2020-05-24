@@ -9,13 +9,6 @@
 #include "enum.h"
 #include "common.h"
 
-#include <gk/gk.h>
-#include <gk/vertex.h>
-
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-
 void
 agkLoadSource(AgkContext  * __restrict ctx,
               AkAccessor  * __restrict acc,

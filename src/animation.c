@@ -6,15 +6,9 @@
  */
 
 #include "../include/agk.h"
-#include <stdlib.h>
-#include <assert.h>
-#include <gk/gk.h>
+#include "common.h"
 #include <gk/animation.h>
 #include <gk/animation-keyframe.h>
-#include <math.h>
-#include <string.h>
-#include <stdint.h>
-#include <limits.h>
 
 GK_INLINE
 GkType

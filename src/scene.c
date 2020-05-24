@@ -6,13 +6,7 @@
  */
 
 #include "../include/agk.h"
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include <gk/gk.h>
-#include <cglm/cglm.h>
-#include <ds/rb.h>
-#include <ds/forward-list.h>
+#include "common.h"
 
 AkResult
 agk_loadScene(GkContext *ctx,

@@ -6,11 +6,7 @@
  */
 
 #include "../include/agk.h"
-#include <stdlib.h>
-#include <assert.h>
-#include <gk/gk.h>
-#include <math.h>
-#include <string.h>
+#include "common.h"
 
 /* currently only common profile until full-impl */
 #include "profiles/common/profile_common.h"
@@ -37,7 +33,6 @@ agkLoadBindMaterial(AgkContext     * __restrict ctx,
     heap                  = ak_heap_getheap(materialInst);
     actx.doc              = ak_heap_data(heap);
     actx.instanceMaterial = materialInst;
-//    actx.bindVertexInput  = ak_map_new(ak_cmp_str);
 
     /* load material */
     material = ak_instanceObject(&materialInst->base);
@@ -91,21 +86,6 @@ agkLoadBindMaterial(AgkContext     * __restrict ctx,
                 
                 bindtex->next           = glprimInst->bindTexture;
                 glprimInst->bindTexture = bindtex;
-
-//                AkMapItem *boundVertexItem;
-//                boundVertexItem = ak_map_find(actx.bindVertexInput,
-//                                              (void *)bvi->semantic);
-//                while (boundVertexItem) {
-//                  char **boundInputName;
-//                  char   attribName[64];
-//
-//                  ak_inputNameBySet(input, attribName);
-//
-//                  boundInputName  = boundVertexItem->data;
-//                  *boundInputName = strdup(attribName);
-//
-//                  boundVertexItem = boundVertexItem->next;
-//                }
               }
             cont:
               bvi = bvi->next;
@@ -124,7 +104,6 @@ agkLoadBindMaterial(AgkContext     * __restrict ctx,
       /* TODO: bind vertex inputs? */
     }
 
-//    ak_map_destroy(actx.bindVertexInput);
     materialInst = (AkInstanceMaterial *)materialInst->base.next;
   }
   
