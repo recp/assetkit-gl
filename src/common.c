@@ -35,16 +35,17 @@ agkColorOrTex(AgkContext  * __restrict ctx,
   GkColorDesc *crtx;
 
   crtx = calloc(1, sizeof(*crtx));
-  if (src->color) {
+  if (src->texture) {
+    crtx->val    = agkLoadTexture(ctx, actx, src->texture);
+    crtx->tex    = crtx->val;
+    crtx->method = GK_COLOR_TEX;
+  } else if (src->color) {
     GkColor *color;
     color = malloc(sizeof(*color));
     glm_vec4_copy(src->color->vec, color->vec);
 
     crtx->val    = color;
     crtx->method = GK_COLOR_COLOR;
-  } else if (src->texture) {
-    crtx->val    = agkLoadTexture(ctx, actx, src->texture);
-    crtx->method = GK_COLOR_TEX;
   }
   
   return crtx;
