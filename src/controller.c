@@ -101,9 +101,9 @@ akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) {
     return glmorph;
   
   static AkInputSemantic desiredInp[] = {
-    AK_INPUT_SEMANTIC_POSITION,
-    AK_INPUT_SEMANTIC_NORMAL,
-    AK_INPUT_SEMANTIC_TANGENT
+    AK_INPUT_POSITION,
+    AK_INPUT_NORMAL,
+    AK_INPUT_TANGENT
   };
   
   static uint32_t nDesiredInp  = AK_ARRAY_LEN(desiredInp);
