@@ -8,6 +8,36 @@
 #include "../include/agk.h"
 #include "common.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
+// #define STBI_MALLOC(sz)           ak_malloc(NULL, sz)
+// #define STBI_REALLOC(p,newsz)     ak_realloc(NULL, p, newsz)
+// #define STBI_FREE(p)              ak_free(p)
+
+#define STBIDEF static inline
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+#pragma GCC diagnostic pop
+
+void*
+imageLoadFromFile(const char * __restrict path,
+                  int        * __restrict width,
+                  int        * __restrict height,
+                  int        * __restrict components);
+
+void*
+imageLoadFromMemory(const char * __restrict data,
+                    size_t                  len,
+                    int        * __restrict width,
+                    int        * __restrict height,
+                    int        * __restrict components);
+
+void
+imageFlipVerticallyOnLoad(bool flip);
+  
+  
 AkResult
 agk_loadScene(GkContext *ctx,
               AkDoc     *doc,
@@ -24,6 +54,10 @@ agk_loadScene(GkContext *ctx,
   if (!scene->visualScene)
     return AK_ERR;
 
+  ak_imageInitLoader(imageLoadFromFile,
+                     imageLoadFromMemory,
+                     imageFlipVerticallyOnLoad);
+  
   glscene     = gkAllocScene(ctx);
   visualScene = ak_instanceObject(scene->visualScene);
   glnode      = gkAllocNode(glscene);
@@ -68,4 +102,26 @@ agk_loadScene(GkContext *ctx,
   *dest = glscene;
 
   return AK_OK;
+}
+
+void*
+imageLoadFromFile(const char * __restrict path,
+                  int        * __restrict width,
+                  int        * __restrict height,
+                  int        * __restrict components) {
+  return stbi_load(path, width, height, components, 0);
+}
+
+void*
+imageLoadFromMemory(const char * __restrict data,
+                    size_t                  len,
+                    int        * __restrict width,
+                    int        * __restrict height,
+                    int        * __restrict components) {
+  return stbi_load_from_memory((stbi_uc const*)data, (int)len, width, height, components, 0);
+}
+
+void
+imageFlipVerticallyOnLoad(bool flip) {
+  stbi_set_flip_vertically_on_load(flip);
 }
