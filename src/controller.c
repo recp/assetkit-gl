@@ -65,7 +65,7 @@ akgLoadSkin(AgkContext * __restrict ctx, AkSkin * __restrict skin) {
     tmp       = NULL;
     w         = skin->weights[i];
     // glweights = malloc(sizeof(*glweights));
-    size      = ak_skinFill(w, maxJointCount, maxJointCount, &tmp);
+    size      = ak_skinInterleave(w, maxJointCount, maxJointCount, &tmp);
 
     // glweights->nWeights = w->nWeights;
     // glweights->nVertex  = w->nVertex;
