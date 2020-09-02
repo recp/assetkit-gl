@@ -77,7 +77,7 @@ agk_loadNode(AgkContext * __restrict ctx,
             rb_insert(ctx->objMap, morphInst->overrideWeights, gmorphInst->overrideWeights);
           }
           
-          if ((skinner = geomInst->skinner)) {
+          if ((skinner = geomInst->skinner) && skinner->skin) {
             GkControllerInst *glCtlrInst;
             AkSkin           *skin;
             GkSkin           *glskin;
