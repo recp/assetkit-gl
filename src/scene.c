@@ -21,6 +21,9 @@
 
 #pragma GCC diagnostic pop
 
+void
+agk_loadskinners(AgkContext * __restrict ctx);
+
 void*
 imageLoadFromFile(const char * __restrict path,
                   int        * __restrict width,
@@ -95,6 +98,7 @@ agk_loadScene(GkContext *ctx,
     } while (node);
 
     agkLoadAnimations(agkCtx);
+    agk_loadskinners(agkCtx);
 
     free(agkCtx);
   }
@@ -124,4 +128,46 @@ imageLoadFromMemory(const char * __restrict data,
 void
 imageFlipVerticallyOnLoad(bool flip) {
   stbi_set_flip_vertically_on_load(flip);
+}
+
+void
+agk_loadskinners(AgkContext * __restrict ctx) {
+  AkInstanceSkin   *skinner;
+  AkSkin           *skin;
+  GkSkin           *glskin;
+  GkNode           *glnode;
+  GkControllerInst *glCtlrInst;
+  GkModelInst      *modelInst;
+  AgkSkin2Load     *skin2load, *tofree;
+
+  skin2load = ctx->skin2load;
+  while (skin2load) {
+    skinner    = skin2load->skinner;
+    glnode     = skin2load->glnode;
+    modelInst  = skin2load->modelInst;
+
+    skin       = skinner->skin;
+    glCtlrInst = calloc(1, sizeof(*glCtlrInst));
+
+    if (!(glskin = rb_find(ctx->ctlr, skin)))
+      glskin = akgLoadSkin(ctx, skin);
+
+    glCtlrInst->ctlr = &glskin->base;
+
+    /* per instance skin joints */
+    if (skinner->overrideJoints) {
+      glCtlrInst->joints = calloc(skin->nJoints, sizeof(*glCtlrInst->joints));
+      akgSetJoints(ctx, skinner->overrideJoints, glCtlrInst->joints, skin->nJoints);
+    }
+
+    glskin->base.source = modelInst;
+    gkMakeInstanceSkin(ctx->scene, glnode, glCtlrInst);
+    gkAttachSkin(glskin);
+
+    tofree = skin2load;
+    skin2load = skin2load->next;
+    free(tofree);
+  }
+  
+  ctx->skin2load = NULL;
 }

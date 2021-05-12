@@ -28,17 +28,25 @@ extern "C" {
 #include <gk/gk.h>
 #include <gk/gpu_state.h>
 
+typedef struct AgkSkin2Load {
+  struct AgkSkin2Load *next;
+  AkInstanceSkin      *skinner;
+  GkNode              *glnode;
+  GkModelInst         *modelInst;
+} AgkSkin2Load;
+
 typedef struct AgkContext {
-  AkDoc     *doc;
-  RBTree    *bufftree;
-  RBTree    *objMap;
-  RBTree    *ctlr;
-  RBTree    *materials;
-  RBTree    *textures;
-  RBTree    *texmap;
-  GkScene   *scene;
-  GkContext *ctx;
-  GLenum     usage;
+  AkDoc        *doc;
+  RBTree       *bufftree;
+  RBTree       *objMap;
+  RBTree       *ctlr;
+  RBTree       *materials;
+  RBTree       *textures;
+  RBTree       *texmap;
+  AgkSkin2Load *skin2load;
+  GkScene      *scene;
+  GkContext    *ctx;
+  GLenum        usage;
 } AgkContext;
 
 AkResult

@@ -78,31 +78,16 @@ agk_loadNode(AgkContext * __restrict ctx,
           }
           
           if ((skinner = geomInst->skinner) && skinner->skin) {
-            GkControllerInst *glCtlrInst;
-            AkSkin           *skin;
-            GkSkin           *glskin;
+            /* postpone load skin until all nodes are loaded */
+            AgkSkin2Load *skin2load;
             
-            skin       = skinner->skin;
-            glCtlrInst = calloc(1, sizeof(*glCtlrInst));
+            skin2load = calloc(1, sizeof(*skin2load));
+            skin2load->glnode    = glnode;
+            skin2load->skinner   = skinner;
+            skin2load->modelInst = modelInst;
             
-            if (!(glskin = rb_find(ctx->ctlr, skin)))
-              glskin = akgLoadSkin(ctx, skin);
-            
-            glCtlrInst->ctlr = &glskin->base;
-            
-            /* per instance skin joints */
-            if (skinner->overrideJoints) {
-              glCtlrInst->joints = calloc(skin->nJoints,
-                                          sizeof(*glCtlrInst->joints));
-              akgSetJoints(ctx,
-                           skinner->overrideJoints,
-                           glCtlrInst->joints,
-                           skin->nJoints);
-            }
-            
-            glskin->base.source = modelInst;
-            gkMakeInstanceSkin(ctx->scene, glnode, glCtlrInst);
-            gkAttachSkin(glskin);
+            skin2load->next      = ctx->skin2load;
+            ctx->skin2load       = skin2load;
           }
         }
       }
