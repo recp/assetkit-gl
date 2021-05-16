@@ -50,9 +50,9 @@ agkLoadSource(AgkContext  * __restrict ctx,
 AkResult
 agkLoadMesh(AgkContext * __restrict ctx,
             AkMesh     * __restrict mesh,
-            GkModel   ** __restrict dest) {
+            GkGeometry ** __restrict dest) {
   AkMeshPrimitive *prim;
-  GkModel         *gmodel;
+  GkGeometry      *ggeom;
   GkPrimitive     *gprim;
   AkInput         *input;
   AkUIntArray     *indices;
@@ -60,11 +60,11 @@ agkLoadMesh(AgkContext * __restrict ctx,
   uint32_t         primc;
 
   primc  = mesh->primitiveCount;
-  gmodel = calloc(1, sizeof(*gmodel) + sizeof(GkPrimitive) * primc);
+  ggeom = calloc(1, sizeof(*ggeom) + sizeof(GkPrimitive) * primc);
   prim   = mesh->primitive;
 
   while (prim) {
-    gprim = &gmodel->prims[gmodel->primc];
+    gprim = &ggeom->prims[ggeom->primc];
 
     glGenVertexArrays(1, &gprim->vao);
     gkBindPrimitive(gprim);
@@ -97,8 +97,8 @@ agkLoadMesh(AgkContext * __restrict ctx,
 
     gprim->mode = agk_drawMode(prim);
 
-    prim->udata = (void *)(uintptr_t)gmodel->primc;
-    gmodel->primc++;
+    prim->udata = (void *)(uintptr_t)ggeom->primc;
+    ggeom->primc++;
 
     if (prim->bbox) {
       glm_vec3_copy(prim->bbox->min, gprim->bbox[0]);
@@ -112,20 +112,20 @@ agkLoadMesh(AgkContext * __restrict ctx,
   }
 
   /* nothing to render */
-  if (gmodel->primc < 1)
+  if (ggeom->primc < 1)
     goto err;
 
   if (mesh->bbox) {
-    glm_vec3_copy(mesh->bbox->min, gmodel->bbox[0]);
-    glm_vec3_copy(mesh->bbox->max, gmodel->bbox[1]);
+    glm_vec3_copy(mesh->bbox->min, ggeom->bbox[0]);
+    glm_vec3_copy(mesh->bbox->max, ggeom->bbox[1]);
   }
 
-  glm_vec3_copy(mesh->center, gmodel->center);
+  glm_vec3_copy(mesh->center, ggeom->center);
 
-  *dest = gmodel;
+  *dest = ggeom;
 
   return AK_OK;
 err:
-  free(gmodel);
+  free(ggeom);
   return AK_ERR;
 }

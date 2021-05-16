@@ -15,7 +15,7 @@ AkResult
 agkLoadBindMaterial(AgkContext     * __restrict ctx,
                     AkGeometry     * __restrict geom,
                     AkBindMaterial * __restrict bindMaterial,
-                    GkModelInst    * __restrict modelInst) {
+                    GkGeometryInst * __restrict geomInst) {
   AkMaterial         *material;
   AkInstanceMaterial *materialInst;
 
@@ -56,7 +56,7 @@ agkLoadBindMaterial(AgkContext     * __restrict ctx,
         GkPrimInst      *glprimInst;
 
         if ((prim = mi->data)) {
-          glprimInst = &modelInst->prims[(uintptr_t)prim->udata];
+          glprimInst = &geomInst->prims[(uintptr_t)prim->udata];
           glprimInst->material = glmaterial;
 
           /* bind inputs (textures...) */
@@ -99,7 +99,7 @@ agkLoadBindMaterial(AgkContext     * __restrict ctx,
     /* bind to whole geometry  */
     else {
       if (ret == AK_OK)
-        modelInst->material = glmaterial;
+        geomInst->material = glmaterial;
 
       /* TODO: bind vertex inputs? */
     }

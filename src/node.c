@@ -39,8 +39,8 @@ agk_loadNode(AgkContext * __restrict ctx,
   if (node->geometry) {
     AkInstanceGeometry *geomInst;
     AkGeometry         *geom;
-    GkModel            *model;
-    GkModelInst        *modelInst;
+    GkGeometry         *ggeom;
+    GkGeometryInst     *ggeomInst;
     AkResult            ret;
 
     geomInst = node->geometry;
@@ -50,15 +50,15 @@ agk_loadNode(AgkContext * __restrict ctx,
         AkInstanceMorph *morphInst;
         AkInstanceSkin  *skinner;
 
-        ret = agk_loadGeometry(ctx, geom, &model);
+        ret = agk_loadGeometry(ctx, geom, &ggeom);
         if (ret == AK_OK) {
-          modelInst       = gkMakeInstance(model);
-          modelInst->next = glnode->model;
-          glnode->model   = modelInst;
+          ggeomInst       = gkMakeInstance(ggeom);
+          ggeomInst->next = glnode->geom;
+          glnode->geom   = ggeomInst;
           
           /* bind material */
           if (geomInst->bindMaterial)
-            agkLoadBindMaterial(ctx, geom, geomInst->bindMaterial, modelInst);
+            agkLoadBindMaterial(ctx, geom, geomInst->bindMaterial, ggeomInst);
 
           if ((morphInst = geomInst->morpher)) {
             GkInstanceMorph *gmorphInst;
@@ -68,9 +68,9 @@ agk_loadNode(AgkContext * __restrict ctx,
             gmorphInst = calloc(1, sizeof(*gmorphInst));
             
             gmorphInst->overrideWeights      = calloc(1, sizeof(*gmorphInst->overrideWeights) * morphInst->overrideWeights->count);
-            gmorphInst->overrideWeightsCount = (uint32_t)morphInst->overrideWeights->count;
+            gmorphInst->nOverrideWeights = (uint32_t)morphInst->overrideWeights->count;
             
-            gmorphInst->baseGeometry = model;
+            gmorphInst->baseGeometry = ggeom;
             gmorphInst->morph        = glmorph;
             glnode->morpher          = gmorphInst;
             
@@ -84,7 +84,7 @@ agk_loadNode(AgkContext * __restrict ctx,
             skin2load = calloc(1, sizeof(*skin2load));
             skin2load->glnode    = glnode;
             skin2load->skinner   = skinner;
-            skin2load->modelInst = modelInst;
+            skin2load->geomInst = ggeomInst;
             
             skin2load->next      = ctx->skin2load;
             ctx->skin2load       = skin2load;

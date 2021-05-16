@@ -11,14 +11,14 @@
 AkResult
 agk_loadGeometry(AgkContext  * __restrict ctx,
                  AkGeometry  * __restrict geom,
-                 GkModel    ** __restrict dest) {
+                 GkGeometry    ** __restrict dest) {
   AkObject    *prim;
-  GkModel     *model;
+  GkGeometry  *ggeom;
   AkResult     ret;
 
-  model = gk_model_find(ctx->ctx, geom);
-  if (model && (model->flags & GK_COMPLEX)) {
-    *dest = model;
+  ggeom = gk_geom_find(ctx->ctx, geom);
+  if (ggeom && (ggeom->flags & GK_COMPLEX)) {
+    *dest = ggeom;
     return AK_OK;
   }
 
@@ -32,7 +32,7 @@ agk_loadGeometry(AgkContext  * __restrict ctx,
   }
 
   if (*dest)
-    gk_model_add(ctx->ctx, *dest, geom);
+    gk_geom_add(ctx->ctx, *dest, geom);
 
   return ret;
 }

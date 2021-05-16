@@ -137,14 +137,14 @@ agk_loadskinners(AgkContext * __restrict ctx) {
   GkSkin           *glskin;
   GkNode           *glnode;
   GkControllerInst *glCtlrInst;
-  GkModelInst      *modelInst;
+  GkGeometryInst   *geomInst;
   AgkSkin2Load     *skin2load, *tofree;
 
   skin2load = ctx->skin2load;
   while (skin2load) {
     skinner    = skin2load->skinner;
     glnode     = skin2load->glnode;
-    modelInst  = skin2load->modelInst;
+    geomInst   = skin2load->geomInst;
 
     skin       = skinner->skin;
     glCtlrInst = calloc(1, sizeof(*glCtlrInst));
@@ -160,7 +160,7 @@ agk_loadskinners(AgkContext * __restrict ctx) {
       akgSetJoints(ctx, skinner->overrideJoints, glCtlrInst->joints, skin->nJoints);
     }
 
-    glskin->base.source = modelInst;
+    glskin->base.source = geomInst;
     gkMakeInstanceSkin(ctx->scene, glnode, glCtlrInst);
     gkAttachSkin(glskin);
 

@@ -32,7 +32,7 @@ typedef struct AgkSkin2Load {
   struct AgkSkin2Load *next;
   AkInstanceSkin      *skinner;
   GkNode              *glnode;
-  GkModelInst         *modelInst;
+  GkGeometryInst      *geomInst;
 } AgkSkin2Load;
 
 typedef struct AgkContext {
@@ -64,12 +64,12 @@ agk_loadNode(AgkContext * __restrict ctx,
 AkResult
 agk_loadGeometry(AgkContext  * __restrict ctx,
                  AkGeometry  * __restrict geom,
-                 GkModel    ** __restrict dest);
+                 GkGeometry    ** __restrict dest);
 
 AkResult
-agkLoadMesh(AgkContext * __restrict ctx,
+agkLoadMesh(AgkContext  * __restrict ctx,
              AkMesh     * __restrict mesh,
-             GkModel   ** __restrict dest);
+             GkGeometry ** __restrict dest);
 
 AkResult
 agk_loadLight(AkDoc    * __restrict doc,
@@ -86,7 +86,7 @@ AkResult
 agkLoadBindMaterial(AgkContext     * __restrict ctx,
                     AkGeometry     * __restrict geom,
                     AkBindMaterial * __restrict bindMaterial,
-                    GkModelInst    * __restrict modelInst);
+                    GkGeometryInst * __restrict geomInst);
 
 
 AkResult
