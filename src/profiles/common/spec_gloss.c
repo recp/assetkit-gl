@@ -30,26 +30,6 @@ agkSpecGloss(AgkContext           * __restrict ctx,
   if (akmat->base.emission)
     specGloss->base.emission = agkColorOrTex(ctx, actx, akmat->base.emission);
 
-  if (akmat->base.occlusion) {
-    GkOcclusion *occlusion;
-
-    occlusion           = calloc(1, sizeof(*occlusion));
-    occlusion->tex      = agkLoadTexture(ctx, actx, akmat->base.occlusion->tex);
-    occlusion->strength = akmat->base.occlusion->strength;
-
-    specGloss->base.occlusion = occlusion;
-  }
-
-  if (akmat->base.normal) {
-    GkNormalMap *normal;
-
-    normal        = calloc(1, sizeof(*normal));
-    normal->tex   = agkLoadTexture(ctx, actx, akmat->base.normal->tex);
-    normal->scale = akmat->base.normal->scale;
-
-    specGloss->base.normal = normal;
-  }
-
   material->technique = &specGloss->base;
   return material;
 }

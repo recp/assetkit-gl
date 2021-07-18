@@ -60,6 +60,28 @@ agk_profileCommon(AgkContext  * __restrict ctx,
     default:
       goto ret;
   }
+  
+  if (material && material->technique) {
+    if (techn->occlusion) {
+      GkOcclusion *occlusion;
+
+      occlusion           = calloc(1, sizeof(*occlusion));
+      occlusion->tex      = agkLoadTexture(ctx, actx, techn->occlusion->tex);
+      occlusion->strength = techn->occlusion->strength;
+
+      material->technique->occlusion = occlusion;
+    }
+
+    if (techn->normal) {
+      GkNormalMap *normal;
+
+      normal        = calloc(1, sizeof(*normal));
+      normal->tex   = agkLoadTexture(ctx, actx, techn->normal->tex);
+      normal->scale = techn->normal->scale;
+      
+      material->technique->normal = normal;
+    }
+  }
 
   material->doubleSided = techn->doubleSided;
   gltechn = material->technique;
