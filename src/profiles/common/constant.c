@@ -18,9 +18,6 @@ agkConstant(AgkContext          * __restrict ctx,
   material   = calloc(1, sizeof(*material));
   glconstant = gkMaterialNewConstant();
 
-  if (constant->emission)
-    glconstant->emission = agkColorOrTex(ctx, actx, constant->emission);
-
   /* TODO: read param later */
 
   material->technique = glconstant;

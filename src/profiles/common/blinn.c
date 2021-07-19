@@ -27,9 +27,6 @@ agkBlinn(AgkContext          * __restrict ctx,
   if (blinn->specular)
     glblinn->specular = agkColorOrTex(ctx, actx, blinn->specular);
 
-  if (blinn->emission)
-    glblinn->emission = agkColorOrTex(ctx, actx, blinn->emission);
-
   if (blinn->shininess)
     glblinn->shininess = *blinn->shininess->val;
 

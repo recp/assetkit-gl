@@ -25,11 +25,6 @@ agkMetalRough(AgkContext          * __restrict ctx,
   metalRough->albedoMap     = agkLoadTexture(ctx, actx, akmat->albedoTex);
   metalRough->metalRoughMap = agkLoadTexture(ctx, actx, akmat->metalRoughTex);
 
-  /* Other Properties */
-
-  if (akmat->base.emission)
-    metalRough->base.emission = agkColorOrTex(ctx, actx, akmat->base.emission);
-
   material->technique = &metalRough->base;
   return material;
 }

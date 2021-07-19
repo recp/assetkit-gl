@@ -24,9 +24,6 @@ agkLambert(AgkContext          * __restrict ctx,
   if (lambert->diffuse)
     gllambert->diffuse = agkColorOrTex(ctx, actx, lambert->diffuse);
 
-  if (lambert->emission)
-    gllambert->emission = agkColorOrTex(ctx, actx, lambert->emission);
-
   /* TODO: read param later */
 
   material->technique = gllambert;

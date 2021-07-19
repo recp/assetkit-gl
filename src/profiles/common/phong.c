@@ -27,9 +27,6 @@ agkPhong(AgkContext          * __restrict ctx,
   if (phong->specular)
     glphong->specular = agkColorOrTex(ctx, actx, phong->specular);
 
-  if (phong->emission)
-    glphong->emission = agkColorOrTex(ctx, actx, phong->emission);
-
   if (phong->shininess)
     glphong->shininess = *phong->shininess->val;
 

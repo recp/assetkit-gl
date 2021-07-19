@@ -25,11 +25,6 @@ agkSpecGloss(AgkContext           * __restrict ctx,
   specGloss->diffuseMap   = agkLoadTexture(ctx, actx, akmat->diffuseTex);
   specGloss->specGlossMap = agkLoadTexture(ctx, actx, akmat->specGlossTex);
 
-  /* Other Properties */
-
-  if (akmat->base.emission)
-    specGloss->base.emission = agkColorOrTex(ctx, actx, akmat->base.emission);
-
   material->technique = &specGloss->base;
   return material;
 }

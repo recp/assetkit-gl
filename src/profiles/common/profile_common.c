@@ -62,6 +62,9 @@ agk_profileCommon(AgkContext  * __restrict ctx,
   }
   
   if (material && material->technique) {
+    if (material->technique->emission)
+      material->technique->emission = agkColorOrTex(ctx, actx, techn->emission);
+
     if (techn->occlusion) {
       GkOcclusion *occlusion;
 
