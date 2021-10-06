@@ -67,7 +67,7 @@ agk_loadNode(AgkContext * __restrict ctx,
             glmorph    = akgLoadMorph(ctx, morphInst->morph);
             gmorphInst = calloc(1, sizeof(*gmorphInst));
             
-            gmorphInst->overrideWeights      = calloc(1, sizeof(*gmorphInst->overrideWeights) * morphInst->overrideWeights->count);
+            gmorphInst->overrideWeights  = calloc(1, sizeof(*gmorphInst->overrideWeights) * morphInst->overrideWeights->count);
             gmorphInst->nOverrideWeights = (uint32_t)morphInst->overrideWeights->count;
             
             gmorphInst->baseGeometry = ggeom;
