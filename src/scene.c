@@ -8,6 +8,8 @@
 #include "../include/agk.h"
 #include "common.h"
 
+#include <im/im.h>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
@@ -113,7 +115,16 @@ imageLoadFromFile(const char * __restrict path,
                   int        * __restrict width,
                   int        * __restrict height,
                   int        * __restrict components) {
-  return stbi_load(path, width, height, components, 0);
+//  return stbi_load(path, width, height, components, 0);
+  ImImage *image;
+
+  im_load(&image, path, NULL, IM_OPEN_INTENT_READONLY);
+
+  *width      = image->width;
+  *height     = image->height;
+  *components = image->componentsPerPixel;
+
+  return image->data.data;
 }
 
 void*
