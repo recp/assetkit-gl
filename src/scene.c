@@ -26,23 +26,18 @@
 void
 agk_loadskinners(AgkContext * __restrict ctx);
 
-void*
-imageLoadFromFile(const char * __restrict path,
-                  int        * __restrict width,
-                  int        * __restrict height,
-                  int        * __restrict components);
+AkImageData*
+imageLoadFromFile(AkHeap     * __restrict heap,
+                  AkImage    * __restrict image,
+                  const char * __restrict path,
+                  bool                    flipVertically);
 
-void*
-imageLoadFromMemory(const char * __restrict data,
-                    size_t                  len,
-                    int        * __restrict width,
-                    int        * __restrict height,
-                    int        * __restrict components);
+AkImageData*
+imageLoadFromMemory(AkHeap   * __restrict heap,
+                    AkImage  * __restrict image,
+                    AkBuffer * __restrict buff,
+                    bool                  flipVertically);
 
-void
-imageFlipVerticallyOnLoad(bool flip);
-  
-  
 AkResult
 agk_loadScene(GkContext *ctx,
               AkDoc     *doc,
@@ -59,10 +54,8 @@ agk_loadScene(GkContext *ctx,
   if (!scene->visualScene)
     return AK_ERR;
 
-  ak_imageInitLoader(imageLoadFromFile,
-                     imageLoadFromMemory,
-                     imageFlipVerticallyOnLoad);
-  
+  ak_imageInitLoader(imageLoadFromFile, imageLoadFromMemory);
+
   glscene     = gkAllocScene(ctx);
   visualScene = ak_instanceObject(scene->visualScene);
   glnode      = gkAllocNode(glscene);
@@ -110,30 +103,56 @@ agk_loadScene(GkContext *ctx,
   return AK_OK;
 }
 
-void*
-imageLoadFromFile(const char * __restrict path,
-                  int        * __restrict width,
-                  int        * __restrict height,
-                  int        * __restrict components) {
-//  return stbi_load(path, width, height, components, 0);
-  ImImage *image;
+AkImageData*
+imageLoadFromFile(AkHeap     * __restrict heap,
+                  AkImage    * __restrict image,
+                  const char * __restrict path,
+                  bool                    flipVertically) {
+  AkImageData *imdata;
+  int          width, height, comp;
 
-  im_load(&image, path, NULL, IM_OPEN_INTENT_READONLY);
+  if (flipVertically) {
+    stbi_set_flip_vertically_on_load(flipVertically);
+  }
 
-  *width      = image->width;
-  *height     = image->height;
-  *components = image->componentsPerPixel;
+  imdata         = ak_heap_calloc(heap, image, sizeof(*imdata));
+  imdata->data   = stbi_load(path, &width, &height, &comp, 0);
+  imdata->width  = width;
+  imdata->height = height;
+  imdata->comp   = comp;
 
-  return image->data.data;
+  return imdata;
+//
+//  ImImage *image;
+//
+//  im_load(&image, path, NULL, IM_OPEN_INTENT_READONLY);
+//
+//  *width      = image->width;
+//  *height     = image->height;
+//  *components = image->componentsPerPixel;
+//
+//  return image->data.data;
 }
 
-void*
-imageLoadFromMemory(const char * __restrict data,
-                    size_t                  len,
-                    int        * __restrict width,
-                    int        * __restrict height,
-                    int        * __restrict components) {
-  return stbi_load_from_memory((stbi_uc const*)data, (int)len, width, height, components, 0);
+AkImageData*
+imageLoadFromMemory(AkHeap   * __restrict heap,
+                    AkImage  * __restrict image,
+                    AkBuffer * __restrict buff,
+                    bool                  flipVertically) {
+  AkImageData *imdata;
+  int          width, height, comp;
+
+  if (flipVertically) {
+    stbi_set_flip_vertically_on_load(flipVertically);
+  }
+
+  imdata         = ak_heap_calloc(heap, image, sizeof(*imdata));
+  imdata->data   = stbi_load_from_memory(buff->data, (int)buff->length, &width, &height, &comp, 0);
+  imdata->width  = width;
+  imdata->height = height;
+  imdata->comp   = comp;
+
+  return imdata;
 }
 
 void
