@@ -81,7 +81,7 @@ agk_mipFilter(AkMipFilter mipfilter) {
 
 GLenum
 agk_drawMode(AkMeshPrimitive *primitive) {
-  GLenum mode;
+  GLenum mode = GL_TRIANGLES;
   
   switch (primitive->type) {
     case AK_PRIMITIVE_POLYGONS:
