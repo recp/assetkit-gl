@@ -14,7 +14,7 @@ agk_profileCommon(AgkContext  * __restrict ctx,
                   AkContext   * __restrict actx,
                   AkEffect    * __restrict effect,
                   GkMaterial ** __restrict dest) {
-  AkProfile            *profilei;
+  // AkProfile            *profilei;
   AkProfileCommon      *profile;
   AkTechniqueFx        *tfx;
   GkMaterial           *material;
@@ -22,14 +22,14 @@ agk_profileCommon(AgkContext  * __restrict ctx,
   AkTechniqueFxCommon  *techn;
 
   /* find profile common */
-  profilei = effect->profile;
-  while (profilei) {
-    if (profilei->type == AK_PROFILE_TYPE_COMMON)
-      break;
-    profilei = profilei->next;
-  }
+  // profilei = effect->profile;
+  // while (profilei) {
+  //   if (profilei->type == AK_PROFILE_TYPE_COMMON)
+  //     break;
+  //   profilei = profilei->next;
+  // }
 
-  if (!(profile = (AkProfileCommon *)profilei)
+  if (!(profile = ak_getProfileCommon(effect))
       || !(tfx = profile->technique)
       || !(techn = tfx->common)) {
     *dest = NULL;
