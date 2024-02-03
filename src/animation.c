@@ -81,7 +81,7 @@ agkLoadAnimations(AgkContext * __restrict ctx) {
                    buff->data + acc->byteOffset,
                    byteLength);
 
-            gbuff->count  = acc->count;// byteLength / acc->componentBytes; /* TODO: */
+            gbuff->count  = acc->count;// byteLength / acc->bytesPerComponent; /* TODO: */
             gbuff->stride = acc->componentCount;
 
             switch (inp->semantic) {

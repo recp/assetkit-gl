@@ -20,7 +20,7 @@ agkAccessor(AkAccessor  * __restrict acc,
   gacc->byteStride = acc->byteStride;
   gacc->itemCount  = acc->componentCount;
   gacc->count      = acc->count;
-  gacc->itemSize   = acc->componentBytes;
+  gacc->itemSize   = acc->bytesPerComponent;
   gacc->normalized = false;
   gacc->filledSize = acc->fillByteSize;
   gacc->gpuTarget  = gbuff->target;

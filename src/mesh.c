@@ -92,7 +92,7 @@ agkLoadMesh(AgkContext * __restrict ctx,
     /* els direct draw */
     else {
       gprim->flags |= GK_DRAW_ARRAYS;
-      gprim->count  = prim->count;
+      gprim->count  = prim->nPolygons;
     }
 
     gprim->mode = agk_drawMode(prim);
