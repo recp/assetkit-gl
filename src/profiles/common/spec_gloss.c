@@ -9,21 +9,25 @@
 #include "../../common.h"
 
 GkMaterial*
-agkSpecGloss(AgkContext           * __restrict ctx,
-             AkContext            * __restrict actx,
-             AkSpecularGlossiness * __restrict akmat) {
+agkSpecGloss(AgkContext          * __restrict ctx,
+             AkContext           * __restrict actx,
+             AkTechniqueFxCommon * __restrict akmat) {
   GkMaterial   *material;
   GkSpecGloss  *specGloss;
+  AkMaterialSpecularProp *specularProp;
 
   material  = calloc(1, sizeof(*material));
   specGloss = gkMaterialNewSpecGloss();
 
-  glm_vec4_copy(akmat->diffuse.vec,  specGloss->diffuse.vec);
-  glm_vec4_copy(akmat->specular.vec, specGloss->specular.vec);
+  if (!(specularProp = akmat->specular)) { return material; }
 
-  specGloss->gloss        = akmat->glossiness;
-  specGloss->diffuseMap   = agkLoadTexture(ctx, actx, akmat->diffuseTex);
-  specGloss->specGlossMap = agkLoadTexture(ctx, actx, akmat->specGlossTex);
+  glm_vec4_copy(akmat->diffuse->color->vec, specGloss->diffuse.vec);
+
+  glm_vec4_copy(specularProp->colorFactor.vec, specGloss->specular.vec);
+
+  specGloss->gloss        = specularProp->strength;
+  specGloss->diffuseMap   = agkLoadTexture(ctx, actx, specularProp->colorTex);
+  specGloss->specGlossMap = agkLoadTexture(ctx, actx, specularProp->specularTex);
 
   material->technique = &specGloss->base;
   return material;

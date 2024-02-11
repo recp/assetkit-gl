@@ -39,11 +39,11 @@ agkConstant(AgkContext          * __restrict ctx,
 GkMaterial*
 agkMetalRough(AgkContext          * __restrict ctx,
               AkContext           * __restrict actx,
-              AkMetallicRoughness * __restrict akmat);
+              AkTechniqueFxCommon * __restrict akmat);
 
 GkMaterial*
-agkSpecGloss(AgkContext           * __restrict ctx,
-             AkContext            * __restrict actx,
-             AkSpecularGlossiness * __restrict akmat);
+agkSpecGloss(AgkContext          * __restrict ctx,
+             AkContext           * __restrict actx,
+             AkTechniqueFxCommon * __restrict akmat);
 
 #endif /* agk_profile_common_h */

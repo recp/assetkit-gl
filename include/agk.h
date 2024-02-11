@@ -98,7 +98,14 @@ void
 agkLoadAnimations(AgkContext * __restrict ctx);
 
 GkMorph*
-akgLoadMorph(AgkContext * __restrict ctx, AkMorph * __restrict morph) ;
+akgLoadMeshMorph(AgkContext  * __restrict ctx,
+                 AkGeometry  * __restrict baseMesh,
+                 AkMeshMorph * __restrict morph);
+
+GkMorph*
+akgLoadPrimitiveMorph(AgkContext       * __restrict ctx,
+                      AkGeometry       * __restrict baseMesh,
+                      AkPrimitiveMorph * __restrict morph);
 
 GkSkin*
 akgLoadSkin(AgkContext * __restrict ctx, AkSkin * __restrict skin);

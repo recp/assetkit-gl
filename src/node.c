@@ -54,7 +54,7 @@ agk_loadNode(AgkContext * __restrict ctx,
         if (ret == AK_OK) {
           ggeomInst       = gkMakeInstance(ggeom);
           ggeomInst->next = glnode->geom;
-          glnode->geom   = ggeomInst;
+          glnode->geom    = ggeomInst;
           
           /* bind material */
           if (geomInst->bindMaterial)
@@ -69,11 +69,11 @@ agk_loadNode(AgkContext * __restrict ctx,
             
             gmorphInst->overrideWeights  = calloc(1, sizeof(*gmorphInst->overrideWeights) * morphInst->overrideWeights->count);
             gmorphInst->nOverrideWeights = (uint32_t)morphInst->overrideWeights->count;
-            
-            gmorphInst->baseGeometry = ggeom;
-            gmorphInst->morph        = glmorph;
-            glnode->morpher          = gmorphInst;
-            
+
+            gmorphInst->baseGeometry     = ggeom;
+            gmorphInst->morph            = glmorph;
+            glnode->morpher              = gmorphInst;
+
             rb_insert(ctx->objMap, morphInst->overrideWeights, gmorphInst->overrideWeights);
           }
           

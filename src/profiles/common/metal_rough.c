@@ -11,19 +11,24 @@
 GkMaterial*
 agkMetalRough(AgkContext          * __restrict ctx,
               AkContext           * __restrict actx,
-              AkMetallicRoughness * __restrict akmat) {
-  GkMaterial   *material;
-  GkMetalRough *metalRough;
+              AkTechniqueFxCommon * __restrict akmat) {
+  GkMaterial             *material;
+  GkMetalRough           *metalRough;
+  AkMaterialMetallicProp *metalness;
+  AkMaterialMetallicProp *roughness;
 
   material   = calloc(1, sizeof(*material));
   metalRough = gkMaterialNewMetalRough();
 
-  glm_vec4_copy(akmat->albedo.vec, metalRough->albedo.vec);
+  glm_vec4_copy(akmat->albedo->color->vec, metalRough->albedo.vec);
 
-  metalRough->metallic      = akmat->metallic;
-  metalRough->roughness     = akmat->roughness;
-  metalRough->albedoMap     = agkLoadTexture(ctx, actx, akmat->albedoTex);
-  metalRough->metalRoughMap = agkLoadTexture(ctx, actx, akmat->metalRoughTex);
+  if (!(metalness = akmat->metalness)) { return material; }
+  if (!(roughness = akmat->roughness)) { return material; }
+
+  metalRough->metallic      = metalness->intensity;
+  metalRough->roughness     = roughness->intensity;
+  metalRough->albedoMap     = agkLoadTexture(ctx, actx, akmat->albedo->texture);
+  metalRough->metalRoughMap = agkLoadTexture(ctx, actx, metalness->tex);
 
   material->technique = &metalRough->base;
   return material;

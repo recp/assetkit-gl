@@ -40,10 +40,10 @@ agk_profileCommon(AgkContext  * __restrict ctx,
 
   switch (techn->type) {
     case AK_MATERIAL_SPECULAR_GLOSSINES:
-      material = agkSpecGloss(ctx, actx, (AkSpecularGlossiness *)techn);
+      material = agkSpecGloss(ctx, actx, techn);
       break;
     case AK_MATERIAL_METALLIC_ROUGHNESS:
-      material = agkMetalRough(ctx, actx, (AkMetallicRoughness *)techn);
+      material = agkMetalRough(ctx, actx, techn);
       break;
     case AK_MATERIAL_PHONG:
       material = agkPhong(ctx, actx, techn);
