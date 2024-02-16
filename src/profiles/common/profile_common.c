@@ -43,6 +43,7 @@ agk_profileCommon(AgkContext  * __restrict ctx,
       material = agkSpecGloss(ctx, actx, techn);
       break;
     case AK_MATERIAL_METALLIC_ROUGHNESS:
+    case AK_MATERIAL_PBR:
       material = agkMetalRough(ctx, actx, techn);
       break;
     case AK_MATERIAL_PHONG:

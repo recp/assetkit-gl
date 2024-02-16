@@ -23,10 +23,17 @@ agkSpecGloss(AgkContext          * __restrict ctx,
 
   glm_vec4_copy(akmat->diffuse->color->vec, specGloss->diffuse.vec);
 
-  glm_vec4_copy(specularProp->colorFactor.vec, specGloss->specular.vec);
+  if (specularProp->color) {
+    if (specularProp->color->color) {
+      glm_vec4_copy(specularProp->color->color->vec, specGloss->specular.vec);
+    }
+
+    if (specularProp->color->texture) {
+      specGloss->diffuseMap  = agkLoadTexture(ctx, actx, specularProp->color->texture);
+    }
+  }
 
   specGloss->gloss        = specularProp->strength;
-  specGloss->diffuseMap   = agkLoadTexture(ctx, actx, specularProp->colorTex);
   specGloss->specGlossMap = agkLoadTexture(ctx, actx, specularProp->specularTex);
 
   material->technique = &specGloss->base;
