@@ -90,8 +90,7 @@ agk_profileCommon(AgkContext  * __restrict ctx,
   material->doubleSided = techn->doubleSided;
   gltechn = material->technique;
 
-  if (techn->indexOfRefraction)
-    material->indexOfRefraction = *techn->indexOfRefraction->val;
+  material->indexOfRefraction = techn->ior;
   
   if (techn->transparent) {
     AkTransparent *aktransp;
@@ -99,15 +98,11 @@ agk_profileCommon(AgkContext  * __restrict ctx,
     
     transp   = calloc(1, sizeof(*gltechn->transparent));
     aktransp = techn->transparent;
-    
-    if (aktransp->amount)
-      transp->amount = *aktransp->amount->val;
-    else
-      transp->amount = 1.0f;
 
     if (aktransp->color)
       transp->color = agkColorOrTex(ctx, actx, aktransp->color);
 
+    transp->amount = aktransp->amount;
     transp->cutoff = aktransp->cutoff;
     transp->mode   = GK_ALPHA_BLEND;
     transp->opaque = agk_opaque(aktransp->opaque);
@@ -122,8 +117,7 @@ agk_profileCommon(AgkContext  * __restrict ctx,
     refl   = calloc(1, sizeof(*refl));
     akrefl = techn->reflective;
     
-    if (akrefl->amount)
-      refl->amount = *akrefl->amount->val;
+    refl->amount = akrefl->amount;
     
     if (akrefl->color)
       refl->color = agkColorOrTex(ctx, actx, akrefl->color);

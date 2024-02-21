@@ -24,11 +24,10 @@ agkPhong(AgkContext          * __restrict ctx,
   if (phong->diffuse)
     glphong->diffuse = agkColorOrTex(ctx, actx, phong->diffuse);
 
-  if (phong->specular)
-    glphong->specular = agkColorOrTex(ctx, actx, phong->specular);
-
-  if (phong->shininess)
-    glphong->shininess = *phong->shininess->val;
+  if (phong->specular) {
+    glphong->specular  = agkColorOrTex(ctx, actx, phong->specular->specularTex);
+    glphong->shininess = phong->specular->shininess;
+  }
 
   /* TODO: read param later */
 

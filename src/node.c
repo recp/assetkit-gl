@@ -84,8 +84,8 @@ agk_loadNode(AgkContext * __restrict ctx,
             skin2load = calloc(1, sizeof(*skin2load));
             skin2load->glnode    = glnode;
             skin2load->skinner   = skinner;
-            skin2load->geomInst = ggeomInst;
-            
+            skin2load->geomInst  = ggeomInst;
+
             skin2load->next      = ctx->skin2load;
             ctx->skin2load       = skin2load;
           }

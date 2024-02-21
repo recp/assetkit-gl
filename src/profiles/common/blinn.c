@@ -24,11 +24,10 @@ agkBlinn(AgkContext          * __restrict ctx,
   if (blinn->diffuse)
     glblinn->diffuse = agkColorOrTex(ctx, actx, blinn->diffuse);
 
-  if (blinn->specular)
-    glblinn->specular = agkColorOrTex(ctx, actx, blinn->specular);
-
-  if (blinn->shininess)
-    glblinn->shininess = *blinn->shininess->val;
+  if (blinn->specular) {
+    glblinn->specular  = agkColorOrTex(ctx, actx, blinn->specular->specularTex);
+    glblinn->shininess = blinn->specular->shininess;
+  }
 
   /* TODO: read param later */
 
